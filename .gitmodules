@@ -1,0 +1,3 @@
+[submodule "lib/myhdl"]
+	path = lib/myhdl
+	url = https://github.com/myhdl/myhdl

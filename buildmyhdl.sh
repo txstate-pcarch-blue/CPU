@@ -2,11 +2,11 @@
 pushd $(dirname "${0}") > /dev/null
 ROOTD=$(pwd -L)
 echo "$ROOTD"
-pushd "$ROOTD/lib" > /dev/null
+pushd "$ROOTD/lib/myhdl" > /dev/null
 
 echo Downloading myhdl library
 git submodule update
-if [ ! -d "myhdl" ]; then
+if [ ! -d "cosimulation" ]; then
    echo Error: Unable to download myhdl
    exit
 fi

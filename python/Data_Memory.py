@@ -10,5 +10,6 @@ def Data_Memory(clk, readA, readB, writeReg, writeData, WC, outA, outB):
     @always(clk.posedge)
     def execute():
         #Insert Memory Read or Write
+        return
 
     return execute

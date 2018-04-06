@@ -10,5 +10,6 @@ def Register():
     @always(clk.negedge)
     def executeNeg():
         #Insert Read
+        return
 
     return executePos, executeNeg

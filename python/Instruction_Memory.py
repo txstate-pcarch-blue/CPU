@@ -4,6 +4,6 @@ from myhdl import *
 def Instruction_Memory(clk, Addr, Out): #Addr and clk input, out is output
 
     @always(clk.posedge)
-    def execute:
+    def execute():
 
     return execute

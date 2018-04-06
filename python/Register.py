@@ -4,11 +4,11 @@ from myhdl import *
 def Register():
 
     @alway(clk.posedge)
-    def executePos:
+    def executePos():
         #Insert Write
 
     @always(clk.negedge)
-    def executeNeg:
+    def executeNeg():
         #Insert Read
 
     return executePos, executeNeg

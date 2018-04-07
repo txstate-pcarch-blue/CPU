@@ -4,11 +4,12 @@ module alu_tb();
 
 	parameter tck = 10; ///< clock tick
 
-	reg [15:0] a, b ;
+	reg [31:0] a, b ;
 	reg clk , reset ;
-	reg [2:0] ctrl  ;
-	wire [15:0] r ;
+	reg [1:0] ctrl  ;
+	wire [31:0] r ;
 	wire zero ;
+	wire ovf ;
 
 
 	alu dut(	.A(a), 
@@ -17,7 +18,8 @@ module alu_tb();
 				.CTRL(ctrl), 
 				.reset(reset), 
 				.R(r), 
-				.zero(zero) 
+				.zero(zero),
+				.ovf(ovf) 
 			);
 			
 	integer num_iter = 0 ;
@@ -32,26 +34,18 @@ module alu_tb();
 							
 	//Initialise registers 
 	initial begin
-		clk = 0; reset = 0; 
-		#(tck*2);
-		reset = 1;
-		#(tck*2);
+		clk = 0; 
 		reset = 0;
-		#(tck*2);
 		a = 0 ;
 		b = 0 ;
 	end
 	
 	always @(posedge clk) begin
-		if (reset) begin
-			reset = 0;
-		end
-		else begin
-			a = $random(seed) ;
-			b = $random(seed) ;
-			ctrl = $random(seed) ;
-			++ num_iter ;
-		end
+		a = $random(seed) ;
+		b = $random(seed) ;
+		ctrl = $random(seed) ;
+		++ num_iter ;
+
 	end
 
 	always @(negedge clk) begin

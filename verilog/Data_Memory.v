@@ -39,7 +39,7 @@ memOut250,memOut251,memOut252,memOut253,memOut254,memOut255
 );
 
 input MR, MW;  // MemRead, MemWrite
-input [7:0] Addr;  // memory address
+input [31:0] Addr;  // memory address
 input [31:0] WD;  // memory address contents
 input Clk;
 output reg [31:0] RD;  // output of memory address contents
@@ -564,7 +564,7 @@ reg [31:0] MEM[0:255];  // 256 words of 32-bit memory
     assign memOut253 = MEM[253];
     assign memOut254 = MEM[254];
     assign memOut255 = MEM[255];
-  */
+*/
   
 integer i;
 
@@ -578,11 +578,11 @@ end
 always @(posedge Clk) begin
   //if MemRead high, load memory value into register
   if (MR == 1'b1) begin
-    RD <= MEM[Addr];
+    RD <= MEM[Addr[31:24]];
   end
   //if MemWrite high, write from register to memory
   if (MW == 1'b1) begin
-    MEM[Addr] <= WD;
+    MEM[Addr[31:24]] <= WD;
   end
 end
 

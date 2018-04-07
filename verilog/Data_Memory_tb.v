@@ -6,7 +6,7 @@ module tb();
 
 	reg clk;
 	reg MR, MW;
-	reg [7:0] Addr;
+	reg [31:0] Addr;
 	reg [31:0] WD;
 
 	wire [31:0] RD; // ReadData output
@@ -271,6 +271,7 @@ module tb();
 		wire [31:0] memOut254;
 		wire [31:0] memOut255;
 	*/
+
 	DataMemory dut
 	(
 		.MR(MR),
@@ -548,7 +549,7 @@ module tb();
 
 	initial begin
 		clk = 0; MR = 0; MW = 0;
-		Addr = 8'd0;
+		Addr = 32'd0;
 		WD = 32'd0;
 	end
 	

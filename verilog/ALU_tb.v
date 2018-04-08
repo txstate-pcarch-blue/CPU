@@ -26,6 +26,12 @@ module alu_tb();
 	integer seed = 1 ;
 	always #(tck/2) clk <= ~clk; // clocking device
 
+	always #60 begin
+		a = 32'h1;
+		b = 32'h1;
+		ctrl = 2'b11;
+	end
+
 	initial begin
 		$dumpfile("alu_ah.vcd");
 		$dumpvars(-1, dut);
@@ -45,7 +51,7 @@ module alu_tb();
 		b = $random(seed) ;
 		ctrl = $random(seed) ;
 		++ num_iter ;
-		if (num_iter > 99999) $finish;
+		if (num_iter > 999) $finish;
 
 	end
 

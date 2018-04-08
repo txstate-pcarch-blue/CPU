@@ -10,6 +10,7 @@ module alu_tb();
 	wire [31:0] r ;
 	wire zero ;
 	wire ovf ;
+	wire branch ;
 
 
 	alu dut(	.A(a), 
@@ -19,18 +20,13 @@ module alu_tb();
 				.reset(reset), 
 				.R(r), 
 				.zero(zero),
-				.ovf(ovf) 
+				.ovf(ovf), 
+				.branch(branch)
 			);
 			
 	integer num_iter = 0 ;
 	integer seed = 1 ;
 	always #(tck/2) clk <= ~clk; // clocking device
-
-	always #60 begin
-		a = 32'h1;
-		b = 32'h1;
-		ctrl = 2'b11;
-	end
 
 	initial begin
 		$dumpfile("alu_ah.vcd");
@@ -38,7 +34,8 @@ module alu_tb();
 		$monitor("%b", r);
 	end
 							
-	//Initialise registers 
+	//Initialise registers
+
 	initial begin
 		clk = 0; 
 		reset = 0;
@@ -52,7 +49,6 @@ module alu_tb();
 		ctrl = $random(seed) ;
 		++ num_iter ;
 		if (num_iter > 999) $finish;
-
 	end
 
 endmodule

@@ -45,12 +45,8 @@ module alu_tb();
 		b = $random(seed) ;
 		ctrl = $random(seed) ;
 		++ num_iter ;
+		if (num_iter > 99999) $finish;
 
-	end
-
-	always @(negedge clk) begin
-		if (num_iter > 99999)
-			$finish;
 	end
 
 endmodule

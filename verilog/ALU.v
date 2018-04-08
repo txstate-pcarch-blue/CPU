@@ -9,17 +9,17 @@ module alu  (input [31:0] A,B,
 		
         /* Decode the instruction */
 
-        always @(posedge clk) begin
+        always @* begin
 			if(reset == 1) begin
 				R <= 16'b0;
 			end
+
 			else if(reset == 0) begin
 				ovf <= 0;
 				case (CTRL)
-					2'b00 /* ADD */: {ovf, R} <= A + B;
-					
-					2'b01 /* SUB */: {ovf, R} <= A - B ;
 
+					2'b00 /* ADD */: {ovf, R} <= A + B;
+					2'b01 /* SUB */: {ovf, R} <= A - B;
 					2'b10 /* XOR */: R <= A ^ B;
 
 
@@ -29,8 +29,9 @@ module alu  (input [31:0] A,B,
 					//3'h5 /* NOTA */:  R <= ~A;
 					//3'h6 /* NAND */:  R <= ~(A & B);
 					//3'h7 /* NOR */:   R <= ~(A | B);
+
 					default: R <= 0;
 				endcase
 			end
 		end
-endmodule //alu
+endmodule 

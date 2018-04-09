@@ -5,16 +5,16 @@ module alu  (input [31:0] A,B,
 			 output zero,
 			 output reg ovf, branch);
 		
-		assign zero = (R==0); //Zero is true if output y is 0
+		assign zero = (R==0); //Zero is true if output r is 0
 		
         /* Decode the instruction */
 
-        always @* begin
+        always @(posedge clk) begin
 			if(reset == 1) begin
 				R <= 16'b0;
 			end
 
-			else if(reset == 0) begin
+			else begin
 				ovf <= 0;
 				branch <= 0;
 				case (CTRL)
@@ -23,8 +23,8 @@ module alu  (input [31:0] A,B,
 					2'b01 /* SUB */: {ovf, R} <= A - B;
 					2'b10 /* XOR */: R <= A ^ B;
 					2'b11 /* Branch Conditional */: begin
-						if (A == B)
-							branch <= 1;
+						if (A == B) branch <= 1;
+						else R <= 0;
 						end
 
 

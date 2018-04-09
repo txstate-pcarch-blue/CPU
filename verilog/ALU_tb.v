@@ -5,8 +5,8 @@ module alu_tb();
 	parameter tck = 10; ///< clock tick
 
 	reg [31:0] a, b ;
-	reg clk , reset ;
-	reg [1:0] ctrl  ;
+	reg clk, reset;
+	reg [1:0] ctrl ;
 	wire [31:0] r ;
 	wire zero ;
 	wire ovf ;
@@ -37,16 +37,17 @@ module alu_tb();
 	//Initialise registers
 
 	initial begin
-		clk = 0; 
-		reset = 0;
+		clk = 0 ; 
+		reset = 0 ;
 		a = 0 ;
 		b = 0 ;
+		ctrl = 0 ;
 	end
 	
 	always @(posedge clk) begin
-		a = $random(seed) ;
-		b = $random(seed) ;
-		ctrl = $random(seed) ;
+		a <= $random(seed) ;
+		b <= $random(seed) ;
+		ctrl <= $random(seed) ;
 		++ num_iter ;
 		if (num_iter > 999) $finish;
 	end

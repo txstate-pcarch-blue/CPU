@@ -48,7 +48,7 @@ module alu_tb();
 		a <= $random(seed) ;
 		b <= $random(seed) ;
 		ctrl <= $random(seed) ;
-		++ num_iter ;
+		num_iter = num_iter+1 ;
 		if (num_iter > 999) $finish;
 	end
 

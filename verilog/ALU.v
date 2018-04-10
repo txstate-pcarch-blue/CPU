@@ -1,3 +1,8 @@
+// 32-bit ALU
+// data input width: 2 32-bit values
+// data output width: 1 32-bit and one "zero" output
+// control: 2-bits
+// zero: output 1 if all bits of data output is 0
 module alu  (input [31:0] A,B,
              input [1:0] CTRL,
              input clk, reset,

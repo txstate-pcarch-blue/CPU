@@ -6,7 +6,7 @@ base_d = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 sys.path.append(os.path.join(base_d, "python/"))
 
 from Accumulator import Accumulator
-from Clock import ClkDriver
+from Clock_Generator import clock_generator
 from Random_Signal import random_signal
 
 
@@ -31,7 +31,7 @@ def match_test(clock, dver, dpy):
 
 def run_hello_cosim():
   clock = Signal(0) 
-  clock_driver = ClkDriver(clock)
+  clock_driver = clock_generator(clock)
   din = Signal(intbv(val = 0, min = 0, max = 256))
   rand = random_signal(din, clock)
   doutver = Signal(intbv(val = 0, min = 0, max = 256))

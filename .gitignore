@@ -1,0 +1,4 @@
+*.swp
+*.vcd
+__pycache__/
+*.o

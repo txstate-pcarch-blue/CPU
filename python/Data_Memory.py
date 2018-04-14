@@ -14,8 +14,8 @@ def Data_Memory(clk, MUX, address, writeData, readData, output):
     def execute():
         #Insert Memory Read or Write
         if clk == 0: 
-            readData = mem[address[9:2]] #return memory to be loaded into a register
-            return readData
+            readData.next = mem[address[9:2]] #return memory to be loaded into a register
+            return readData.next
         elif clk == 1:
             mem[address[9:2]] = writeData #write register data into memory
         return

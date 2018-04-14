@@ -7,7 +7,7 @@ def Instruction_Memory(clk, Addr, Out): #Addr and clk input, out is output
 
     @always(clk.posedge)
     def execute():
-        Out = mem[address[9:2]] #return the address of the instruciton
-        return Out
+        Out.next = mem[address[9:2]] #return the address of the instruciton
+        return Out.next
 
     return execute

@@ -16,7 +16,7 @@ module alu  (input [31:0] A,B,
 
         always @(posedge clk) begin
 			if(reset == 1) begin
-				R <= 16'b0;
+				R <= 32'b0;
 			end
 
 			else begin

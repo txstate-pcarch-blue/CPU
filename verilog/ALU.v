@@ -22,13 +22,6 @@ module alu  (input [31:0] A,B,
 			else begin
 				ovf <= 0;
 				branch <= 0;
-				case (CTRL)
-
-					2'b00 /* ADD */: {ovf, R} <= A + B;
-					2'b01 /* SUB */: {ovf, R} <= A - B;
-					2'b10 /* XOR */: R <= A ^ B;
-					2'b11 /* Branch Conditional */: begin
-				
 				// CTRL is equivalent to 3 bit ALU Op code
 				// and can accomodate max 8 types of operations
 				case (CTRL)

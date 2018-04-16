@@ -1,3 +1,7 @@
+// PC Test Bench
+// Branches to address "cafef00c" when counter = 11
+// Else, PC = PC + 4
+
 `timescale 1 ns / 1 ns
 
 module pc_tb();
@@ -42,7 +46,7 @@ module pc_tb();
 
 		if (num_iter == 11) begin
 			branch <= 1 ;
-			addrIn <= $random(seed) ;
+			addrIn <= 32'hcafef00c;
 		end
 
 		else begin

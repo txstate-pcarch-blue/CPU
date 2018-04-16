@@ -15,7 +15,6 @@ always @(posedge clk) begin
 	else begin
 		if(branch == 1) addrOut <= addrIn;
 		else addrOut <= addrOut+4;
-
 	end
 
 	end

@@ -34,4 +34,20 @@ def alu(clk, reset, A, B, CTRL, R, zero): 			#Note that input and outputs are ty
     	elif CTRL == 2:				# if CTRL is equal to 2, then
     		R.next = (A ^ B) 			# Xor
 
+    	elif CTRL == 3:				# if CTRL is equal to 3, then
+    		R.next = (A | B) 			# OR
+
+    	elif CTRL == 4:				# if CTRL is equal to 4, then
+    		R.next = (A & B) 			# AND
+
+    	elif CTRL == 5:				# if CTRL is equal to 5, then
+    		R.next = ~A 
+
+    	elif CTRL == 6:				# if CTRL is equal to 6, then
+    		R.next = ~(A & B) 			# NAND
+
+    	elif CTRL == 7:				# if CTRL is equal to 7, then
+    		R.next = ~(A | B) 			# NOR
+
+
     return execute, zero_ex #Return for ALU class ClassName(object):

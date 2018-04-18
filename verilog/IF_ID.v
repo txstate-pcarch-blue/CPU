@@ -8,6 +8,11 @@ input IFID_write, IF_flush;
 always@(posedge clk)
     begin
 
+      if(reset == 1) begin
+        InsOut <= 32'b0;
+        PC_out <= 32'b0;
+      end
+
       if(IFID_write == 1) begin
       	InsOut <= InsIn;
       	PC_out <= PC_In;

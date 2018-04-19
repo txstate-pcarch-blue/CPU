@@ -26,14 +26,14 @@ def alu(clk, reset, A, B, CTRL, R, zero, ovf, branch): 			 # Note that input and
     	if (reset == 1):
             R.next = 0
         else:         
-            if CTRL == 0:				                         # if CTRL is equal to 0, then
-        		R.next = (A + B) 			                     # and
+            if CTRL == 0:				         # if CTRL is equal to 0, then
+        	R.next = (A + B) 			         # and
 
-        	elif CTRL == 1:				                         # if CTRL is equal to 1, then
-        		R.next = (A - B) 			                     # sub
+            elif CTRL == 1:				         # if CTRL is equal to 1, then
+                R.next = (A - B) 			         # sub
 
-        	elif CTRL == 2:				                         # if CTRL is equal to 2, then
-        		R.next = (A ^ B) 			                     # Xor
+            elif CTRL == 2:				         # if CTRL is equal to 2, then
+        	R.next = (A ^ B) 			         ;# Xor
 
             elif CTRL == 4:                                      # if CTRL is equal to 4, then
                 R.next = (A & B)                                 # AND

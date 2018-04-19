@@ -26,6 +26,7 @@ def alu(clk, reset, A, B, CTRL, R, zero, ovf, branch): 			 # Note that input and
     	if (reset == 1):
             R.next = 0
         else:         
+<<<<<<< HEAD
             if CTRL == 0:				         # if CTRL is equal to 0, then
         	R.next = (A + B) 			         # and
 
@@ -34,6 +35,16 @@ def alu(clk, reset, A, B, CTRL, R, zero, ovf, branch): 			 # Note that input and
 
             elif CTRL == 2:				         # if CTRL is equal to 2, then
         	R.next = (A ^ B) 			         ;# Xor
+=======
+            if CTRL == 0:				                         # if CTRL is equal to 0, then
+        		R.next = (A + B) 			                     # and
+
+        	elif CTRL == 1:				                         # if CTRL is equal to 1, then
+        		R.next = (A - B) 			                     # sub
+
+        	elif CTRL == 2:				                         # if CTRL is equal to 2, then
+        		R.next = (A ^ B) 			                     # Xor
+>>>>>>> 8e31019ff99429a7be33f758066baf58a7bb4657
 
             elif CTRL == 4:                                      # if CTRL is equal to 4, then
                 R.next = (A & B)                                 # AND

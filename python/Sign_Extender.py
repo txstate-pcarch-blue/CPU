@@ -4,7 +4,7 @@ from myhdl import *
 def Sign_Extender(clk, instruction, output):
     #Instruction should be a 16-bit intbv
     #output is accurate 32-bit intbv.
-    output.Next = intbv(max = 32)
+    output.Next = intbv(min = 32, max = 32)
     
     @alway(clk.posedge)
     def execute():

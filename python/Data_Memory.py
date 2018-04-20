@@ -16,7 +16,9 @@ def Data_Memory(clk, address, write, readData, writeData):
         if write:
             execute.mem[address[9:2]] = writeData #write register data into memory
         readData.next = execute.mem[address[9:2]]
-
-    execute.mem = [intbv(max = 2**32)] * 256 #create a mem array with 256 32-bit intbv elements
+    mem = []
+    for i in range(0, 256):
+        mem.append(Signal(intbv(0, 0 ,2**32)))
+    #execute.mem = [intbv(max = 2**32)] * 256 #create a mem array with 256 32-bit intbv elements
     return execute
 

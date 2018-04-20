@@ -102,15 +102,6 @@ module ID_EX_tb();
 
 			if (num_iter > 2000)
 				$finish;
-
-	end
-			
-
-	always @(negedge clk) begin
-		
-
-		if (num_iter > 2000)
-			$finish;
 	end
 
 endmodule

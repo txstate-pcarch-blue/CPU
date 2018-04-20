@@ -1,4 +1,4 @@
-LU control lines		Function
+:#ALU control lines		Function
 #0000					add
 #0001					sub
 #0010					xor

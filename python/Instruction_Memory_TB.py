@@ -2,7 +2,6 @@ from myhdl import Signal, Simulation, intbv, traceSignals
 from Instruction_Memory import Instruction_Memory
 from Clock_Generator import clock_generator
 from Random_Signal import random_signal
-from Pulse_Generator import pulse_generator
   
 # Program Counter Testbench
 # Runs the PC for max_cycles

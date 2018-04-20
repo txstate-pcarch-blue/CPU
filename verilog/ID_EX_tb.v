@@ -3,7 +3,6 @@
 module ID_EX_tb();
 
 	parameter tck = 10; ///< clock tick
-	
 
 	reg ID_Hazard_lwstall, ID_Hazard_Branch;
 	reg Branch_in, MemRead_in, MemWrite_in, Jump_in;

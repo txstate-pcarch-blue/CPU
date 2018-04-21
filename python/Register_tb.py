@@ -10,7 +10,7 @@ if (__name__ == "__main__"):
     BusA = Signal(intbv(0, 0, 2**32)) #output
     BusB = Signal(intbv(0, 0, 2**32)) #output
     BusW = Signal(intbv(0, 0, 2**32)) #input
-    
+
     RA = Signal(intbv(0, 0, 2**5)) #input
     RB = Signal(intbv(0, 0, 2**5)) #input
     RW = Signal(intbv(0, 0, 2**5)) #input
@@ -26,11 +26,5 @@ if (__name__ == "__main__"):
     register_driver = traceSignals(RegisterFile(BusA, BusB, BusW, RA, RB, RW, RegWr, clk, rst))
     clock_driver = clock_generator(clk)
 
-    sim = Simulation(busWAddress_driver, 
-                     readAAddress_driver, 
-                     readBAddress_driver, 
-                     readWAddress_driver, 
-                     RegWr_driver, 
-                     register_driver, 
-                     clock_driver)
+    sim = Simulation(busWAddress_driver, readAAddress_driver, readBAddress_driver, readWAddress_driver, RegWr_driver, register_driver, clock_driver)
     sim.run(MAX_CYCLES)

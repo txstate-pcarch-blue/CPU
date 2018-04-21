@@ -15,6 +15,7 @@ from myhdl import *
 def RegisterFile(BusA, BusB, BusW, RA, RB, RW, RegWr, clk, Rst):
 
     registers = []
+<<<<<<< HEAD
     for i in range(0, 32):
         registers.append(Signal(intbv(0, 0, 2**32)))
     #registers[].posedge = clk.negedge
@@ -33,3 +34,36 @@ def RegisterFile(BusA, BusB, BusW, RA, RB, RW, RegWr, clk, Rst):
       BusA.next = registers[RA]
       BusB.next = registers[RB]
     return executePos, executeNeg
+=======
+    regSig = Signal(0, 5)
+    period = 10
+
+    #Generate Signals of intbv type for registers (Signal is used to track on gtkwave)
+    for i in range(0, 32):
+        registers.append(Signal(intbv(0, 0, 2**32)))
+        registers[i].driven = not registers[i].driven
+
+    #Create clocking iterator to switch every quarter full clock cycle (used to read and write on quarter of clock cycle)
+    @instance
+    def regSig_generator():
+        highTime = int(period/2)
+        lowTime = period - highTime
+
+        while True:
+          yield delay(highTime)
+          regSig.next = 1
+          yield delay(lowTime)
+          regSig.next = 0
+
+    #Every posedge of regSig (a.k.a. every quareter clock cycle), perform either read or write (notice write will happen before read)
+    @always(regSig.posedge)
+    def writeReg():
+        nonlocal registers
+        if(clk and RegWr):
+            registers[RW.unsigned()].next = BusW
+        elif(not clk):
+            BusA.next = registers[int(RA)]
+            BusB.next = registers[int(RB)]
+
+    return regSig_generator, writeReg
+>>>>>>> 861d81a8e0bac3ea444def037450fe1d58ca3390

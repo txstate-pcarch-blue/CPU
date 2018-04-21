@@ -3,11 +3,11 @@
 // data output width: 1 32-bit and one "zero" output
 // ALUControl: 3-bits
 // zero: output 1 if all bits of data output is 0
-module alu  (input [31:0] A,B,
+module alu  (input [31:0] A, B,
              input [2:0] ALUControl,
              input clk, reset,
              output reg [31:0] R,
-			 output zero,
+			 output zero
 			 );
 		
 		//Zero is true (i.e., 1) if output R is 0

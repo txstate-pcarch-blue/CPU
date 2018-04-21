@@ -15,7 +15,7 @@ from myhdl import *
 def RegisterFile(BusA, BusB, BusW, RA, RB, RW, RegWr, clk, Rst):
 
     registers = []
-    regSig = Signal(0)
+    regSig = Signal(0, 5)
     period = 10
 
     #Generate Signals of intbv type for registers (Signal is used to track on gtkwave)

@@ -6,7 +6,7 @@
 # Always output the following:
 #     Read Data 1 = Registers[Read Addr 1]
 #     Read Data 2 = Registers[Read Addr 2]
-# R0 = 0
+#
 # SP starts at 0xFFFFFFFC
 
 from myhdl import *
@@ -14,22 +14,22 @@ from myhdl import *
 @block
 def RegisterFile(BusA, BusB, BusW, RA, RB, RW, RegWr, clk, Rst):
 
-    registers = [intbv(0,0,2**32)] * 32
+    registers = []
+    for i in range(0, 32):
+        registers.append(Signal(intbv(0, 0, 2**32)))
+    #registers[].posedge = clk.negedge
 
     @always(clk.posedge)
     def executePos():
-
       if RegWr:
-        registers[RW] = BusW
+        registers[RW].next = BusW
 
-      elif (Rst):
-        for i in range (0,32):
+      elif Rst:
+        for i in range(0, 32):
           registers[i] = intbv(0, 0, 2**32)
 
     @always(clk.negedge)
     def executeNeg():
-
-      BusA = registers[RA]
-      BusB = registers[RB]
-
-return executePos, executeNeg
+      BusA.next = registers[RA]
+      BusB.next = registers[RB]
+    return executePos, executeNeg

@@ -15,26 +15,6 @@ from myhdl import *
 def RegisterFile(BusA, BusB, BusW, RA, RB, RW, RegWr, clk, Rst):
 
     registers = []
-<<<<<<< HEAD
-    for i in range(0, 32):
-        registers.append(Signal(intbv(0, 0, 2**32)))
-    #registers[].posedge = clk.negedge
-
-    @always(clk.posedge)
-    def executePos():
-      if RegWr:
-        registers[RW].next = BusW
-
-      elif Rst:
-        for i in range(0, 32):
-          registers[i] = intbv(0, 0, 2**32)
-
-    @always(clk.negedge)
-    def executeNeg():
-      BusA.next = registers[RA]
-      BusB.next = registers[RB]
-    return executePos, executeNeg
-=======
     regSig = Signal(0, 5)
     period = 10
 
@@ -66,4 +46,3 @@ def RegisterFile(BusA, BusB, BusW, RA, RB, RW, RegWr, clk, Rst):
             BusB.next = registers[int(RB)]
 
     return regSig_generator, writeReg
->>>>>>> 861d81a8e0bac3ea444def037450fe1d58ca3390

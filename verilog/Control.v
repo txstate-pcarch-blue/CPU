@@ -82,16 +82,6 @@ module Control(opcode, ALUSrc, RegDst, MemWrite, MemRead, Beq, Jump, MemToReg, R
 			    Jump = 1;
 			    RegWrite = 0;
 			end
-			
-			// Jump return opcode 0x00
-			'b 000010: begin
-			    MemWrite = 0;
-			    MemRead = 0;
-			    Beq = 0;
-			    Jump = 1;
-			    RegWrite = 0;
-			end
-
 			// addi
 			'b 001000: begin
 			    ALUSrc = 1;  //sign ext. imm.
@@ -119,5 +109,6 @@ module Control(opcode, ALUSrc, RegDst, MemWrite, MemRead, Beq, Jump, MemToReg, R
 			end
 			
 		endcase
+		
 	end
 endmodule

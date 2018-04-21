@@ -82,7 +82,7 @@ regOut24,regOut25,regOut26,regOut27,regOut28,regOut29,regOut30,regOut31
 	
 	integer i, j;
 	
-	initial begin 
+	initial begin //initialize all register values to 0
 		for(i = 0; i < 32; i = i + 1) begin
 				registers[i] <= 0;
 		end
@@ -90,7 +90,7 @@ regOut24,regOut25,regOut26,regOut27,regOut28,regOut29,regOut30,regOut31
 	
 	always begin
 		@(posedge Clk) begin
-			if (RegWr) begin
+			if (RegWr && RW != 0) begin //$0 must remain unchanged as 0
 				registers[RW] <= BusW;
 			end
 			else if (Rst) begin

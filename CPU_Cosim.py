@@ -12,7 +12,6 @@ from CPU import CPU as py_cpu
 
 
 def v_cpu(clock, reset, vregisters , infile):
-    # TODO: Add the needed verilog files
     cmd = "iverilog -o %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s -Din_file %s" % \
         (CPU_Cosim_o, ALU_v, ALU_control_v, bj_calc, Control_v, DM_v, EX_MEM_v, FU_v, HD_v, ID_EX_v,
          IF_ID_v, IM_v, MEM_WB_v, MUX_v, PC_v, RF_v, infile)

@@ -1,9 +1,9 @@
 from myhdl import *
 
 @block
-def MUX(clk, ctrl, inputA, inputB, output):
+def MUX(ctrl, inputA, inputB, output):
 
-    @always(clk.posedge)
+    @always_comb
     def execute():
 
         if ctrl:

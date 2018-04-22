@@ -18,7 +18,7 @@ if (__name__ == "__main__"):
     inputA_driver = random_signal(inputA, clk)
     inputB_driver = random_signal(inputB, clk)
 
-    MUX_driver = traceSignals(MUX(clk, ctrl, inputA, inputB, output))
+    MUX_driver = traceSignals(MUX(ctrl, inputA, inputB, output))
 
     sim = Simulation(clock_driver, ctrl_driver, inputA_driver, inputB_driver, MUX_driver)
     sim.run(MAX_CYCLES)

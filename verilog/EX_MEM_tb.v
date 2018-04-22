@@ -6,14 +6,16 @@ module EX_MEM_tb();
 
 	reg clk, rst;
 	reg EX_Flush;
-	reg RegWrite_in, MemtoReg_in;
+	reg RegWrite_in; 
+	reg [1:0] MemtoReg_in;
 	reg Branch_in, MemRead_in, MemWrite_in, Jump_in;
 	reg [31:0] jump_addr_in, branch_addr_in;
 	reg ALU_zero_in;
 	reg [31:0] ALU_result_in, reg_read_data_2_in;
 	reg [4:0] ID_EX_RegisterRd_in;
 	
-	wire RegWrite_out, MemtoReg_out;
+	wire RegWrite_out;
+	wire [1:0] MemtoReg_out;
 	wire Branch_out, MemRead_out, MemWrite_out, Jump_out;
 	wire [31:0] jump_addr_out, branch_addr_out;
 	wire ALU_zero_out;

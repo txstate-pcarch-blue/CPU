@@ -185,7 +185,7 @@ parameter tck = 10; ///< clock tick
 
 //input and output regs
 reg [31:0] In1_rd, In2_rt;
-reg Ctrl_RegDst;
+reg [1:0] Ctrl_RegDst;
 wire [31:0] out;
 
 idEx_to_exMem_mux_2_to_1 dut(	

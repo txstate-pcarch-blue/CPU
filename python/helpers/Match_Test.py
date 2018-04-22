@@ -8,7 +8,7 @@ def match_test_report(clock, a, b):
     @always(clock.negedge)
     def match_t():
         if a != b:
-            print("No Match: a %s, b %s" % (bin(dver), bin(dpy)))
+            print("No Match: a %s, b %s" % (a, b))
     return match_t
 
 

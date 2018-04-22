@@ -15,22 +15,21 @@ def load_config(infile):
     with open(infile, 'r') as f:
         lines = f.readlines()
     conf = namedtuple("conf", ['i_count', 'pf_p', 'mem_p'])
-    config = conf(1024, .1, .3)
     for line in lines:
         line = line.split('#')[0]  # Remove comments
         if len(line) != 0:
             key, value = line.split(':')
             if key == 'i_count':
-                config.i_count = int(value)
+                conf.i_count = int(value.strip())
             elif key == 'pf_p':
-                config.pf_p = float(value)
+                conf.pf_p = float(value.strip())
             elif key == 'mem_p':
-                config.mem_p = float(value)
+                conf.mem_p = float(value.strip())
             else:
                 print("Invalid config key:", key)
                 quit(1)
 
-    return config
+    return conf
 
 
 # Generates random ALU instructions in a way that does not change
@@ -110,12 +109,13 @@ def generate_code(config):
 
     # Store and create function locations
     labels = dict()
-    labels['f1'] = len(instr_list) - len(function_template) - 2
-    labels['f2'] = len(instr_list) - 2*len(function_template) - 4
+    labels['f1'] = len(instr_list) - len(function_template) - 1
+    labels['f2'] = len(instr_list) - 2*len(function_template) - 1
 
     # Add functions to the instruction list
     for i in labels:
-        instr_list[labels[i]: len(function_template)] = function_template
+        for x, value in enumerate(function_template):
+            instr_list[labels[i] + x] = value
 
     # Generate jump instructions
     for x in range(0, int(config.pf_p * len(instr_list))):

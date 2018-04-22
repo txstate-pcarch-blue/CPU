@@ -66,7 +66,7 @@ endmodule
 //if 1: rd (R type)
 module idEx_to_exMem_mux_2_to_1(In1_rd, In2_rt, Ctrl_RegDst, out);
 	input [31:0] In1_rd, In2_rt;
-	input [1:0] Ctrl_RegDst;
+	input Ctrl_RegDst;
 	output reg [31:0] out; // 32-bit output
 	always @(In1_rd, In2_rt, Ctrl_RegDst) begin
 		case (Ctrl_RegDst) 
@@ -127,7 +127,7 @@ endmodule
 // if control is 1, select sign extended label added to PC for BTA
 module first_jump_or_branch_mux_2_to_1(In1_PC_plus_4, In2_BTA, Ctrl_Branch_Gate, out);
 	input [31:0] In1_PC_plus_4, In2_BTA;
-	input [1:0] Ctrl_Branch_Gate;
+	input Ctrl_Branch_Gate;
 	output reg [31:0] out; // 32-bit output
 	always @(In1_PC_plus_4, In2_BTA, Ctrl_Branch_Gate) begin
 		case (Ctrl_Branch_Gate) 
@@ -164,7 +164,7 @@ endmodule
 //If control is 1 we take register value which contains jr address
 module third_jump_or_branch_mux_2_to_1(In1_second_mux, In2_reg_value_ra, JRCtrl, out);
 	input [31:0] In1_second_mux, In2_reg_value_ra;
-	input [1:0] JRCtrl;
+	input JRCtrl;
 	output reg [31:0] out; // 32-bit output
 	always @(In1_second_mux, In2_reg_value_ra, JRCtrl) begin
 		case (JRCtrl) 
@@ -183,7 +183,7 @@ endmodule
 //If Control is 1, output is 0 and sent to ID/EX wb, m, and ex control lines
 module hazard_stall_mux_2_to_1(In1_zero, In2_control_unit, Ctrl_Mux_Select_Stall, out);
 	input [31:0] In1_zero, In2_control_unit;
-	input [1:0] Ctrl_Mux_Select_Stall;
+	input Ctrl_Mux_Select_Stall;
 	output reg [31:0] out; // 32-bit output
 	always @(In1_zero, In2_control_unit, Ctrl_Mux_Select_Stall) begin
 		case (Ctrl_Mux_Select_Stall) 

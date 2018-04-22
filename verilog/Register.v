@@ -79,7 +79,7 @@ regOut24,regOut25,regOut26,regOut27,regOut28,regOut29,regOut30,regOut31
 	assign regOut29 = registers[29];
 	assign regOut30 = registers[30];
 	assign regOut31 = registers[31];
-	
+
 	integer i, j;
 	
 	initial begin //initialize all register values to 0

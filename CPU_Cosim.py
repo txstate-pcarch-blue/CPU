@@ -20,7 +20,7 @@ def v_cpu(clock, reset, vregisters , infile):
 
 
 def run_MIPS_cosim(infile):
-    const MAX_TIME = 1000000
+    MAX_TIME = 1000000
     clock = Signal(0)
     clock_driver = clock_generator(clock)
     reset = Signal(0)

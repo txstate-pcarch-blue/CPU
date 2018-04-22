@@ -32,29 +32,29 @@
 module ID_EX (
 	input ID_Hazard_lwstall, ID_Hazard_Branch,
 	input Branch_in, MemRead_in, MemWrite_in, Jump_in,
-	input RegWrite_in, MemtoReg_in,
-	input RegDst_in, ALUSrc_in,
-	input [1:0] ALUOp_in,
+	input RegWrite_in, 
+	input ALUSrc_in,
+	input [1:0] ALUOp_in, RegDst_in, MemtoReg_in,
 	input [31:0] jump_addr_in, PC_plus4_in,
 	input [31:0] reg_read_data_1_in, reg_read_data_2_in, immi_sign_extended_in,
 	input [4:0] IF_ID_RegisterRs_in, IF_ID_RegisterRt_in, IF_ID_RegisterRd_in,
 	input [5:0] IF_ID_funct_in,
 	input clk, rst,
 	
-	output RegWrite_out, MemtoReg_out,
+	output RegWrite_out, 
 	output Branch_out, MemRead_out, MemWrite_out, Jump_out,
 	output RegDst_out, ALUSrc_out,
-	output [1:0] ALUOp_out,
+	output [1:0] ALUOp_out, RegDst_out, MemtoReg_out,
 	output [31:0] jump_addr_out, PC_plus4_out,
 	output [31:0] reg_read_data_1_out, reg_read_data_2_out, immi_sign_extended_out,
 	output [4:0] IF_ID_RegisterRs_out, IF_ID_RegisterRt_out, IF_ID_RegisterRd_out,
 	output [5:0] IF_ID_funct_out
 );
 
-	reg RegWrite_out, MemtoReg_out;
+	reg RegWrite_out;
 	reg Branch_out, MemRead_out, MemWrite_out, Jump_out;
-	reg RegDst_out, ALUSrc_out;
-	reg [1:0] ALUOp_out;
+	reg ALUSrc_out;
+	reg [1:0] ALUOp_out, RegDst_out, MemtoReg_out;
 	reg [31:0] jump_addr_out, PC_plus4_out;
 	reg [31:0] reg_read_data_1_out, reg_read_data_2_out, immi_sign_extended_out;
 	reg [4:0] IF_ID_RegisterRs_out, IF_ID_RegisterRt_out, IF_ID_RegisterRd_out;
@@ -65,12 +65,12 @@ module ID_EX (
 		
 		if (rst == 1'b1) begin
 			RegWrite_out <= 1'b0;
-			MemtoReg_out <= 1'b0;
+			MemtoReg_out <= 2'b00;
 			Branch_out <= 1'b0;
 			MemRead_out <= 1'b0;
 			MemWrite_out <= 1'b0;
 			Jump_out <= 1'b0;
-			RegDst_out <= 1'b0;
+			RegDst_out <= 2'b00;
 			ALUSrc_out <= 1'b0;
 			ALUOp_out <= 2'b0;
 			jump_addr_out <= 32'b0;
@@ -108,12 +108,12 @@ module ID_EX (
 			if (ID_Hazard_lwstall == 1'b1 || ID_Hazard_Branch == 1'b1) begin
 
 				RegWrite_out <= 1'b0;
-				MemtoReg_out <= 1'b0;
+				MemtoReg_out <= 2'b00;
 				Branch_out <= 1'b0;
 				MemRead_out <= 1'b0;
 				MemWrite_out <= 1'b0;
 				Jump_out <= 1'b0;
-				RegDst_out <= 1'b0;
+				RegDst_out <= 2'b00;
 				ALUSrc_out <= 1'b0;
 				ALUOp_out <= 2'b0;
 

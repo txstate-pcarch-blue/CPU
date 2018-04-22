@@ -4,14 +4,16 @@ module MEM_WB_tb();
 
 	parameter tck = 10; ///< clock tick
 
-	reg RegWrite_in, MemtoReg_in;
+	reg RegWrite_in;
+	reg [1:0] MemtoReg_in;
 	reg [31:0] D_MEM_read_data_in, D_MEM_read_addr_in;
 	reg [4:0] EX_MEM_RegisterRd_in;
 	reg clk, rst;
 
 	wire [31:0] D_MEM_read_data_out, D_MEM_read_addr_out;
 	wire [4:0] MEM_WB_RegisterRd_out;
-	wire RegWrite_out, MemtoReg_out;
+	wire RegWrite_out;
+	wire [1:0] MemtoReg_out;
 	
 	integer seed = 1;
 	integer num_iter = 0 ;

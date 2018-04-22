@@ -59,16 +59,19 @@ module third_alu_mux_2_to_1(In1_second_alu_mux, In2_immediate, Ctrl_ALUSrc, out)
 	end
 endmodule
 
-//Mux to determine which value to send to ex/mem pipeline stage
-//TBD ????
-module idEx_to_exMem_mux_2_to_1(In1, In2, Selector, out)
-	input [31:0] In1, In2;
-	input Selector;
+//Mux to determine which destination address will be used and send to ex/mem pipeline stage
+//Control: RegDst
+//Inputs: rd, rt; Outputs: the chosen destination register
+//if 0: rt (immediate type)
+//if 1: rd (R type)
+module idEx_to_exMem_mux_2_to_1(In1_rd, In2_rt, Ctrl_RegDst, out)
+	input [31:0] In1_rd, In2_rt;
+	input [1:0] Ctrl_RegDst;
 	output reg [31:0] out; // 32-bit output
-	always @(In1, In2, Selector) begin
-		case (Selector) 
-			0: out <= In1;
-			1: out <= In2;
+	always @(In1_rd, In2_rt, Ctrl_RegDst) begin
+		case (Ctrl_RegDst) 
+			0: out <= In1_rt;
+			1: out <= In2_rd;
 		endcase
 	end
 endmodule

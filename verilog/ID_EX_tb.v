@@ -6,9 +6,9 @@ module ID_EX_tb();
 
 	reg ID_Hazard_lwstall, ID_Hazard_Branch;
 	reg Branch_in, MemRead_in, MemWrite_in, Jump_in;
-	reg RegWrite_in, MemtoReg_in;
-	reg RegDst_in, ALUSrc_in;
-	reg [1:0] ALUOp_in;
+	reg RegWrite_in;
+	reg ALUSrc_in;
+	reg [1:0] ALUOp_in, RegDst_in, MemtoReg_in;
 	reg [31:0] jump_addr_in, PC_plus4_in;
 	reg [31:0] reg_read_data_1_in, reg_read_data_2_in, immi_sign_extended_in;
 	reg [4:0] IF_ID_RegisterRs_in, IF_ID_RegisterRt_in, IF_ID_RegisterRd_in;

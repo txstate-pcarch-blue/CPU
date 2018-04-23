@@ -1,6 +1,6 @@
 from os import path
 
-base_d = path.join(path.abspath(path.dirname(__file__)), "../..")
+base_d = path.join(path.realpath(path.dirname(__file__)), "../..")
 
 # Path declarations
 Accu_v = path.join(base_d, "samples/Accumulator.v")

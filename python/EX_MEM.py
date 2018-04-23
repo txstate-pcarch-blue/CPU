@@ -3,42 +3,41 @@
 from myhdl import *
 
 @block
-def ex_mem(clk, ALU_in, ALU_out, MemData_in, MemData_out, reg_in,
-            reg_out, zero_in, zero_out, PC_in, PC_out, MemToReg_in,
-            MemToReg_out, MemWrite_in, MemWrite_out, WB_in, WB_out):
-
-    class latches:
-        ALU = intbv(0, 0, 2**32)
-        MemData = intbv(0, 0, 2**32)
-        reg = intbv(0, 0, 2**5)
-        zero = intbv(0, 0, 2**1)
-        PC = intbv(0, 0, 2**32)
-        MemToReg = intbv(0, 0, 2**1)
-        MemWrite = intbv(0, 0, 2**1)
-        WB = intbv(0, 0, 2**1)
-
-
-
-    @always(clk.posedge)
-    def input():
-        latches.ALU = ALU_in
-        latches.MemData = MemData_in
-        latches.reg = reg_in
-        latches.zero = zero_in
-        latches.PC = PC_in
-        latches.MemToReg = MemToReg_in
-        latches.MemWrite = MemWrite_in
-        latches.WB = WB_in
+def ex_mem(clk, rst, EX_Flush, RegWrite_in, MemtoReg_in, Branch_in, MemRead_in,
+            MemWrite_in, Jump_in, jump_addr_in, branch_addr_in, ALU_zero_in,
+            ALU_result_in, reg_read_data_2_in, ID_EX_RegisterRd_in, RegWrite_out,
+            MemtoReg_out, Branch_out, MemRead_out, MemWrite_out, Jump_out,
+            jump_addr_out, branch_addr_out, ALU_zero_out, ALU_result_out,
+            reg_read_data_2_out, EX_MEM_RegisterRd_out):
 
     @always(clk.negedge)
-    def output():
-        ALU_out.next = latches.ALU
-        MemData_out.next = latches.MemData
-        reg_in.next = latches.reg
-        zero_out.next = latches.zero
-        PC_out.next = latches.PC
-        MemToReg_out.next = latches.MemToReg
-        MemWrite_out.next = latches.MemWrite
-        WB_out.next = latches.WB
+    def latches():
+        if(rst==1):
+            for i in enumerate(RegWrite_out,
+            MemtoReg_out, Branch_out, MemRead_out, MemWrite_out, Jump_out,
+            jump_addr_out, branch_addr_out, ALU_zero_out, ALU_result_out,
+            reg_read_data_2_out, EX_MEM_RegisterRd_out):
+                i.next = 0
+        else:
+            RegWrite_out.next = RegWrite_in
+            MemtoReg_out.next = MemtoReg_in
+            Branch_out.next = Branch_in
+            MemRead_out.next = MemRead_in
+            MemWrite_out.next = MemWrite_in
+            Jump_out.next = Jump_in
+            jump_addr_out.next = jump_addr_in
+            branch_addr_out.next = branch_addr_in
+            ALU_zero_out.next = ALU_zero_in
+            ALU_result_out.next = ALU_result_in
+            reg_read_data_2_out.next = reg_read_data_2_in
+            EX_MEM_RegisterRd_out.next = ID_EX_RegisterRd_in
 
-    return input, output
+            if(EX_Flush==1):
+                RegWrite_out.next = 0
+                MemtoReg_out.next = 0
+                Branch_out.next = 0
+                MemRead_out.next = 0
+                MemWrite_out.next = 0
+                Jump_out.next = 0
+
+    return latches

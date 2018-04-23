@@ -5,33 +5,32 @@
 module ForwardingUnit(
 
     // Inputs: the two RegWrite signals come from the control unit
-    input [31:0] ID_EX_RegRs, ID_EX_RegRt, EX_MEM_RegRd, MEM_WB_RegRd,
+	input [4:0] ID_EX_RegRs, ID_EX_RegRt, EX_MEM_RegRd, MEM_WB_RegRd,
     input MEM_WB_RegWrite, EX_MEM_RegWrite,
 	
     // Outputs: multiplexers attached to the ALU
-    output reg [31:0] Mux_ForwardA, Mux_ForwardB
+    output reg [1:0] Mux_ForwardA, Mux_ForwardB
 );
 
     always @(ID_EX_RegRs, ID_EX_RegRt, EX_MEM_RegRd, EX_MEM_RegWrite, MEM_WB_RegRd, MEM_WB_RegWrite ) begin
-
         // EX_MEM Hazard equations
         if (EX_MEM_RegWrite == 1 && EX_MEM_RegRd == ID_EX_RegRs) begin
-            Mux_ForwardA <= ID_EX_RegRs;
+            Mux_ForwardA <= 2;
         end
     	
         if (EX_MEM_RegWrite == 1 && EX_MEM_RegRd == ID_EX_RegRt) begin
-            Mux_ForwardB <= ID_EX_RegRt;
+            Mux_ForwardB <= 2;
     	end
 
         // MEM_WB Hazard equations
         if(MEM_WB_RegWrite == 1 && MEM_WB_RegRd == ID_EX_RegRs &&
         (EX_MEM_RegRd != ID_EX_RegRs || EX_MEM_RegWrite == 0)) begin
-            Mux_ForwardA <= ID_EX_RegRs;
+            Mux_ForwardA <= 1;
         end
     	
         if (MEM_WB_RegWrite == 1 && MEM_WB_RegRd == ID_EX_RegRt &&
         (EX_MEM_RegRd != ID_EX_RegRt || EX_MEM_RegWrite == 0)) begin
-            Mux_ForwardB <= ID_EX_RegRt;
+            Mux_ForwardB <= 1;
         end
 	end
 endmodule

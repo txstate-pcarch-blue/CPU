@@ -10,7 +10,6 @@ module alu_tb();
 	wire [31:0] r ;
 	wire zero ;
 	wire ovf ;
-	wire branch ;
 
 
 	alu dut(	.A(a), 

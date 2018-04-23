@@ -1,7 +1,7 @@
 from myhdl import *
 
 @block
-def if_id(clk, inst_in, inst_out, PC_in, PC_out, If_flush, IFID_write):
+def if_id(clk, rst, inst_in, inst_out, PC_in, PC_out, IF_flush, IFID_write):
 
     @always(clk.negedge)
     def latch():
@@ -9,7 +9,7 @@ def if_id(clk, inst_in, inst_out, PC_in, PC_out, If_flush, IFID_write):
             inst_out.next = 0
             PC_out.next = 0
         else:
-            if(IF_flush==1);
+            if(IF_flush==1):
                 inst_out.next = 0
                 PC_out.next = 0
             elif(IFID_write==1):

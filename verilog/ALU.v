@@ -4,7 +4,7 @@
 // ALUControl: 3-bits
 // zero: output 1 if all bits of data output is 0
 module alu  (input signed [31:0] A, B,
-             input [2:0] ALUControl,
+             input [1:0] ALUControl,
              input clk, reset,
              output reg signed [31:0] R,
 			 output zero,
@@ -22,9 +22,9 @@ module alu  (input signed [31:0] A, B,
 				// ALUControl is equivalent to 3 bit ALU Op code
 				// and can accomodate max 8 types of operations
 				case (ALUControl)
-					3'b000 /* ADD */: R <= A + B;
-					3'b001 /* SUB */: R <= A - B;
-					3'b010 /* XOR */: R <= A ^ B;
+					2'b00 /* ADD */: R <= A + B;
+					2'b01 /* SUB */: R <= A - B;
+					2'b10 /* XOR */: R <= A ^ B;
 					default: R <= 0;
 				endcase
 			end

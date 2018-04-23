@@ -14,7 +14,7 @@ module Control(opcode, ALUSrc, RegDst, MemWrite, MemRead, Beq, Jump, MemToReg, R
 	always @(*) begin
 		case (opcode)
 			// R-type opcode 0x00
-			'b 000000: begin
+			6'b000000: begin
 				ALUSrc = 0;  //from reg
 				RegDst = 1;
 				MemWrite = 0;
@@ -27,7 +27,7 @@ module Control(opcode, ALUSrc, RegDst, MemWrite, MemRead, Beq, Jump, MemToReg, R
 			end
 
 			// lw opcode 0x23
-			'b 100011: begin
+			6'b100011: begin
 				ALUSrc = 1;  //sign ext. imm.
 				RegDst = 0;
 				MemWrite = 0;
@@ -40,7 +40,7 @@ module Control(opcode, ALUSrc, RegDst, MemWrite, MemRead, Beq, Jump, MemToReg, R
 			end
 
 			// sw opcode 0x2b
-			'b 101011: begin
+			6'b101011: begin
 				ALUSrc = 1;  //sign ext. imm.
 				MemWrite = 1;
 				MemRead = 0;
@@ -51,7 +51,7 @@ module Control(opcode, ALUSrc, RegDst, MemWrite, MemRead, Beq, Jump, MemToReg, R
 			end
 
 			// beq opcode 0x04
-			'b 000100: begin
+			6'b000100: begin
 			    ALUSrc = 1;  //sign ext. imm.
 			    MemWrite = 0;
 			    MemRead = 0;
@@ -62,7 +62,7 @@ module Control(opcode, ALUSrc, RegDst, MemWrite, MemRead, Beq, Jump, MemToReg, R
 			end
 
 			// Jump label opcode 0x02
-			'b 000010: begin
+			6'b000010: begin
 				RegDst = 0;
 				MemToReg = 0;
 			    MemWrite = 0;
@@ -73,7 +73,7 @@ module Control(opcode, ALUSrc, RegDst, MemWrite, MemRead, Beq, Jump, MemToReg, R
 			end
 			
 			// Jump and link opcode 0x03
-			'b 000011: begin
+			6'b00011: begin
 				RegDst = 2;
 				MemToReg = 2;
 			    MemWrite = 0;
@@ -83,7 +83,7 @@ module Control(opcode, ALUSrc, RegDst, MemWrite, MemRead, Beq, Jump, MemToReg, R
 			    RegWrite = 0;
 			end
 			// addi opcode 0x08
-			'b 001000: begin
+			6'b01000: begin
 			    ALUSrc = 1;  //sign ext. imm.
 			    RegDst = 0;
 			    MemWrite = 0;
@@ -96,7 +96,7 @@ module Control(opcode, ALUSrc, RegDst, MemWrite, MemRead, Beq, Jump, MemToReg, R
 			end
 			
 			// subi opcode 0x09
-			'b 001001: begin
+			6'b01001: begin
 			    ALUSrc = 1;  //sign ext. imm.
 			    RegDst = 0;
 			    MemWrite = 0;

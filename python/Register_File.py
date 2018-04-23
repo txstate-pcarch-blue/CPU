@@ -15,7 +15,6 @@ from myhdl import *
 def RegisterFile(BusA, BusB, BusW, RA, RB, RW, RegWr, clk, Rst, outregs):
 
     registers = []
-    regSig = Signal(0, 5)
     period = 10
 
     # Generate Signals of intbv type for registers (Signal is used to track on gtkwave)
@@ -23,33 +22,24 @@ def RegisterFile(BusA, BusB, BusW, RA, RB, RW, RegWr, clk, Rst, outregs):
         registers.append(Signal(intbv(0, 0, 2**32)))
         registers[i].driven = not registers[i].driven
 
-    # Create clocking iterator to switch every quarter full clock cycle (used to read and write on quarter of clock cycle)
-    @instance
-    def regSig_generator():
-        highTime = int(period/2)
-        lowTime = period - highTime
-
-        while True:
-          yield delay(highTime)
-          regSig.next = 1
-          yield delay(lowTime)
-          regSig.next = 0
 
     #Every posedge of regSig (a.k.a. every quareter clock cycle), perform either read or write (notice write will happen before read)
-    @always(regSig.posedge)
+    @always(clk.posedge)
     def writeReg():
         nonlocal registers, outregs
-        if(clk and RegWr):
+        if RegWr and RW != 0:
             registers[RW.unsigned()].next = BusW
             outregs[RW.unsigned()].next = BusW
-        if(clk and Rst):
+        if Rst:
             for i in range(0, 31):
                 registers[i] = Signal(intbv(0, 0, 2**32))
                 registers[i].driven = not registers[i].driven
                 outregs[i] = Signal(intbv(0, 0, 2**32))
                 outregs[i].driven = not outregs[i].driven
-        elif(not clk):
-            BusA.next = registers[int(RA)]
-            BusB.next = registers[int(RB)]
 
-    return regSig_generator, writeReg
+    @always(clk.negedge)
+    def readReg():
+        BusA.next = registers[int(RA)]
+        BusB.next = registers[int(RB)]
+
+    return readReg, writeReg

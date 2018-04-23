@@ -1,4 +1,4 @@
 
 
-def CPU():
+def CPU(clock, reset, registers):
     pass

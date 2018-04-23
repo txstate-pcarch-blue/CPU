@@ -1,14 +1,22 @@
 from myhdl import *
 
 @block
-def Instruction_Memory(clk, address, out): #Addr and clk input, out is output
-    
+def Instruction_Memory(clk, address, out, infile): #Addr and clk input, out is output
 
     @always(clk.posedge)
     def execute():
-        out.next = execute.mem[address[9:2]] #return the address of the instruciton
-    mem = []
-    for i in range(0, 256):
-        mem.append(Signal(intbv(0, 0, 2**32)))
-    #execute.mem = [intbv(max = 2**32)] * 256
+        # [10:2] is correct, it returns the 8 bits needed for addressing per testing
+        #  Do not update to 9:2 unless you are absolutely sure I'm wrong
+        out.next = execute.mem[address[10:2]]
+
+    execute.mem = []
+    with open(infile) as f:
+        for line in f.readlines():
+            line = line.strip()
+            if line != '':
+                execute.mem.append(int(line, 16))
+
+    if len(execute.mem) > 256:
+        raise IndexError
+
     return execute

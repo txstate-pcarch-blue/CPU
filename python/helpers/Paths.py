@@ -1,12 +1,13 @@
 from os import path
 
-base_d = path.join(path.abspath(path.dirname(__file__)), "../..")
+base_d = path.join(path.realpath(path.dirname(__file__)), "../..")
 
 # Path declarations
 Accu_v = path.join(base_d, "samples/Accumulator.v")
 Accu_o = path.join(base_d, "bin/Accumulator.o")
 ALU_v = path.join(base_d, "verilog/ALU.v")
-ALU_cosim_v = path.join(base_d, "verilog/ALU.v")
+ALU_cosim_v = path.join(base_d, "verilog/ALU_cosim.v")
+ALU_cosim_o = path.join(base_d, "bin/ALU_cosim.o")
 ALU_control_v = path.join(base_d, "verilog/ALU_control.v")
 bj_calc = path.join(base_d, "verilog/branch_jump_calc.v")
 Control_v = path.join(base_d, "verilog/Control.v")

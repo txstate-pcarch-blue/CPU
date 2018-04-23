@@ -1,20 +1,19 @@
 from myhdl import *
 
 @block
-def if_id(clk, inst_in, inst_out, PC_in, PC_out):
-
-    class latches:
-        inst = intbv(0, 0, 2**32)
-        PC = intbv(0, 0, 2**32)
-
-    @always(clk.posedge)
-    def input():
-        latches.inst = inst_in
-        latches.PC = PC_in
+def if_id(clk, rst, inst_in, inst_out, PC_in, PC_out, IF_flush, IFID_write):
 
     @always(clk.negedge)
-    def output():
-        inst_out.next = latches.inst
-        PC_out.next = latches.PC
+    def latch():
+        if(rst==1):
+            inst_out.next = 0
+            PC_out.next = 0
+        else:
+            if(IF_flush==1):
+                inst_out.next = 0
+                PC_out.next = 0
+            elif(IFID_write==1):
+                inst_out.next = inst_in
+                PC_out.next = PC_in
 
-    return input, output
+    return latch

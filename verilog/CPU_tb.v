@@ -16,7 +16,7 @@ module CPU_tb();
 		$dumpfile("cpu_ah.vcd");
 		$dumpvars(-1, dut);
 		$monitor(
-			"Rst:%b|PC_in:%b|PCWrite:%b|PC_out:%b|Instr:%b|IFID_Inst:%b|IFID_PCp4:%b",  
+			"Rst:%h|PC_in:%h|PCWrite:%h|PC_out:%h|Instr:%h|IFID_Inst:%h|IFID_PCp4:%h",
 			rst, dut.PC_in, dut.PCWrite, dut.PC_out, dut.instruction_out,dut.IF_ID_instruction,dut.IF_ID_PC_plus4);
 		
 		clk = 0;
@@ -31,13 +31,9 @@ module CPU_tb();
 	end
 	
 	always @(posedge clk) begin
-		
-	
-		num_iter++;
-		
+		num_iter = num_iter + 1;
 		if (num_iter > 10)
 			$finish;
-		
 	end
 	
 endmodule

@@ -26,7 +26,8 @@
 //Multiplexers drive control decision making
 //Modules receive pre-determined inputs based on mux output
 
-module cpu (clk, rst);
+module cpu (clk, rst
+);
 
 	input clk, rst;
 
@@ -54,7 +55,11 @@ module cpu (clk, rst);
 	wire Jump, Branch, MemRead, MemWrite, ALUSrc, RegWrite;
 	wire [1:0] RegDst, MemToReg;
 	wire [2:0] ALUOp;
-	
+
+	// Constants within the ID stage
+	wire [4:0] In3_jal_ra;
+	assign In3_jal_ra = 5'b11111;
+
 
 	
 	//mux output wires
@@ -67,7 +72,7 @@ module cpu (clk, rst);
 	wire [31:0] first_jump_or_branch_mux_2_to_1_out;
 	wire [31:0] second_jump_or_branch_mux_2_to_1_out;
 	wire [31:0] third_jump_or_branch_mux_2_to_1_out;
-	wire hazard_stall_mux_2_to_1_out;
+	wire h_RegWrite_out, h_MemWrite_out;
 	
 	
 	// wires for lw hazard stall
@@ -83,9 +88,7 @@ module cpu (clk, rst);
 		regOut8,regOut9,regOut10,regOut11,regOut12,regOut13,regOut14,regOut15,
 		regOut16,regOut17,regOut18,regOut19,regOut20,regOut21,regOut22,regOut23,
 		regOut24,regOut25,regOut26,regOut27,regOut28,regOut29,regOut30,regOut31;
-	
-	assign PCWrite = 1;
-	assign IF_ID_Write = 1;
+
 	assign immi_sign_extended = IF_ID_instruction[15:0];
 	
 	
@@ -101,19 +104,21 @@ module cpu (clk, rst);
 	wire [4:0] ID_EX_RegisterRs, ID_EX_RegisterRt, ID_EX_RegisterRd;
 	wire [4:0] EX_RegisterRd;
 	wire [5:0] ID_EX_funct;
-	wire [3:0] out_to_ALU;
+	wire [1:0] out_to_ALU;
 	wire [31:0] muxA_out, muxB_out;
 	wire [31:0] after_ALUSrc;
 	wire [31:0] ALU_result;
 	wire ALU_zero;
 	wire JRControl;
 	wire [31:0] after_shift;
-	
+
 	//*************************************
 	// wires in MEM stage
 	//*************************************
 	wire [4:0] EX_MEM_RegisterRd;
-	wire EX_MEM_RegWrite, EX_MEM_MemtoReg, EX_MEM_Branch, EX_MEM_MemRead, EX_MEM_MemWrite, EX_MEM_Jump;
+	wire EX_MEM_Branch, EX_MEM_MemRead, EX_MEM_MemWrite, EX_MEM_Jump;
+	wire [1:0] EX_MEM_MemtoReg;
+	wire EX_MEM_RegWrite;
 	wire [31:0] EX_MEM_jump_addr, EX_MEM_branch_addr;
 	wire EX_MEM_ALU_zero;
 	wire [31:0] EX_MEM_ALU_result, EX_MEM_reg_read_data_2;
@@ -123,7 +128,8 @@ module cpu (clk, rst);
 	// wires in WB stage
 	//*************************************
 	wire [31:0] reg_write_data;
-	wire MEM_WB_RegWrite, MEM_WB_MemtoReg;
+	wire MEM_WB_RegWrite;
+	wire [1:0] MEM_WB_MemtoReg;
 	wire [31:0] MEM_WB_D_MEM_read_data, MEM_WB_D_MEM_read_addr;
 	
 	
@@ -158,15 +164,15 @@ module cpu (clk, rst);
 	);
 	
 	regDst_mux_3_to_1 Unit5 (
-		.In1_imm_destination_rt(IF_ID_instruction[20:16]), .In2_rType_rd(IF_ID_instruction[25:21]), .In3_jal_ra(), .Ctrl_RegDst(RegDst), .out(regDst_mux_3_to_1_out)
+		.In1_imm_destination_rt(IF_ID_instruction[20:16]), .In2_rType_rd(IF_ID_instruction[25:21]), .In3_jal_ra(In3_jal_ra), .Ctrl_RegDst(RegDst), .out(regDst_mux_3_to_1_out)
 	);
 	
 	hazard_unit Unit25(
-		.ID_EX_MemRead(ID_EX_MemRead), .ID_EX_RegRt(ID_EX_RegRt), .IF_ID_RegRs(), .IF_ID_RegRt()
+		.ID_EX_MemRead(ID_EX_MemRead), .ID_EX_RegRt(ID_EX_RegisterRt), .IF_ID_RegRs(IF_ID_instruction[25:21]), .IF_ID_RegRt(IF_ID_RegRt[20:16]), .Mux_Select_Stall(ID_Flush_lwstall), .PCWrite(PCWrite), .IF_ID_Write(IF_ID_Write)
 	);
 	
 	hazard_stall_mux_2_to_1 Unit6(
-		.In1_zero(), .In2_control_unit(), .Ctrl_Mux_Select_Stall(), .out()
+	    .h_RegWrite(RegWrite), .h_MemWrite(MemWrite), .Ctrl_Mux_Select_Stall(ID_Flush_lwstall), .h_RegWrite_out(h_RegWrite_out), .h_MemWrite_out(h_MemWrite_out)
 	);
 	
 	RegisterFile Unit7(
@@ -213,22 +219,22 @@ module cpu (clk, rst);
 	//*************************************
 	// EX Stage: ALU, ALU_Control, JRControl, Forwarding_Unit, alu muxes 1,2,3, ex_to_mem_mux, EX_MEM_reg
 	//*************************************
-	ALUControl Unit11(.ALUcontrol(ID_EX_ALUOp), .ALUop(), .funct());
+	ALUControl Unit11(.ALUcontrol(out_to_ALU), .ALUop(ID_EX_ALUOp), .funct(ID_EX_funct));
 	
 	JR_Control Unit12(.alu_op(ID_EX_ALUOp), .funct(ID_EX_funct), .JRControl(JRControl));
 	
 	ForwardingUnit Unit13(
-		.ID_EX_RegRs(), .ID_EX_RegRt(), .EX_MEM_RegRd(), .MEM_WB_RegRd(),
-		.MEM_WB_RegWrite(), .EX_MEM_RegWrite()
+		.ID_EX_RegRs(ID_EX_RegisterRs), .ID_EX_RegRt(ID_EX_RegisterRt), .EX_MEM_RegRd(EX_MEM_RegisterRd), .MEM_WB_RegRd(MEM_WB_RegisterRd),
+		.MEM_WB_RegWrite(MEM_WB_RegWrite), .EX_MEM_RegWrite(EX_MEM_RegWrite)
 	);
 	
 	// ALU depends on muxes and does not receive any input directly. 
 	// Output of 1st mux is ALU's 1st input
 	// Output of 2nd mux feeds into 3rd mux as an input
 	// Output of 3rd mux is ALU's 2nd input
-	first_alu_mux_3_to_1 Unit14(.In1_RegRs(ID_EX_reg_read_data_1), .In2_fwdEx(EX_MEM_reg_read_data_2), .In3_fwdMem(MEM_WB_RegisterRd), .Ctrl_FwdA(ForwardA), .out(first_alu_mux_3_to_1_out));
+	first_alu_mux_3_to_1 Unit14(.In1_RegRs(ID_EX_reg_read_data_1), .In2_fwdEx(EX_MEM_reg_read_data_2), .In3_fwdMem(MEM_WB_D_MEM_read_data), .Ctrl_FwdA(ForwardA), .out(first_alu_mux_3_to_1_out));
 	
-	second_alu_mux_3_to_1 Unit15(.In1_RegRt(ID_EX_reg_read_data_2), .In2_fwdEx(EX_MEM_RegisterRd), .In3_fwdMem(MEM_WB_RegisterRd), .Ctrl_FwdB(ForwardB), .out(second_alu_mux_3_to_1_out));
+	second_alu_mux_3_to_1 Unit15(.In1_RegRt(ID_EX_reg_read_data_2), .In2_fwdEx(EX_MEM_reg_read_data_2), .In3_fwdMem(MEM_WB_D_MEM_read_data), .Ctrl_FwdB(ForwardB), .out(second_alu_mux_3_to_1_out));
 	
 	third_alu_mux_2_to_1 Unit16(
 		.In1_second_alu_mux(second_alu_mux_3_to_1_out), .In2_immediate(immi_sign_extended), .Ctrl_ALUSrc(ALUSrc), .out(third_alu_mux_2_to_1_out)
@@ -236,11 +242,11 @@ module cpu (clk, rst);
 	
 	
 	alu Unit10(
-		.A(first_alu_mux_3_to_1_out), .B(third_alu_mux_2_to_1_out), .ALUControl(ALUControl), .clk(clk), .reset(rst), .R(ALU_result), .zero(ALU_zero)
+		.A(first_alu_mux_3_to_1_out), .B(third_alu_mux_2_to_1_out), .ALUControl(out_to_ALU), .clk(clk), .reset(rst), .R(ALU_result), .zero(ALU_zero)
 	);
-	
+
 	idEx_to_exMem_mux_2_to_1 Unit17(
-		.In1_rd(ID_EX_RegisterRd), .In2_rt(ID_EX_RegRt), .Ctrl_RegDst(ID_EX_RegDst), .out(idEx_to_exMem_mux_2_to_1_out)
+		.In1_rd(ID_EX_RegisterRd), .In2_rt(ID_EX_RegisterRt), .Ctrl_RegDst(ID_EX_RegDst), .out(idEx_to_exMem_mux_2_to_1_out)
 	);
 	
 	// Beware, there be giant squid here!
@@ -253,8 +259,8 @@ module cpu (clk, rst);
 		.Branch_in(ID_EX_Branch), .MemRead_in(ID_EX_MemRead), .MemWrite_in(ID_EX_MemWrite), .Jump_in(ID_EX_Jump),
 		.jump_addr_in(ID_EX_jump_addr), .branch_addr_in(ID_EX_branch_address),
 		.ALU_zero_in(ALU_zero),
-		.ALU_result_in(ALU_result), .reg_read_data_2_in(ID_EX_reg_read_data_2),
-		.ID_EX_RegisterRd_in(idEx_to_exMem_mux_2_to_1),
+		.ALU_result_in(ALU_result), .reg_read_data_2_in(second_alu_mux_3_to_1_out),
+		.ID_EX_RegisterRd_in(idEx_to_exMem_mux_2_to_1_out),
 		
 		.RegWrite_out(EX_MEM_RegWrite), 
 		.MemtoReg_out(EX_MEM_MemtoReg),
@@ -267,8 +273,8 @@ module cpu (clk, rst);
 	
 	//*************************************
 	// MEM Stage: Data_Memory, MEM_WB_Reg, jump/branch muxes 1,2,3,
-	//*************************************	
-	DataMemory Unit19(.addr(EX_MEM_ALU_result[7:0]), .write_data(EX_MEM_reg_read_data_2), .read_data(D_MEM_data), .clk(clk), .reset(reset), .MemRead(EX_MEM_MemRead), .MemWrite(EX_MEM_MemWrite));
+	//*************************************
+	DataMemory Unit19(.MR(EX_MEM_MemRead), .MW(EX_MEM_MemWrite), .Addr(EX_MEM_ALU_result), .WD(EX_MEM_reg_read_data_2), .Clk(clk), .RD(D_MEM_data));
 	
 	// Beware, there be alien engineers here!
 	MEM_WB Unit20(
@@ -287,7 +293,7 @@ module cpu (clk, rst);
 	//This likely won't work but intent is to create an AND gate to compare 
 	//ALU zero with Control's branch signal
 	wire branch_taken;
-	assign branch_taken = (ALU_zero_out & Branch);
+	assign branch_taken = (ALU_zero & Branch);
 	
 	first_jump_or_branch_mux_2_to_1 Unit21(.In1_PC_plus_4(ID_EX_PC_plus4), .In2_BTA(BTA), .Ctrl_Branch_Gate(branch_taken), .out(first_jump_or_branch_mux_2_to_1_out));
 	

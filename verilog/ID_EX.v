@@ -34,7 +34,8 @@ module ID_EX (
 	input Branch_in, MemRead_in, MemWrite_in, Jump_in,
 	input RegWrite_in, 
 	input ALUSrc_in,
-	input [1:0] ALUOp_in, RegDst_in, MemtoReg_in,
+	input [1:0] RegDst_in, MemtoReg_in,
+	input [2:0] ALUOp_in,
 	input [31:0] jump_addr_in, PC_plus4_in, branch_addr_in,
 	input [31:0] reg_read_data_1_in, reg_read_data_2_in, immi_sign_extended_in,
 	input [4:0] IF_ID_RegisterRs_in, IF_ID_RegisterRt_in, IF_ID_RegisterRd_in,
@@ -44,7 +45,8 @@ module ID_EX (
 	output RegWrite_out, 
 	output Branch_out, MemRead_out, MemWrite_out, Jump_out,
 	output ALUSrc_out,
-	output [1:0] ALUOp_out, RegDst_out, MemtoReg_out,
+	output [1:0] RegDst_out, MemtoReg_out,
+	output [2:0] ALUOp_out,
 	output [31:0] jump_addr_out, PC_plus4_out, branch_addr_out,
 	output [31:0] reg_read_data_1_out, reg_read_data_2_out, immi_sign_extended_out,
 	output [4:0] ID_EX_RegisterRs_out, ID_EX_RegisterRt_out, ID_EX_RegisterRd_out,
@@ -54,7 +56,8 @@ module ID_EX (
 	reg RegWrite_out;
 	reg Branch_out, MemRead_out, MemWrite_out, Jump_out;
 	reg ALUSrc_out;
-	reg [1:0] ALUOp_out, RegDst_out, MemtoReg_out;
+	reg [2:0] ALUOp_out;
+	reg [1:0] RegDst_out, MemtoReg_out;
 	reg [31:0] jump_addr_out, PC_plus4_out, branch_addr_out;
 	reg [31:0] reg_read_data_1_out, reg_read_data_2_out, immi_sign_extended_out;
 	reg [4:0] ID_EX_RegisterRs_out, ID_EX_RegisterRt_out, ID_EX_RegisterRd_out;

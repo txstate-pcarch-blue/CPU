@@ -1,3 +1,7 @@
+# Dictionary of all registers
+from random import choice
+
+# Dictionary of all normal registers
 registers = {"$Zero": 0, "$r0": 0, "$0": 0,
              "$at": 1, "$1": 1,
              "$v0": 2, "$2": 2,
@@ -32,6 +36,7 @@ registers = {"$Zero": 0, "$r0": 0, "$0": 0,
              "$ra": 31, "$31": 31,
              }
 
+# Dictionary for registers writable in randomly generated code
 writeable_registers = {
              "$at": 1, "$1": 1,
              "$v0": 2, "$2": 2,
@@ -61,3 +66,14 @@ writeable_registers = {
              "$k0": 26, "$26": 26,
              "$k1": 27, "$27": 27,
              }
+
+
+# Returns a random register from the normal 32
+def rand_register():
+    return choice(list(registers.items()))[1]
+
+
+# Returns a random register from the writable 27 used in randomly generated code
+def rand_w_register():
+    return choice(list(writeable_registers.items()))[1]
+

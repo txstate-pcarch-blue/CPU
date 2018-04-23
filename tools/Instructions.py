@@ -23,3 +23,12 @@ r_instructions = {
 
 # All instructions, items are using
 instructions = {**i_instructions, **j_instructions, **r_instructions}
+
+# Program flow instructions
+pf_instructions = ["beq", "j", "jr", "jal"]
+
+# Memory management instructions
+mem_instructions = ["lw", "sw"]
+
+# ALU operation instructions
+alu_instructions = ["add", "sub", "xor", "addi", "subi"]

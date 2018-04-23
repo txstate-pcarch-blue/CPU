@@ -15,7 +15,7 @@
 from myhdl import *
 
 @block
-def alu(clk, reset, A, B, CTRL, R, zero, ovf, branch): 			 # Note that input and outputs are type intbv type
+def alu(clk, reset, A, B, CTRL, R, zero, ovf): 			 # Note that input and outputs are type intbv type
 
     @always_comb                                                 # Combinational assignment for zero
     def zero_ex():
@@ -33,19 +33,6 @@ def alu(clk, reset, A, B, CTRL, R, zero, ovf, branch): 			 # Note that input and
                 output = intbv(A.signed() - B.signed())			                     # sub
             elif CTRL == 2:				                         # if CTRL is equal to 2, then
                 output = (A ^ B)			                     # Xor
-            elif CTRL == 4:                                      # if CTRL is equal to 4, then
-                output = A & B                                   # AND
-            elif CTRL == 5:                                      # if CTRL is equal to 5, then
-                output = ~A
-            elif CTRL == 6:                                      # if CTRL is equal to 6, then
-                output = ~(A & B)                                # NAND
-            elif CTRL == 7:                                      # if CTRL is equal to 7, then
-                output = ~(A | B)                                # NOR
-            elif CTRL == 3:
-                if (A == B):
-                    branch.next = 1
-                else:
-                    output = intbv(0)
             else:
                 output = intbv(0)
 

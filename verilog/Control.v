@@ -73,7 +73,7 @@ module Control(opcode, ALUSrc, RegDst, MemWrite, MemRead, Beq, Jump, MemToReg, R
 			end
 			
 			// Jump and link opcode 0x03
-			'b 000010: begin
+			'b 000011: begin
 				RegDst = 2;
 				MemToReg = 2;
 			    MemWrite = 0;
@@ -82,17 +82,7 @@ module Control(opcode, ALUSrc, RegDst, MemWrite, MemRead, Beq, Jump, MemToReg, R
 			    Jump = 1;
 			    RegWrite = 0;
 			end
-			
-			// Jump return opcode 0x00
-			'b 000010: begin
-			    MemWrite = 0;
-			    MemRead = 0;
-			    Beq = 0;
-			    Jump = 1;
-			    RegWrite = 0;
-			end
-
-			// addi
+			// addi opcode 0x08
 			'b 001000: begin
 			    ALUSrc = 1;  //sign ext. imm.
 			    RegDst = 0;
@@ -105,8 +95,8 @@ module Control(opcode, ALUSrc, RegDst, MemWrite, MemRead, Beq, Jump, MemToReg, R
 			    ALUOp = 2;
 			end
 			
-			// subi
-			'b 001000: begin
+			// subi opcode 0x09
+			'b 001001: begin
 			    ALUSrc = 1;  //sign ext. imm.
 			    RegDst = 0;
 			    MemWrite = 0;
@@ -119,5 +109,6 @@ module Control(opcode, ALUSrc, RegDst, MemWrite, MemRead, Beq, Jump, MemToReg, R
 			end
 			
 		endcase
+		
 	end
 endmodule

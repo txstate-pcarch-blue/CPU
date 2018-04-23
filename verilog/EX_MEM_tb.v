@@ -6,14 +6,16 @@ module EX_MEM_tb();
 
 	reg clk, rst;
 	reg EX_Flush;
-	reg RegWrite_in, MemtoReg_in;
+	reg RegWrite_in; 
+	reg [1:0] MemtoReg_in;
 	reg Branch_in, MemRead_in, MemWrite_in, Jump_in;
 	reg [31:0] jump_addr_in, branch_addr_in;
 	reg ALU_zero_in;
 	reg [31:0] ALU_result_in, reg_read_data_2_in;
 	reg [4:0] ID_EX_RegisterRd_in;
 	
-	wire RegWrite_out, MemtoReg_out;
+	wire RegWrite_out;
+	wire [1:0] MemtoReg_out;
 	wire Branch_out, MemRead_out, MemWrite_out, Jump_out;
 	wire [31:0] jump_addr_out, branch_addr_out;
 	wire ALU_zero_out;
@@ -68,34 +70,29 @@ module EX_MEM_tb();
 	end
 	
 	
-	always @(negedge clk) begin
+	always @(posedge clk) begin
 		if (rst) 
 			rst = 0;
 		else
-			clk = $random(seed);
-			rst = $random(seed);
-			EX_Flush = $random(seed);
-			RegWrite_in = $random(seed);
-			MemtoReg_in = $random(seed);
-			Branch_in = $random(seed);
-			MemRead_in = $random(seed);
-			MemWrite_in = $random(seed);
-			Jump_in = $random(seed);
-			jump_addr_in = $random(seed);
-			branch_addr_in = $random(seed);
-			ALU_zero_in = $random(seed);
-			ALU_result_in = $random(seed);
-			reg_read_data_2_in = $random(seed);
-			ID_EX_RegisterRd_in = $random(seed);
+			RegWrite_in <= $random(seed);
+			MemtoReg_in <= $random(seed);
+			Branch_in <= $random(seed);
+			MemRead_in <= $random(seed);
+			MemWrite_in <= $random(seed);
+			Jump_in <= $random(seed);
+			jump_addr_in <= $random(seed);
+			branch_addr_in <= $random(seed);
+			ALU_zero_in <= $random(seed);
+			ALU_result_in <= $random(seed);
+			reg_read_data_2_in <= $random(seed);
+			ID_EX_RegisterRd_in <= $random(seed);
 
-		++ num_iter ;
+			num_iter = num_iter + 1;
+			if (num_iter == 5) EX_Flush <= 1'b1;
+			if (num_iter == 6) EX_Flush <= 1'b0;
+			if (num_iter > 2000)
+				$finish;
 		
-	end
-			
-
-	always @(negedge clk) begin
-		if (num_iter > 2000)
-			$finish;
 	end
 
 endmodule

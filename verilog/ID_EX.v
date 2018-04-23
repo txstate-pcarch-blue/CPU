@@ -35,7 +35,7 @@ module ID_EX (
 	input RegWrite_in, 
 	input ALUSrc_in,
 	input [1:0] ALUOp_in, RegDst_in, MemtoReg_in,
-	input [31:0] jump_addr_in, PC_plus4_in,
+	input [31:0] jump_addr_in, PC_plus4_in, branch_addr_in,
 	input [31:0] reg_read_data_1_in, reg_read_data_2_in, immi_sign_extended_in,
 	input [4:0] IF_ID_RegisterRs_in, IF_ID_RegisterRt_in, IF_ID_RegisterRd_in,
 	input [5:0] IF_ID_funct_in,
@@ -43,22 +43,22 @@ module ID_EX (
 	
 	output RegWrite_out, 
 	output Branch_out, MemRead_out, MemWrite_out, Jump_out,
-	output RegDst_out, ALUSrc_out,
+	output ALUSrc_out,
 	output [1:0] ALUOp_out, RegDst_out, MemtoReg_out,
-	output [31:0] jump_addr_out, PC_plus4_out,
+	output [31:0] jump_addr_out, PC_plus4_out, branch_addr_out,
 	output [31:0] reg_read_data_1_out, reg_read_data_2_out, immi_sign_extended_out,
-	output [4:0] IF_ID_RegisterRs_out, IF_ID_RegisterRt_out, IF_ID_RegisterRd_out,
-	output [5:0] IF_ID_funct_out
+	output [4:0] ID_EX_RegisterRs_out, ID_EX_RegisterRt_out, ID_EX_RegisterRd_out,
+	output [5:0] ID_EX_funct_out
 );
 
 	reg RegWrite_out;
 	reg Branch_out, MemRead_out, MemWrite_out, Jump_out;
 	reg ALUSrc_out;
 	reg [1:0] ALUOp_out, RegDst_out, MemtoReg_out;
-	reg [31:0] jump_addr_out, PC_plus4_out;
+	reg [31:0] jump_addr_out, PC_plus4_out, branch_addr_out;
 	reg [31:0] reg_read_data_1_out, reg_read_data_2_out, immi_sign_extended_out;
-	reg [4:0] IF_ID_RegisterRs_out, IF_ID_RegisterRt_out, IF_ID_RegisterRd_out;
-	reg [5:0] IF_ID_funct_out;
+	reg [4:0] ID_EX_RegisterRs_out, ID_EX_RegisterRt_out, ID_EX_RegisterRd_out;
+	reg [5:0] ID_EX_funct_out;
 
 	
 	always @(negedge clk) begin
@@ -74,14 +74,15 @@ module ID_EX (
 			ALUSrc_out <= 1'b0;
 			ALUOp_out <= 2'b0;
 			jump_addr_out <= 32'b0;
+			branch_addr_out <= 32'b0;
 			PC_plus4_out <= 32'b0;
 			reg_read_data_1_out <= 32'b0;
 			reg_read_data_2_out <= 32'b0;
 			immi_sign_extended_out <= 32'b0;
-			IF_ID_RegisterRs_out <= 5'b0;
-			IF_ID_RegisterRt_out <= 5'b0;
-			IF_ID_RegisterRd_out <= 5'b0;
-			IF_ID_funct_out <= 6'b0;			
+			ID_EX_RegisterRs_out <= 5'b0;
+			ID_EX_RegisterRt_out <= 5'b0;
+			ID_EX_RegisterRd_out <= 5'b0;
+			ID_EX_funct_out <= 6'b0;			
 		end
 
 		else begin
@@ -96,14 +97,15 @@ module ID_EX (
 			ALUSrc_out <= ALUSrc_in;
 			ALUOp_out <= ALUOp_in;
 			jump_addr_out <= jump_addr_in;
+			branch_addr_out <= branch_addr_in;
 			PC_plus4_out <= PC_plus4_in;
 			reg_read_data_1_out <= reg_read_data_1_in;
 			reg_read_data_2_out <= reg_read_data_2_in;
 			immi_sign_extended_out <= immi_sign_extended_in;
-			IF_ID_RegisterRs_out <= IF_ID_RegisterRs_in;
-			IF_ID_RegisterRt_out <= IF_ID_RegisterRt_in;
-			IF_ID_RegisterRd_out <= IF_ID_RegisterRd_in;
-			IF_ID_funct_out <= IF_ID_funct_in;
+			ID_EX_RegisterRs_out <= IF_ID_RegisterRs_in;
+			ID_EX_RegisterRt_out <= IF_ID_RegisterRt_in;
+			ID_EX_RegisterRd_out <= IF_ID_RegisterRd_in;
+			ID_EX_funct_out <= IF_ID_funct_in;
 
 			if (ID_Hazard_lwstall == 1'b1 || ID_Hazard_Branch == 1'b1) begin
 

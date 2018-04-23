@@ -1,5 +1,5 @@
 import os
-from myhdl import Simulation, Cosimulation, Signal, traceSignals, intbv
+from myhdl import Simulation, Cosimulation, Signal, traceSignals, intbv, instances
 from helpers.Paths import *
 from helpers.Clock_Generator import clock_generator
 from helpers.Pulse_Generator import pulse_generator
@@ -12,7 +12,7 @@ def v_rf(readA, readB, write, rAddrA, rAddrB, wAddr, writeSignal, clock, reset, 
     cmd = "iverilog -o %s %s %s" % (RF_cosim_o, RF_cosim_v, RF_v)
     os.system(cmd)
     return Cosimulation("vvp -m %s %s" % (myhdl_vpi, RF_cosim_o),
-                        readA=readA, readB=readB, write=write, rAddra=rAddrA, rAddrB=rAddrB,
+                        readA=readA, readB=readB, write=write, rAddrA=rAddrA, rAddrB=rAddrB,
                         wAddr=wAddr, writeSignal=writeSignal, clock=clock, reset=reset,
                         regOut0=registers[0], regOut1=registers[1], regOut2=registers[2], regOut3=registers[3],
                         regOut4=registers[4], regOut5=registers[5], regOut6=registers[6], regOut7=registers[7],
@@ -26,7 +26,7 @@ def v_rf(readA, readB, write, rAddrA, rAddrB, wAddr, writeSignal, clock, reset, 
 
 def run_RF_cosim():
     # Initiate signals
-    MAX_TIME = 1000000
+    MAX_TIME = 100000
     clock = Signal(0)
     reset = Signal(0)
     writeSignal = Signal(0)
@@ -47,20 +47,19 @@ def run_RF_cosim():
         vregs[i].driven = not vregs[i].driven
 
     # Build driver instances
-    clock_driver = clock_generator(clock)
-    reset_driver = pulse_generator(clock, reset)
-    write_driver = pulse_generator(writeSignal, reset, delay=3)
+    clock_driver = clock_generator(clock, period=20)
+    #reset_driver = pulse_generator(clock, reset)
+    write_driver = pulse_generator(clock, writeSignal, delay=2)
     wd_rand = random_signal(write, clock, seed=1)
     rdAddrA_rand = random_signal(rAddrA, clock, seed=2)
     rdAddrB_rand = random_signal(rAddrB, clock, seed=3)
     wAddr_rand = random_signal(wAddr, clock, seed=4)
     py_cosim = traceSignals(RegisterFile(pyReadA, pyReadB, write, rAddrA, rAddrB, wAddr, writeSignal, clock, reset, pyregs))
-    v_cosim = traceSignals(v_rf(vReadA, vReadB, write, rAddrA, rAddrB, wAddr, writeSignal, clock, reset, vregs))
-    read_test = match_test_report(clock, (vReadA, vReadB), (pyReadA, pyReadB))
+    v_cosim = v_rf(vReadA, vReadB, write, rAddrA, rAddrB, wAddr, writeSignal, clock, reset, vregs)
+    read_test = match_test_report(clock, (vReadA, vReadB), (pyReadA, pyReadB), a_name="v:", b_name="py:")
     reg_test = match_test_report(clock, vregs, pyregs)
 
-    sim = Simulation(clock_driver, reset_driver, write_driver, wd_rand, rdAddrA_rand, rdAddrB_rand, wAddr_rand,
-                      py_cosim, v_cosim, read_test, reg_test)
+    sim = Simulation(instances())
     sim.run(MAX_TIME)
 
 run_RF_cosim()

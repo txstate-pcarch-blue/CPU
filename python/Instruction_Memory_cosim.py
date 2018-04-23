@@ -25,7 +25,7 @@ def run_IM_cosim():
 
     # Build driver instances
     clock_driver = clock_generator(clock, period=20)
-    addr_driver = random_signal(address, clock, seed=1)
+    addr_driver = random_signal(clock, address, seed=1)
     py_cosim = traceSignals(py_im(clock, address, pyData, infile))
     v_cosim = v_im(clock, address, vData, infile)
     read_test = match_test_report(clock, vData, pyData, a_name="v:", b_name="py:")

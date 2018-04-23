@@ -15,8 +15,8 @@ if (__name__ == "__main__"):
 
     clock_driver = clock_generator(clk)
     ctrl_driver = pulse_generator(clk, ctrl)
-    inputA_driver = random_signal(inputA, clk)
-    inputB_driver = random_signal(inputB, clk)
+    inputA_driver = random_signal(clk, inputA)
+    inputB_driver = random_signal(clk, inputB)
 
     MUX_driver = traceSignals(MUX(ctrl, inputA, inputB, output))
 

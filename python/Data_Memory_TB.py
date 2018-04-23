@@ -17,7 +17,7 @@ if (__name__ == "__main__"):
     writeData = Signal(intbv(0, 0, 2**32))
     pc_driver = program_counter(clk, address, Signal(0), Signal(0))
     
-    writeData_driver = random_signal(writeData, clk)
+    writeData_driver = random_signal(clk, writeData)
     dataMemory_driver = traceSignals(Data_Memory(clk, address, write, readData, writeData))
     clock_driver = clock_generator(clk)
   

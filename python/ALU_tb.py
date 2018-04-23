@@ -16,9 +16,9 @@ if (__name__ == "__main__"):
     clock_driver = clock_generator(clk)
 
     ALUDriver = traceSignals(alu(clk, reset, readA, readB, CTRL, R, zero, ovf))
-    readADriver = random_signal(readA, clk)
-    readBDriver = random_signal(readB, clk)
-    CTRLDriver = random_signal(CTRL, clk)
+    readADriver = random_signal(clk, readA)
+    readBDriver = random_signal(clk, readB)
+    CTRLDriver = random_signal(clk, CTRL)
 
     sim = Simulation(instances())
     sim.run(1000)

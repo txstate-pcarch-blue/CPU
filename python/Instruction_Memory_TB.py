@@ -18,7 +18,7 @@ if (__name__ == "__main__"):
 
     instruction_driver = traceSignals(Instruction_Memory(clk, address, out, test_file))
     clock_driver = clock_generator(clk)
-    rand_driver = random_signal(address, clk)
+    rand_driver = random_signal(clk, address)
 
     sim = Simulation(clock_driver, rand_driver, instruction_driver)
     sim.run(MAX_CYCLES)

@@ -22,10 +22,10 @@ if (__name__ == "__main__"):
         outregs.append(Signal(intbv(0, 0, 2**32)))
         outregs[i].driven = not outregs[i].driven
 
-    busWAddress_driver = random_signal(BusW, clk)
-    readAAddress_driver = random_signal(RA, clk)
-    readBAddress_driver = random_signal(RB, clk)
-    readWAddress_driver = random_signal(RW, clk)
+    busWAddress_driver = random_signal(clk, BusW)
+    readAAddress_driver = random_signal(clk, RA)
+    readBAddress_driver = random_signal(clk, RB)
+    readWAddress_driver = random_signal(clk, RW)
     RegWr_driver = pulse_generator(clk, RegWr, delay=2)
     reset_driver = pulse_generator(clk, rst, delay=40)
     register_driver = traceSignals(RegisterFile(BusA, BusB, BusW, RA, RB, RW, RegWr, clk, rst, outregs))

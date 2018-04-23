@@ -15,7 +15,7 @@ if (__name__ == "__main__"):
 
     pc_driver = traceSignals(Sign_Extender(clk, instruction, output))
     clock_driver = clock_generator(clk)
-    rand_driver  = random_signal(instruction, clk)
+    rand_driver  = random_signal(clk, instruction)
   
     sim = Simulation(clock_driver, rand_driver, pc_driver)
     sim.run(MAX_CYCLES)

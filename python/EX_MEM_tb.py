@@ -32,14 +32,14 @@ if (__name__ == "__main__"):
     register_driver = traceSignals(ex_mem(clk, ALU_in, ALU_out, MemData_in, MemData_out, reg_in,
                                     reg_out, zero_in, zero_out, PC_in, PC_out, MemToReg_in,
                                     MemToReg_out, MemWrite_in, MemWrite_out, WB_in, WB_out))
-    ALU_driver = random_signal(ALU_in, clk)
-    MemData_driver = random_signal(MemData_in, clk)
-    reg_driver = random_signal(reg_in, clk)
-    zero_driver = random_signal(zero_in, clk)
-    PC_driver = random_signal(PC_in, clk)
-    MemToReg_driver = random_signal(MemToReg_in, clk)
-    MemWrite_driver = random_signal(MemWrite_in, clk)
-    WB_driver = random_signal(WB_in, clk)
+    ALU_driver = random_signal(clk, ALU_in)
+    MemData_driver = random_signal(clk, MemData_in)
+    reg_driver = random_signal(clk, reg_in)
+    zero_driver = random_signal(clk, zero_in)
+    PC_driver = random_signal(clk, PC_in)
+    MemToReg_driver = random_signal(clk, MemToReg_in)
+    MemWrite_driver = random_signal(clk, MemWrite_in)
+    WB_driver = random_signal(clk, WB_in)
 
 
     sim = Simulation(clock_driver, register_driver, ALU_driver, MemData_driver,

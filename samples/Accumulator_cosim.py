@@ -25,7 +25,7 @@ def run_hello_cosim():
     clock = Signal(0)
     clock_driver = clock_generator(clock)
     din = Signal(intbv(val = 0, min = 0, max = 256))
-    rand = random_signal(din, clock)
+    rand = random_signal(clock, din)
     doutver = Signal(intbv(val = 0, min = 0, max = 256))
     v_cosim = accumulator_cosim(clock, din, doutver)
     doutpy  = Signal(modbv(val = 0, min = 0, max = 256))

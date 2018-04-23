@@ -29,9 +29,9 @@ def run_ALU_cosim():
 
     # Build driver instances
     clock_driver = clock_generator(clock, period=20)
-    control_driver = random_signal(ALU_control, clock, seed=1)
-    A_rand = random_signal(inA, clock, seed=2)
-    B_rand = random_signal(inB, clock, seed=3)
+    control_driver = random_signal(clock, ALU_control, seed=1)
+    A_rand = random_signal(clock, inA, seed=2)
+    B_rand = random_signal(clock, inB, seed=3)
     reset_driver = pulse_generator(clock, reset)
     py_cosim = traceSignals(py_alu(clock, reset, inA, inB, ALU_control, pyData, pyZero))
     v_cosim = v_alu(clock, reset, ALU_control, inA, inB, vData, vZero)

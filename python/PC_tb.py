@@ -17,7 +17,7 @@ if (__name__ == "__main__"):
 
   pc_driver = traceSignals(program_counter(clock, addr_out, addr_in, branch_signal))
   clock_driver = clock_generator(clock)
-  rand_driver  = random_signal(addr_in, clock)
+  rand_driver  = random_signal(clock, addr_in)
   pulse_driver = pulse_generator(clock, branch_signal)
   
   sim = Simulation(clock_driver, rand_driver, pc_driver, pulse_driver)

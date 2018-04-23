@@ -2,7 +2,7 @@ from myhdl import Signal, block, always, intbv
 import random
 
 @block
-def random_signal(sig, clock, seed=1):
+def random_signal(clock, sig, seed=1):
   random.seed(seed)
   @always(clock.posedge)
   def rand_sig():

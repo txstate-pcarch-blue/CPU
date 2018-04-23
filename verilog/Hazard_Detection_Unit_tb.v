@@ -1,9 +1,10 @@
-`timescale 1 ns / 1 ns
+`timescale 1ns /  1ns
 
 module tb();
 
     // Inputs
-	reg ID_EX_MemRead, ID_EX_RegRt, IF_ID_RegRs, IF_ID_RegRt;
+	reg ID_EX_MemRead;
+	reg [4:0] ID_EX_RegRt, IF_ID_RegRs, IF_ID_RegRt;
 
 	parameter tck = 10; ///< clock tick
 	reg clk;
@@ -20,7 +21,10 @@ module tb();
 		ID_EX_MemRead,
 		ID_EX_RegRt,
 		IF_ID_RegRs,
-		IF_ID_RegRt
+		IF_ID_RegRt,
+		Mux_Select_Stall,
+		PCWrite,
+		IF_ID_Write
 	);
 	  
 	integer num_iter = 0;

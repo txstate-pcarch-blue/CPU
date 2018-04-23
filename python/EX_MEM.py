@@ -13,11 +13,18 @@ def ex_mem(clk, rst, EX_Flush, RegWrite_in, MemtoReg_in, Branch_in, MemRead_in,
     @always(clk.negedge)
     def latches():
         if(rst==1):
-            for i in enumerate(RegWrite_out,
-            MemtoReg_out, Branch_out, MemRead_out, MemWrite_out, Jump_out,
-            jump_addr_out, branch_addr_out, ALU_zero_out, ALU_result_out,
-            reg_read_data_2_out, EX_MEM_RegisterRd_out):
-                i.next = 0
+            RegWrite_out.next = 0
+            MemtoReg_out.next = 0
+            Branch_out.next = 0
+            MemRead_out.next = 0
+            MemWrite_out.next = 0
+            Jump_out.next = 0
+            jump_addr_out.next = 0
+            branch_addr_out.next = 0
+            ALU_zero_out.next = 0
+            ALU_result_out.next = 0
+            reg_read_data_2_out.next = 0
+            EX_MEM_RegisterRd_out.next = 0
         else:
             RegWrite_out.next = RegWrite_in
             MemtoReg_out.next = MemtoReg_in

@@ -9,9 +9,9 @@ from Register_File import RegisterFile
 
 
 def v_rf(readA, readB, write, rAddrA, rAddrB, wAddr, writeSignal, clock, reset, registers):
-    cmd = 'iverilog -o "%s" "%s" "%s"' % (RF_cosim_o, RF_cosim_v, RF_v)
+    cmd = 'iverilog -o %s %s %s' % (RF_cosim_o, RF_cosim_v, RF_v)
     os.system(cmd)
-    return Cosimulation('vvp -m "%s" "%s"' % (myhdl_vpi, RF_cosim_o),
+    return Cosimulation('vvp -m %s %s' % (myhdl_vpi, RF_cosim_o),
                         readA=readA, readB=readB, write=write, rAddrA=rAddrA, rAddrB=rAddrB,
                         wAddr=wAddr, writeSignal=writeSignal, clock=clock, reset=reset,
                         regOut0=registers[0], regOut1=registers[1], regOut2=registers[2], regOut3=registers[3],
@@ -60,6 +60,34 @@ def run_RF_cosim():
     reg_test = match_test_report(clock, vregs, pyregs, a_name="verilog", b_name="python")
 
     sim = Simulation(instances())
-    sim.run(MAX_TIME)
+
+    inp = ""
+    help = 'Enter "run <cycles>" to run the simulation "print" to show the register files, or "quit" to exit.'
+    prompt = "command: "
+    print(help)
+    while (inp != "quit"):
+        inp = input(prompt)
+        if inp == "show":
+            for x, reg in enumerate(pyregs):
+                print("py[%d]=%#x" % (x, reg.val), end=' ')
+            print()
+            for x, reg in enumerate(vregs):
+                print(" v[%d]=%#x" % (x, reg.val), end=' ')
+            print()
+            if (pyregs == vregs):
+                print("They match")
+            else:
+                print("They don't match")
+            continue
+        elif inp.startswith("run "):
+            try:
+                cycles = int(inp.split()[1].strip())
+                sim.run(cycles)
+                continue
+            except ValueError:
+                pass
+        elif inp != "quit":
+            print(help)
+
 
 run_RF_cosim()

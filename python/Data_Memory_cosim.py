@@ -31,7 +31,7 @@ def run_IM_cosim():
     WD_driver = random_signal(clock, WD, seed=2)
     MR_driver = pulse_generator(clock, MR, delay=2)
     MW_driver = pulse_generator(clock, MW, delay=3)
-    py_cosim = traceSignals(py_dm(clock, address, MW, MR, pyData, WD, inmem))
+    py_cosim = traceSignals(py_dm(clock, address, MW, MR, pyData, WD))
     v_cosim = v_dm(clock, MR, MW, address, WD, vData)
     read_test = match_test_report(clock, vData, pyData, a_name="v:", b_name="py:")
 

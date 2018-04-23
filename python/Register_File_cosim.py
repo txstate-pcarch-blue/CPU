@@ -26,15 +26,15 @@ def v_rf(readA, readB, write, rAddrA, rAddrB, wAddr, writeSignal, clock, reset, 
 
 def run_RF_cosim():
     # Initiate signals
-    MAX_TIME = 100000
+    MAX_TIME = 10000
     clock = Signal(0)
     reset = Signal(0, delay=10)
-    writeSignal = Signal(0, delay=5)
+    writeSignal = Signal(0, delay=10)
     pyReadA = Signal(intbv(0, 0, 2**32))
     pyReadB = Signal(intbv(0, 0, 2**32))
     vReadA = Signal(intbv(0, 0, 2**32))
     vReadB = Signal(intbv(0, 0, 2**32))
-    write = Signal(intbv(0, 0, 2**32))
+    write = Signal(intbv(0, 0, 2**32), delay=10)
     rAddrA = Signal(intbv(0, 0, 2**5))
     rAddrB = Signal(intbv(0, 0, 2**5))
     wAddr = Signal(intbv(0, 0, 2**5), delay=10)

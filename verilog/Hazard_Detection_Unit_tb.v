@@ -39,7 +39,7 @@ module tb();
 	end
 
 	always @(posedge clk) begin
-		num_iter++;
+		num_iter = num_iter + 1;
 	end
 	
 	always @ * begin

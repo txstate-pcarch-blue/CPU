@@ -181,14 +181,14 @@ endmodule
 //Inputs: Control Unit signal, hardcoded zero 
 //If Control is 0, output is whatever is sent by Control Unit
 //If Control is 1, output is 0 and sent to ID/EX wb, m, and ex control lines
-module hazard_stall_mux_2_to_1(In1_zero, In2_control_unit, Ctrl_Mux_Select_Stall, out);
-	input [31:0] In1_zero, In2_control_unit;
+module hazard_stall_mux_2_to_1(h_RegWrite, h_MemWrite, Ctrl_Mux_Select_Stall, h_RegWrite_out, h_MemWrite_out);
+	input h_RegWrite, h_MemWrite;
 	input Ctrl_Mux_Select_Stall;
-	output reg [31:0] out; // 32-bit output
-	always @(In1_zero, In2_control_unit, Ctrl_Mux_Select_Stall) begin
+	output reg h_RegWrite_out, h_MemWrite_out; // 32-bit output
+	always @(h_RegWrite, h_MemWrite, Ctrl_Mux_Select_Stall) begin
 		case (Ctrl_Mux_Select_Stall) 
-			0: out <= In1_zero;
-			1: out <= In2_control_unit; 
+			0: h_RegWrite_out <= h_RegWrite; h_MemWrite_out <= h_MemWrite;
+			1: h_RegWrite_out <= 0; h_MemWrite_out <= 0;
 		endcase
 	end
 endmodule

@@ -27,19 +27,21 @@ def RegisterFile(BusA, BusB, BusW, RA, RB, RW, RegWr, clk, Rst, outregs):
     @always(clk.posedge)
     def writeReg():
         nonlocal registers, outregs
-        if RegWr and RW != 0:
+        if Rst:
+            for i in range(0, 32):
+                registers[i].next = Signal(intbv(0, 0, 2**32))
+                outregs[i].next = Signal(intbv(0, 0, 2**32))
+        elif RegWr and RW != 0:
             registers[RW.unsigned()].next = BusW
             outregs[RW.unsigned()].next = BusW
-        if Rst:
-            for i in range(0, 31):
-                registers[i] = Signal(intbv(0, 0, 2**32))
-                registers[i].driven = not registers[i].driven
-                outregs[i] = Signal(intbv(0, 0, 2**32))
-                outregs[i].driven = not outregs[i].driven
 
     @always(clk.negedge)
     def readReg():
-        BusA.next = registers[int(RA)]
-        BusB.next = registers[int(RB)]
+        if (Rst):
+            BusA.next = Signal(intbv(0, 0, 2**32))
+            BusB.next = Signal(intbv(0, 0, 2**32))
+        else:
+            BusA.next = registers[int(RA)]
+            BusB.next = registers[int(RB)]
 
     return readReg, writeReg

@@ -28,8 +28,8 @@ def run_RF_cosim():
     # Initiate signals
     MAX_TIME = 100000
     clock = Signal(0)
-    reset = Signal(0)
-    writeSignal = Signal(0)
+    reset = Signal(0, delay=10)
+    writeSignal = Signal(0, delay=5)
     pyReadA = Signal(intbv(0, 0, 2**32))
     pyReadB = Signal(intbv(0, 0, 2**32))
     vReadA = Signal(intbv(0, 0, 2**32))
@@ -37,7 +37,7 @@ def run_RF_cosim():
     write = Signal(intbv(0, 0, 2**32))
     rAddrA = Signal(intbv(0, 0, 2**5))
     rAddrB = Signal(intbv(0, 0, 2**5))
-    wAddr = Signal(intbv(0, 0, 2**5))
+    wAddr = Signal(intbv(0, 0, 2**5), delay=10)
     pyregs = []
     vregs  = []
     for i in range(0, 32):
@@ -48,7 +48,7 @@ def run_RF_cosim():
 
     # Build driver instances
     clock_driver = clock_generator(clock, period=20)
-    #reset_driver = pulse_generator(clock, reset)
+    reset_driver = pulse_generator(clock, reset, delay=30)
     write_driver = pulse_generator(clock, writeSignal, delay=2)
     wd_rand = random_signal(write, clock, seed=1)
     rdAddrA_rand = random_signal(rAddrA, clock, seed=2)
@@ -57,7 +57,7 @@ def run_RF_cosim():
     py_cosim = traceSignals(RegisterFile(pyReadA, pyReadB, write, rAddrA, rAddrB, wAddr, writeSignal, clock, reset, pyregs))
     v_cosim = v_rf(vReadA, vReadB, write, rAddrA, rAddrB, wAddr, writeSignal, clock, reset, vregs)
     read_test = match_test_report(clock, (vReadA, vReadB), (pyReadA, pyReadB), a_name="v:", b_name="py:")
-    reg_test = match_test_report(clock, vregs, pyregs)
+    reg_test = match_test_report(clock, vregs, pyregs, a_name="verilog", b_name="python")
 
     sim = Simulation(instances())
     sim.run(MAX_TIME)

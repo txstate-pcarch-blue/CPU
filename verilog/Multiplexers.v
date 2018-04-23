@@ -187,8 +187,8 @@ module hazard_stall_mux_2_to_1(h_RegWrite, h_MemWrite, Ctrl_Mux_Select_Stall, h_
 	output reg h_RegWrite_out, h_MemWrite_out; // 32-bit output
 	always @(h_RegWrite, h_MemWrite, Ctrl_Mux_Select_Stall) begin
 		case (Ctrl_Mux_Select_Stall) 
-			0: h_RegWrite_out <= h_RegWrite; h_MemWrite_out <= h_MemWrite;
-			1: h_RegWrite_out <= 0; h_MemWrite_out <= 0;
+			0: begin h_RegWrite_out <= h_RegWrite; h_MemWrite_out <= h_MemWrite; end
+			1: begin h_RegWrite_out <= 0; h_MemWrite_out <= 0; end
 		endcase
 	end
 endmodule

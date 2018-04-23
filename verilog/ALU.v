@@ -8,7 +8,7 @@ module alu  (input [31:0] A,B,
              input clk, reset,
              output reg [31:0] R,
 			 output zero,
-			 output reg overflow
+			 output overflow
 			 );
 		
 		assign zero = (R==0); //Zero is true (i.e., 1) if output R is 0

@@ -3,20 +3,19 @@
 // data output width: 1 32-bit addr
 // control: 1-bit: branch or not branch
 
-module pc  (input [31:0] addrIn,
-             input clk, reset, branch,
-             output reg [31:0] addrOut);
+module pc  (
+	input [31:0] PC_in,
+    input clk, reset, PCWrite,
+    
+	output reg [31:0] PC_out
+);
 
-always @(posedge clk) begin
-	if(reset == 1) begin
-		addrOut <= 32'b0;
-	end
-
-	else begin
-		if(branch == 1) addrOut <= addrIn;
-		else addrOut <= addrOut+4;
-	end
-
+	always @(posedge clk) begin
+		
+		if(reset==1'b1)
+			PC_out <= 0;
+		else if(PCWrite)
+			PC_out <= PC_in;
 	end
 
 endmodule

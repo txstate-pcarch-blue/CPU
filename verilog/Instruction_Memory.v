@@ -1,5 +1,6 @@
 
-module InstructionMemory(Addr, Clk, Inst,
+module InstructionMemory(Addr, Clk, Inst
+/*
 memOut0,memOut1,memOut2,memOut3,memOut4,memOut5,memOut6,memOut7,
 memOut8,memOut9,memOut10,memOut11,memOut12,memOut13,memOut14,memOut15,
 memOut16,memOut17,memOut18,memOut19,memOut20,memOut21,memOut22,memOut23,
@@ -35,6 +36,7 @@ memOut229,memOut230,memOut231,memOut232,memOut233,memOut234,memOut235,
 memOut236,memOut237,memOut238,memOut239,memOut240,memOut241,memOut242,
 memOut243,memOut244,memOut245,memOut246,memOut247,memOut248,memOut249,
 memOut250,memOut251,memOut252,memOut253,memOut254,memOut255
+*/
 );
 
 input Clk;
@@ -43,6 +45,7 @@ output reg [31:0] Inst; //instruction to output
 
 reg [31:0] MEM[0:255];
 
+/*
 output [31:0] memOut0;
 output [31:0] memOut1;
 output [31:0] memOut2;
@@ -556,6 +559,7 @@ assign memOut252 = MEM[252];
 assign memOut253 = MEM[253];
 assign memOut254 = MEM[254];
 assign memOut255 = MEM[255];
+*/
 
 parameter in_file = "input.hex";
 initial begin

@@ -26,45 +26,42 @@ def build_r(opcode, rs, rt, rd, shamt, funct):
 
 
 # Parses J instructions
-def parse_j(instr, opcode, labels, index):
+def parse_j(instr, labels, index):
     sp = instr.split()
-    if (sp[1] in labels):
-        location = labels[sp[1]]
-    else:
-        raise "Invalid Label"
+    opcode = j_instructions[sp[0]]
+    location = labels[sp[1]]
     return build_j(opcode, location)
 
 
 # Parses I instructions
-def parse_i(instr, opcode, labels, index):
+def parse_i(instr, labels, index):
     sp = instr.split()
+    opcode = i_instructions[sp[0]]
     if sp[0] == "beq":
         rt = registers[sp[2]]
         rs = registers[sp[1]]
-        if (sp[3] in labels):
-            immediate = labels[sp[3]] - index
-        else:
-            raise "Invalid Label"
+        immediate = labels[sp[3]] - index
     elif sp[0] in ["sw", "lw"]:
         rt = registers[sp[1]]
         sp2 = sp[2].replace(')', '').split('(')
         rs = registers[sp2[1]]
         immediate = int(sp2[0])
-    else:
+    else:  # Function is in
         rt = registers[sp[1]]
         rs = registers[sp[2]]
         try:
             immediate = int(sp[3])
-        except:
+        except ValueError:
             immediate = int(sp[3], 16)
     return build_i(opcode, rs, rt, immediate)
 
 
 # Parses R instructions
-def parse_r(instr, funct, labels, index):
+def parse_r(instr, labels, index):
     sp = instr.split()
     # Gather part values
     opcode = 0
+    funct = r_instructions[sp[0]]
     if sp[0] == "jr":
         rs = registers[sp[1]]
         rt = 0
@@ -75,7 +72,7 @@ def parse_r(instr, funct, labels, index):
         rd = registers[sp[1]]
         # Verify no write to r0
         if rd == 0:
-            raise "Write to $0"
+            raise ValueError
     shamt = 0
     # Assemble Instruction
     return build_r(opcode, rs, rt, rd, shamt, funct)
@@ -85,6 +82,8 @@ def parse_r(instr, funct, labels, index):
 def normalize_hex(inlines):
     lines = []
     for line in inlines:
+        if isinstance(line, int):
+            line = hex(line)
         line = line[2:] # Remove 0x
         if line[-1] != '\n':
             line = line + '\n'

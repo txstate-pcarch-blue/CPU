@@ -12,10 +12,10 @@ def Data_Memory(clk, address, write, readData, writeData):
     @always(clk.posedge)
     def execute():
         #Insert Memory Read or Write
-        #readData.next = execute.mem[address[9:2]] #return memory to be loaded into a register
+        #readData.next = execute.mem[address[10:2]] #return memory to be loaded into a register
         if write:
-            execute.mem[address[9:2]] = writeData #write register data into memory
-        readData.next = execute.mem[address[9:2]]
+            execute.mem[address[10:2]] = writeData #write register data into memory
+        readData.next = execute.mem[address[10:2]]
     mem = []
     for i in range(0, 256):
         mem.append(Signal(intbv(0, 0 ,2**32)))

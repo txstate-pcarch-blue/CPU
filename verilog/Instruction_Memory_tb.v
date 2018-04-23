@@ -531,7 +531,7 @@ module tb();
 		.memOut255(memOut255)
 	);
 
-    defparam dut.in_file = "../samples/Instruction_Memory.txt";
+    defparam dut.in_file = "../samples/Index_Memory_256.hex";
 	  
 	integer num_iter = 0;
 	always #(tck/2) clk <= ~clk; // clocking device

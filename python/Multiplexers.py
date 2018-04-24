@@ -97,12 +97,12 @@ def regDst_mux_3_to_1(In1_imm_destination_rt, In2_rType_rd, In3_jal_ra, Ctrl_Reg
             out.next = In3_jal_ra
     return mux
 
-#1st Mux: Jump or Branch 2:1
+#1st Mux: PC + 4 or Branch
 #Control lines comes form branch and decision AND gate
 #if 0, select PC+4
 #if 1, select sign extended label added to PC for BTA
 @block
-def first_jump_or_branch_mux_2_to_1(In1_PC_plus_4, In2_BTA, Ctrl_Branch_Gate, out):
+def first_PC4_or_branch_mux_2_to_1(In1_PC_plus_4, In2_BTA, Ctrl_Branch_Gate, out):
     @always_comb
     def mux():
         if Ctrl_Branch_Gate == 0:
@@ -111,14 +111,14 @@ def first_jump_or_branch_mux_2_to_1(In1_PC_plus_4, In2_BTA, Ctrl_Branch_Gate, ou
             out.next = In2_BTA
     return mux
 
-#2nd MUX: jal
+#2nd MUX: jump or first mux output
 #1st MUX feeds it's output into 2nd as one of the inputs
 #2nd input comes from jump_address_calculator
 #Control line comes form Control Unit Jump line.
 #If 0, it is the 1st input (eitehr PC+4 or BTA depending on 1st MUX reuslt
 #If 1, calculated jump address (shift 2, concat top 4 of PC)
 @block
-def second_jump_or_branch_mux_2_to_1(In1_first_mux, In2_jump_addr_calc, Ctrl_Jump, out):
+def second_jump_or_first_mux_2_to_1(In1_first_mux, In2_jump_addr_calc, Ctrl_Jump, out):
     @always_comb
     def mux():
         if Ctrl_Jump == 0:
@@ -133,7 +133,7 @@ def second_jump_or_branch_mux_2_to_1(In1_first_mux, In2_jump_addr_calc, Ctrl_Jum
 #If 0, take 1st input as determined by 2nd MUX
 #If 1, we take register value which contains jr address
 @block
-def third_jump_or_branch_mux_2_to_1(In1_second_mux, In2_reg_value_ra, JRCtrl, out):
+def third_jr_or_second_mux_2_to_1(In1_second_mux, In2_reg_value_ra, JRCtrl, out):
     @always_comb
     def mux():
         if JRCtrl == 0:
@@ -149,11 +149,13 @@ def third_jump_or_branch_mux_2_to_1(In1_second_mux, In2_reg_value_ra, JRCtrl, ou
 #If 0, output is whatever is send by Control Unit
 #If 1, output is 0 and sent to ID/EX wb, m, and ex control lines
 @block
-def hazard_stall_mux_2_to_1(In1_zero, In2_control_unit, Ctrl_Mux_Select_Stall, out):
+def hazard_stall_mux_2_to_1(h_RegWrite, h_MemWrite, Ctrl_Mux_Select_Stall, h_RegWrite_out, h_MemWrite_out):
     @always_comb
     def mux():
         if Ctrl_Mux_Select_Stall == 0:
-            out.next = In1_zero
+            h_RegWrite_out.next = h_RegWrite
+            h_MemWrite_out.next = h_MemWrite
         elif Ctrl_Mux_Select_Stall == 1:
-            out.next = In2_control_unit
+            h_RegWrite_out.next = 0
+            h_MemWrite_out.next = 0
     return mux

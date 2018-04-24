@@ -1,10 +1,10 @@
 from myhdl import *
 
 @block
-def Control(opcode, ALUSrc, RegDst, MemWrite, MemRead, Beq, Jump, MemToReg, RegWrite, ALUOp):
+def control(opcode, ALUSrc, RegDst, MemWrite, MemRead, Beq, Jump, MemToReg, RegWrite, ALUOp):
 
-    @always_comb
-    def control():
+    @always(opcode)
+    def execute():
         if(opcode==0):
             ALUSrc.next = 0
             RegDst.next = 1
@@ -81,4 +81,4 @@ def Control(opcode, ALUSrc, RegDst, MemWrite, MemRead, Beq, Jump, MemToReg, RegW
             RegWrite.next = 1
             ALUOp.next = 3
 
-    return control
+    return execute

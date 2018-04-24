@@ -13,3 +13,19 @@ def hazard_unit(ID_EX_MemRead, ID_EX_RegRt, IF_ID_RegRs,IF_ID_RegRt, Mux_Select_
             PCWrite.next = 1
             IF_ID_Write.next = 1
     return HDU
+
+@block
+def branch_or_jump_taken_flush(EX_MEM_branch_out_in, EX_MEM_jump_out_in, EX_MEM_ALU_Zero_out_in, IF_Flush, ID_Flush, EX_Flush):
+
+    @always_comb
+    def check():
+        if((EX_MEM_branch_out_in and EX_MEM_ALU_Zero_out_in) or (EX_MEM_jump_out_in)):
+            IF_Flush.next = 1
+            ID_Flush.next = 1
+            EX_Flush.next = 1
+        else:
+            IF_Flush.next = 1
+            ID_Flush.next = 1
+            EX_Flush.next = 1
+
+    return check

@@ -14,7 +14,7 @@ def jump_calculator(In1_instruction, In2_pc_plus_4, Jump_Address):
 
     @always(In1_instruction)
     def calc():
-        temp = modbv((In1_instruction * 4), 0, 2**32)
+        temp = intbv((In1_instruction * 4), 0, 2**32)
         temp[32:28] = In2_pc_plus_4[32:28]
         Jump_Address.next = temp
 

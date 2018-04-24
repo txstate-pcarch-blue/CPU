@@ -71,23 +71,23 @@ Files are stored in this tree structure as follows:
 
 ```
 .
-├── bin             # Stores compiled files
-├── lib             # Stores external libraries
-│   └── myhdl           # myhdl libary, used to compile myhdl.vpi
-├── python          # Stores python simulation files
-│   └── helpers         # Stores python test bench helping functions
-├── samples         # Stores sample code for simulation testing
-├── tools           # Stores assembler and generator files
-└── verilog         # Stores verilog simulation files
+├── bin             Stores compiled files
+├── lib             Stores external libraries
+│   └── myhdl           myhdl libary, used to compile myhdl.vpi
+├── python          Stores python simulation files
+│   └── helpers         Stores python test bench helping functions
+├── samples         Stores sample code for simulation testing
+├── tools           Stores assembler and generator files
+└── verilog         Stores verilog simulation files
 ```
 
 ### File Conventions
 
 All verilog files end with `.v` and all python files end with `.py`
 
-If a file end with `_tb.*`, then the file is used to test the module.
+If a file end with `_tb.[py|v]`, then the file is used to test the module.
 
-If a file end with `_cosim.*`, then the file is used to control cosimulation.
+If a file end with `_cosim.[py|v]`, then the file is used to control cosimulation. Each `_cosim.[py|v]` pair is used to control one build target. I.E. the Register_File_cosim files are not used in the CPU Cosimulation. Run the python files to initiate cosimulation.
 
 ## Credits
 

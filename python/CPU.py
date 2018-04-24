@@ -35,19 +35,19 @@ from CPU_Assigns import *
 @block
 def CPU(clock, reset): #Removed Registers to handle locally for tb purposes
 
+
     # Wires in the IF stage
     PC_out = Signal(intbv(0, 0, 2**32))
-    PC_plus4 = Signal(intbv(0, 0, 2**32))
+    PC_plus4 = Signal(intbv(4, 0, 2**32))
     instruction_out = Signal(intbv(0, 0, 2**32))
     PO_write = Signal(intbv(0, 0, 2**1))
 
-    # PC_Plus4 assignment
     pcp4_driver = PC_Increment(clock, PC_out, PC_plus4)
 
     # Wires in the ID stage
     IF_ID_PC_plus4 = Signal(intbv(0, 0, 2**32))
     IF_ID_instruction = Signal(intbv(0, 0, 2**32))
-    MEM_WB_RegisterRd = Signal(intbv(0, 0, 2**4))
+    MEM_WB_RegisterRd = Signal(intbv(0, 0, 2**5))
     reg_read_data_1 = Signal(intbv(0, 0, 2**32))
     reg_read_data_2 = Signal(intbv(0, 0, 2**32))
     immi_sign_extended = Signal(intbv(0, 0, 2**32))
@@ -58,12 +58,12 @@ def CPU(clock, reset): #Removed Registers to handle locally for tb purposes
     jump_base28 = Signal(intbv(0, 0, 2**28))
 
     # Control Signal generation within the ID stage
-    Jump = Signal(0)
-    Branch = Signal(0)
-    MemRead = Signal(0)
-    MemWrite = Signal(0)
-    ALUSrc = Signal(0)
-    RegWrite = Signal(0)
+    Jump = Signal(intbv(0, 0, 2**1))
+    Branch = Signal(intbv(0, 0, 2**1))
+    MemRead = Signal(intbv(0, 0, 2**1))
+    MemWrite = Signal(intbv(0, 0, 2**1))
+    ALUSrc = Signal(intbv(0, 0, 2**1))
+    RegWrite = Signal(intbv(0, 0, 2**1))
     RegDst = Signal(intbv(0, 0, 2**2))
     MemToReg = Signal(intbv(0, 0, 2**2))
     ALUOp = Signal(intbv(0, 0, 2**3))
@@ -81,36 +81,36 @@ def CPU(clock, reset): #Removed Registers to handle locally for tb purposes
     first_PC4_or_branch_mux_2_to_1_out = Signal(intbv(0, 0, 2**32))
     second_jump_or_first_mux_2_to_1_out = Signal(intbv(0, 0, 2**32))
     third_jr_or_second_mux_2_to_1_out = Signal(intbv(0, 0, 2**32))
-    h_RegWrite_out = Signal(0)
-    h_MemWrite_out = Signal(0)
+    h_RegWrite_out = Signal(intbv(0, 0, 2**1))
+    h_MemWrite_out = Signal(intbv(0, 0, 2**1))
 
     # Wires for the LW hazard stall
-    PCWrite = Signal(0)            # PC stop writing if PCWrite == 0
-    IF_ID_Write = Signal(0)        # IF/ID reg stops writing if IF_ID_Write == 0
-    ID_Flush_lwstall = Signal(0)
+    PCWrite = Signal(intbv(0, 0, 2**1))            # PC stop writing if PCWrite == 0
+    IF_ID_Write = Signal(intbv(1, 0, 2**1))        # IF/ID reg stops writing if IF_ID_Write == 0
+    ID_Flush_lwstall = Signal(intbv(0, 0, 2**1))
 
     # Wires for jump/branch control
-    PCSrc = Signal(0)
-    IF_Flush = Signal(0)
-    ID_Flush_Branch = Signal(0)
-    EX_Flush = Signal(0)
+    PCSrc = Signal(intbv(0, 0, 2**1))
+    IF_Flush = Signal(intbv(0, 0, 2**1))
+    ID_Flush_Branch = Signal(intbv(0, 0, 2**1))
+    EX_Flush = Signal(intbv(0, 0, 2**1))
 
     # Register wires
     regOut = []
     for i in range(0, 32):
         regOut.append(Signal(intbv(0, 0, 2**32)))
 
-    se_driver = Sign_Extender(IF_ID_instruction, immi_sign_extended)
+
 
     # Wires in the EX stage
-    ID_EX_Jump = Signal(0)
-    ID_EX_Branch = Signal(0)
-    ID_EX_MemRead = Signal(0)
-    ID_EX_MemWrite = Signal(0)
-    ID_EX_ALUSrc = Signal(0)
-    ID_EX_RegWrite = Signal(0)
-    ALU_zero = Signal(0)
-    JRControl = Signal(0)
+    ID_EX_Jump = Signal(intbv(0, 0, 2**1))
+    ID_EX_Branch = Signal(intbv(0, 0, 2**1))
+    ID_EX_MemRead = Signal(intbv(0, 0, 2**1))
+    ID_EX_MemWrite = Signal(intbv(0, 0, 2**1))
+    ID_EX_ALUSrc = Signal(intbv(0, 0, 2**1))
+    ID_EX_RegWrite = Signal(intbv(0, 0, 2**1))
+    ALU_zero = Signal(intbv(0, 0, 2**1))
+    JRControl = Signal(intbv(0, 0, 2**1))
     ID_EX_jump_addr = Signal(intbv(0, 0, 2**32))
     ID_EX_branch_address = Signal(intbv(0, 0, 2**32))
     ID_EX_PC_plus4 = Signal(intbv(0, 0, 2**32))
@@ -134,14 +134,14 @@ def CPU(clock, reset): #Removed Registers to handle locally for tb purposes
 
     # Wires in the MEM stage
     EX_MEM_RegisterRd = Signal(intbv(0, 0, 2**5))
-    EX_MEM_Branch = Signal(0)
-    EX_MEM_MemRead = Signal(0)
-    EX_MEM_MemWrite = Signal(0)
-    EX_MEM_Jump = Signal(0)
-    Branch_taken = Signal(0)
-    EX_MEM_ALU_zero = Signal(0)
+    EX_MEM_Branch = Signal(intbv(0, 0, 2**1))
+    EX_MEM_MemRead = Signal(intbv(0, 0, 2**1))
+    EX_MEM_MemWrite = Signal(intbv(0, 0, 2**1))
+    EX_MEM_Jump = Signal(intbv(0, 0, 2**1))
+    Branch_taken = Signal(intbv(0, 0, 2**1))
+    EX_MEM_ALU_zero = Signal(intbv(0, 0, 2**1))
     EX_MEM_MemtoReg = Signal(intbv(0, 0, 2**2))
-    EX_MEM_RegWrite = Signal(0)
+    EX_MEM_RegWrite = Signal(intbv(0, 0, 2**1))
     EX_MEM_jump_addr = Signal(intbv(0, 0, 2**32))
     EX_MEM_branch_addr = Signal(intbv(0, 0, 2**32))
     EX_MEM_ALU_result = Signal(intbv(0, 0, 2**32))
@@ -150,7 +150,7 @@ def CPU(clock, reset): #Removed Registers to handle locally for tb purposes
 
     # Wires in the WB Stage
     reg_write_data = Signal(intbv(0, 0, 2**32))
-    MEM_WB_RegWrite = Signal(0)
+    MEM_WB_RegWrite = Signal(intbv(0, 0, 2**1))
     MEM_WB_MemtoReg = Signal(intbv(0, 0, 2**2))
     MEM_WB_D_MEM_read_data = Signal(intbv(0, 0, 2**32))
     MEM_WB_D_MEM_read_addr = Signal(intbv(0, 0, 2**32))
@@ -159,21 +159,34 @@ def CPU(clock, reset): #Removed Registers to handle locally for tb purposes
     ForwardA = Signal(intbv(0, 0, 2**2))
     ForwardB = Signal(intbv(0, 0, 2**2))
 
+    mem = []
+
+    branch_or_jump_taken = Signal(intbv(0, 0, 2**1))
+    PC_in = Signal(intbv(0, 0, 2**32))
+
+    Unit27 = PC_input_2_to_1(PC_plus4, third_jr_or_second_mux_2_to_1_out, branch_or_jump_taken, PC_in)
+    Unit0 = program_counter(clock, reset, PC_out, PC_in, PCWrite)
+    Unit1 = Instruction_Memory(clock, PC_out, instruction_out, "instructions.txt", mem)
+
+
     #IF stage: PC, IM, IF_ID_Reg
-    Unit0 = program_counter(clock, reset, PC_out, third_alu_mux_2_to_1_out, PCWrite)
-    Unit1 = Instruction_Memory(clock, PC_out, instruction_out, "instructions.txt") # TODO: infile #)
+
+    # TODO: infile #
+    se_driver = Sign_Extender(IF_ID_instruction, immi_sign_extended)
     Unit3 = if_id(clock, reset, instruction_out, IF_ID_instruction, PC_plus4, IF_ID_PC_plus4, IF_Flush, IF_ID_Write)
 
     #ID Stage: Control, Registers, branch_jump_cal, sign_extend, regDst_mux_3_to_1,
     #ID_EX_reg, Hazard_Detection_Unit
     Unit4 = control(IF_ID_instruction(32, 26), ALUSrc, RegDst, MemWrite, MemRead, Branch, Jump, MemToReg, RegWrite, ALUOp)
-    Unit5 = regDst_mux_3_to_1(IF_ID_instruction[21:16], IF_ID_instruction[26:21], In3_jal_ra, RegDst, regDst_mux_3_to_1_out)
-    Unit25 = hazard_unit(ID_EX_MemRead, ID_EX_RegisterRt, IF_ID_instruction[26:21], IF_ID_instruction[21:16], ID_Flush_lwstall, PCWrite, IF_ID_Write)
+    Unit5 = regDst_mux_3_to_1(IF_ID_instruction(21,16), IF_ID_instruction(26,21), In3_jal_ra, RegDst, regDst_mux_3_to_1_out)
+    Unit25 = hazard_unit(ID_EX_MemRead, ID_EX_RegisterRt, IF_ID_instruction(26,21), IF_ID_instruction(21,16), ID_Flush_lwstall, PCWrite, IF_ID_Write)
     Unit6 = hazard_stall_mux_2_to_1(RegWrite, MemWrite, ID_Flush_lwstall, h_RegWrite_out, h_MemWrite_out)
-    Unit7 = RegisterFile(reg_read_data_1, reg_read_data_2, reg_write_data, IF_ID_instruction[26:21], IF_ID_instruction[21:16], regDst_mux_3_to_1_out, RegWrite, clock, reset, regOut)
+In1_ALU_Result, In2_Mem_output, In3_PC_plus_4, Ctrl_MemToReg, out
+    Unit28 = writeback_source_mux_3_to_1(MEM_WB_D_MEM_read_addr, MEM_WB_D_MEM_read_data,  )
+    Unit7 = RegisterFile(reg_read_data_1, reg_read_data_2, #TODO writeback_source_mux_3_to_1_out, IF_ID_instruction(26, 21), IF_ID_instruction(21, 16), regDst_mux_3_to_1_out, MEM_WB_RegWrite, clock, reset, regOut)
     Unit8 = branch_calculator(immi_sign_extended, IF_ID_PC_plus4, BTA)
     Unit9 = jump_calculator(IF_ID_instruction, IF_ID_PC_plus4, Jump_Address)
-    Unit24 = id_ex(clock, reset, ID_Flush_lwstall, ID_Flush_Branch, Branch, MemRead, MemWrite, Jump, RegWrite, ALUSrc, ALUOp, RegDst, MemToReg, Jump_Address, BTA, IF_ID_PC_plus4, reg_read_data_1, reg_read_data_2, immi_sign_extended,  IF_ID_instruction[26:21], IF_ID_instruction[21:16], IF_ID_instruction[16:11], IF_ID_instruction[6:0], ID_EX_RegWrite, ID_EX_Branch, ID_EX_MemRead, ID_EX_MemWrite, ID_EX_Jump, ID_EX_ALUSrc, ID_EX_ALUOp, ID_EX_RegDst, ID_EX_MemtoReg, ID_EX_jump_addr, ID_EX_branch_address, ID_EX_PC_plus4, ID_EX_reg_read_data_1, ID_EX_reg_read_data_2, ID_EX_immi_sign_extended, ID_EX_RegisterRs, ID_EX_RegisterRt, ID_EX_RegisterRd, ID_EX_funct)
+    Unit24 = id_ex(clock, reset, ID_Flush_lwstall, ID_Flush_Branch, Branch, MemRead, MemWrite, Jump, RegWrite, ALUSrc, ALUOp, RegDst, MemToReg, Jump_Address, BTA, IF_ID_PC_plus4, reg_read_data_1, reg_read_data_2, immi_sign_extended,  IF_ID_instruction(26,21), IF_ID_instruction(21,16), IF_ID_instruction(16,11), IF_ID_instruction(6,0), ID_EX_RegWrite, ID_EX_Branch, ID_EX_MemRead, ID_EX_MemWrite, ID_EX_Jump, ID_EX_ALUSrc, ID_EX_ALUOp, ID_EX_RegDst, ID_EX_MemtoReg, ID_EX_jump_addr, ID_EX_branch_address, ID_EX_PC_plus4, ID_EX_reg_read_data_1, ID_EX_reg_read_data_2, ID_EX_immi_sign_extended, ID_EX_RegisterRs, ID_EX_RegisterRt, ID_EX_RegisterRd, ID_EX_funct)
 
     #EX Stage:
     Unit11 = alu_control(ID_EX_ALUOp, ID_EX_funct, out_to_ALU)
@@ -189,10 +202,10 @@ def CPU(clock, reset): #Removed Registers to handle locally for tb purposes
 
     #Mem Stage:
     Unit19 = Data_Memory(clock, EX_MEM_ALU_result, EX_MEM_MemWrite, EX_MEM_MemRead, D_MEM_data, EX_MEM_reg_read_data_2)
-    Unit26 = branch_or_jump_taken_flush(EX_MEM_Branch, EX_MEM_Jump, EX_MEM_ALU_zero, IF_Flush, ID_Flush_Branch, EX_Flush)
+    Unit26 = branch_or_jump_taken_flush(EX_MEM_Branch, EX_MEM_Jump, EX_MEM_ALU_zero, IF_Flush, ID_Flush_Branch, EX_Flush, branch_or_jump_taken)
     Unit20 = mem_wb(clock, reset, EX_MEM_RegWrite, EX_MEM_MemtoReg, D_MEM_data, EX_MEM_ALU_result, EX_MEM_RegisterRd, MEM_WB_D_MEM_read_data, MEM_WB_D_MEM_read_addr, MEM_WB_RegisterRd, MEM_WB_RegWrite, MEM_WB_MemtoReg)
 
-    branch_taken = Signal(0)
+    branch_taken = Signal(intbv(0, 0, 2**1))
     branch_checker = isBranch(ALU_zero, Branch, branch_taken)
 
     Unit21 = first_PC4_or_branch_mux_2_to_1(ID_EX_PC_plus4, BTA, branch_taken, first_PC4_or_branch_mux_2_to_1_out)

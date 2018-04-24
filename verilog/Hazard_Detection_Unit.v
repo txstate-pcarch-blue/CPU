@@ -21,3 +21,19 @@ module hazard_unit(ID_EX_MemRead, ID_EX_RegRt, IF_ID_RegRs, IF_ID_RegRt, Mux_Sel
     end
 
 endmodule
+
+
+module branch_or_jump_taken_flush(EX_MEM_branch_out_in, EX_MEM_jump_out_in, EX_MEM_ALU_Zero_out_in, IF_Flush, ID_Flush_Branch, EX_Flush);
+
+	input EX_MEM_branch_out_in, EX_MEM_jump_out_in, EX_MEM_ALU_Zero_out_in;
+	output reg IF_Flush, ID_Flush_Branch, EX_Flush;
+
+	always @( EX_MEM_branch_out_in, EX_MEM_jump_out_in, EX_MEM_ALU_Zero_out_in ) begin
+		if (((EX_MEM_ALU_Zero_out_in == 1) && (EX_MEM_branch_out_in == 1)) || (EX_MEM_jump_out_in == 1)) begin 
+			IF_Flush <=1 ; ID_Flush_Branch <=1 ; EX_Flush <=1 ; 
+		end
+		else begin 
+			IF_Flush <= 0; ID_Flush_Branch <= 0; EX_Flush <= 0; 
+		end
+	end
+endmodule

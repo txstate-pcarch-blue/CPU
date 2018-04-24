@@ -1,0 +1,35 @@
+Python Documentation - Blue Team
+
+    Our project simulates the working of a processor using both Verilog and Python implementations. We are using signals to simulate the functions of wires. We are using Python to generate a clock for both the Python and Verilog simulation and synchronizing them together while verifying their outputs are correct. Components have a block for defining the exoected inputs and an @always statement which tells the component when it should execute it's code. Each component also has a testbench which uses a clock and random signal generators to simulate values it might receive and verify that it is working correctly. We are usually running a minimum of 1000 simualations for each component.
+
+    ALU: The ALU receives two 32-bit input variables and performs operations on them according to what the ALU Control line tells it is needed. It stores the result in a 33-bit register to prevent overflow but only returns a 32-bit value. It also has a zero line to signal a zero value and a reset line to reset the values if necessary. Unlike the Python implementation, the Verilog implementation uses a 32-bit variable for the output.
+
+    ALU Control: The ALU Control tells the ALU which operation to perform. Based on the operations signal it receives it tells the ALU which operation is needed, including JR.
+
+    Branch Jump Calculator: Calculates the address for a branch or jump instruction by taking the instruction and adding 4 and the program counter. There is a separate block for branch and jump as each is calculated differently.
+
+    CPU: The CPU runs the entire simulation. It creates all the wires for the entire simulation and makes sure the program counter keeps incrementing as long as there is no branch instruction. It's broken up into pipeline stages for each stage of our pipeline.
+
+    Data Memory: Data Memory fetches and stores data from main memory. It creates 256 32-bit memory locations and receives signals giving it data and a control signal telling it what to do with it.
+
+    EX MEM: A pipeline register used to flush or reset our entire system if necessary. It takes a signal and determines if it needs to reset or flush the pipeline. It takes a teremendous number of inputs because all of our data needs to pass through this pipeline stage.
+
+    Forwarding Unit: This unit checks different criteria and checks if it needs to forward data to avoid a stall. If it does, it sends a signal to the appropriate location telling it what to do. The Python implemenation of this code was much simpler than Verilog since Verilog had to send out several signals instead of one.
+
+    Hazard Detection Unit: This unit receives signal from various locations to check if there is going to be a hazard. If it detects a problem, it causes a stall, if not, the system continues normally. The Verilog and Python are implemented almost identically.
+
+    ID EX: This is another pipeline register between the Decode and Execute stage. Similar to the EX/MEM pipeline, it checks for a reset signal and acts accordingly as well as checking for a stall or branch, making a flush necessary.
+
+    IF ID: The Fetch/Decode pipeline. This one has far fewer inputs since it mainly has to check for a branch and data hasn't been retreived at this point.
+
+    Instruction Memory: The Instruction Memory receives an address fetches the appropriate instruction before sending it down the line. It also check to verify the address has an appropriate location.
+
+    MEM WB: The Memory/Writeback Pipeline register. Checks for a need to flush, if not, passes data appropriately.
+
+    Multiplexors: Contains each of our multiplexer's. They are all defines separately to help with identify and errors occuring during testing. Each of them takes a number of inputs and selects the appropriate one, from the control signal, and sends out the correct data.
+
+    Program Counter: Increments the current instruction address by 4 unless a reset or jump is necessary. If they are, it sends the appropriate signal to calculate the new address.
+
+    Register File: Creates 32, 32-bit registers for storing data during out simulation. Writes and reads on a positive edge or negative edge respectively to avoid a data error. Passes the correct data on.
+
+    Sign Extender: Takes a 16-bit instruction and sign extends the last bit into a 32-bit value then passes it along. The Verilog side doesn't have a need for a sign extender.

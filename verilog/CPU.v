@@ -67,9 +67,9 @@ module cpu (clk, rst
 	wire [4:0] idEx_to_exMem_mux_2_to_1_out;
 	wire [31:0] writeback_source_mux_3_to_1_out;
 	wire [4:0] regDst_mux_3_to_1_out;
-	wire [31:0] first_jump_or_branch_mux_2_to_1_out;
-	wire [31:0] second_jump_or_branch_mux_2_to_1_out;
-	wire [31:0] third_jump_or_branch_mux_2_to_1_out;
+	wire [31:0] first_PC4_or_branch_mux_2_to_1_out;
+	wire [31:0] second_jump_or_first_mux_2_to_1_out;
+	wire [31:0] third_jr_or_second_mux_2_to_1_out;
 	wire h_RegWrite_out, h_MemWrite_out;
 	
 	
@@ -138,7 +138,7 @@ module cpu (clk, rst
 	// (WORKING) IF stage: PC, IM, IF_ID_reg
 	//*************************************
 	pc Unit0 (
-		.PC_in(third_jump_or_branch_mux_2_to_1_out), .clk(clk), .reset(rst),  .PCWrite(PCWrite), .PC_out(PC_out)
+		.PC_in(third_jr_or_second_mux_2_to_1_out), .clk(clk), .reset(rst),  .PCWrite(PCWrite), .PC_out(PC_out)
 	);
 	
 	InstructionMemory Unit1 (
@@ -274,6 +274,14 @@ module cpu (clk, rst
 	//*************************************
 	DataMemory Unit19(.MR(EX_MEM_MemRead), .MW(EX_MEM_MemWrite), .Addr(EX_MEM_ALU_result), .WD(EX_MEM_reg_read_data_2), .Clk(clk), .RD(D_MEM_data));
 	
+	
+	branch_or_jump_taken_flush Unit26(
+		.EX_MEM_branch_out_in(EX_MEM_Branch), .EX_MEM_jump_out_in(EX_MEM_Jump), .EX_MEM_ALU_Zero_out_in(EX_MEM_ALU_zero),
+	
+		.IF_Flush(IF_Flush), .ID_Flush_Branch(ID_Flush_Branch), .EX_Flush(EX_Flush)
+	);
+	
+	
 	// Beware, there be alien engineers here!
 	MEM_WB Unit20(
 		.RegWrite_in(EX_MEM_RegWrite), 
@@ -293,14 +301,14 @@ module cpu (clk, rst
 	wire branch_taken;
 	assign branch_taken = (ALU_zero & Branch);
 	
-	first_jump_or_branch_mux_2_to_1 Unit21(.In1_PC_plus_4(ID_EX_PC_plus4), .In2_BTA(BTA), .Ctrl_Branch_Gate(branch_taken), .out(first_jump_or_branch_mux_2_to_1_out));
+	first_PC4_or_branch_mux_2_to_1 Unit21(.In1_PC_plus_4(ID_EX_PC_plus4), .In2_BTA(BTA), .Ctrl_Branch_Gate(branch_taken), .out(first_PC4_or_branch_mux_2_to_1_out));
 	
-	second_jump_or_branch_mux_2_to_1 Unit22(
-		.In1_first_mux(first_jump_or_branch_mux_2_to_1_out), .In2_jump_addr_calc(Jump_Address), .Ctrl_Jump(Jump), .out(second_jump_or_branch_mux_2_to_1_out)
+	second_jump_or_first_mux_2_to_1 Unit22(
+		.In1_first_mux(first_PC4_or_branch_mux_2_to_1_out), .In2_jump_addr_calc(Jump_Address), .Ctrl_Jump(Jump), .out(second_jump_or_first_mux_2_to_1_out)
 	);
 	
-	third_jump_or_branch_mux_2_to_1 Unit23(
-		.In1_second_mux(second_jump_or_branch_mux_2_to_1_out), .In2_reg_value_ra(regOut31), .JRCtrl(JRControl), .out(third_jump_or_branch_mux_2_to_1_out)
+	third_jr_or_second_mux_2_to_1 Unit23(
+		.In1_second_mux(second_jump_or_first_mux_2_to_1_out), .In2_reg_value_ra(regOut31), .JRCtrl(JRControl), .out(third_jr_or_second_mux_2_to_1_out)
 	);
 	
 	//*************************************

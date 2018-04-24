@@ -1,5 +1,5 @@
 
-module InstructionMemory(Addr, Clk, Inst
+module InstructionMemory(Addr, Inst
 /*
 memOut0,memOut1,memOut2,memOut3,memOut4,memOut5,memOut6,memOut7,
 memOut8,memOut9,memOut10,memOut11,memOut12,memOut13,memOut14,memOut15,
@@ -39,9 +39,8 @@ memOut250,memOut251,memOut252,memOut253,memOut254,memOut255
 */
 );
 
-input Clk;
 input [31:0] Addr; //instruction address from PC
-output reg [31:0] Inst; //instruction to output
+output [31:0] Inst; //instruction to output
 
 reg [31:0] MEM[0:255];
 
@@ -177,7 +176,7 @@ initial begin
     $readmemh(in_file, MEM);
 end 
 
-always @(posedge Clk) begin
+always @(*) begin
 	Inst <= MEM[Addr[9:2]];
 end
 

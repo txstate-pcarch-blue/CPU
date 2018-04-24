@@ -47,7 +47,7 @@ module EX_MEM (
 	reg RegWrite_out;
 	reg [1:0] MemtoReg_out;
 	reg Branch_out, MemRead_out, MemWrite_out, Jump_out;
-	reg [31:0] jump_addr_out, branch_addr_out, PC_plus_4_out,
+	reg [31:0] jump_addr_out, branch_addr_out, PC_plus_4_out;
 	reg ALU_zero_out;
 	reg [31:0] ALU_result_out, reg_read_data_2_out;
 	reg [4:0] EX_MEM_RegisterRd_out;

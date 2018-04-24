@@ -22,7 +22,14 @@ r_instructions = {
 }
 
 # All instructions, items are using
-instructions = {**i_instructions, **j_instructions, **r_instructions}
+instructions = dict()
+
+for key in r_instructions:
+    instructions[key] = r_instructions[key]
+for key in i_instructions:
+    instructions[key] = i_instructions[key]
+for key in j_instructions:
+    instructions[key] = j_instructions[key]
 
 # Program flow instructions
 pf_instructions = ["beq", "j", "jr", "jal"]

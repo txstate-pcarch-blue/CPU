@@ -26,6 +26,7 @@ from MEM_WB import mem_wb
 
 # CPU Assignments
 from CPU_Assigns import *
+from helpers.Paths import IM_in_file
 
 # CPU - five stage MIPS CPU with forwarding and hazard control
 # This file drives the processor. Control wiring signals are handled here.
@@ -33,7 +34,7 @@ from CPU_Assigns import *
 # Multiplexers drive control decision making
 # Modules receive pre-determined inputs based on mux output
 @block
-def CPU(clock, reset): #Removed Registers to handle locally for tb purposes
+def CPU(clock, reset, regOut):
 
     # Wires in the IF stage
     PC_out = Signal(intbv(0, 0, 2**32))
@@ -95,10 +96,6 @@ def CPU(clock, reset): #Removed Registers to handle locally for tb purposes
     ID_Flush_Branch = Signal(0)
     EX_Flush = Signal(0)
 
-    # Register wires
-    regOut = []
-    for i in range(0, 32):
-        regOut.append(Signal(intbv(0, 0, 2**32)))
 
     se_driver = Sign_Extender(IF_ID_instruction, immi_sign_extended)
 
@@ -161,7 +158,7 @@ def CPU(clock, reset): #Removed Registers to handle locally for tb purposes
 
     #IF stage: PC, IM, IF_ID_Reg
     Unit0 = program_counter(clock, reset, PC_out, third_alu_mux_2_to_1_out, PCWrite)
-    Unit1 = Instruction_Memory(clock, PC_out, instruction_out, "instructions.txt") # TODO: infile #)
+    Unit1 = Instruction_Memory(clock, PC_out, instruction_out, IM_in_file)
     Unit3 = if_id(clock, reset, instruction_out, IF_ID_instruction, PC_plus4, IF_ID_PC_plus4, IF_Flush, IF_ID_Write)
 
     #ID Stage: Control, Registers, branch_jump_cal, sign_extend, regDst_mux_3_to_1,

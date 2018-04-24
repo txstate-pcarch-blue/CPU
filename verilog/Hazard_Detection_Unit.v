@@ -22,7 +22,7 @@ module hazard_unit(ID_EX_MemRead, ID_EX_RegRt, IF_ID_RegRs, IF_ID_RegRt, Mux_Sel
 
 endmodule
 
-
+//flush IF/ID, ID/EX and EX/MEM if branch OR jump is determined viable at MEM stag
 module branch_or_jump_taken_flush(EX_MEM_branch_out_in, EX_MEM_jump_out_in, EX_MEM_ALU_Zero_out_in, IF_Flush, ID_Flush_Branch, EX_Flush);
 
 	input EX_MEM_branch_out_in, EX_MEM_jump_out_in, EX_MEM_ALU_Zero_out_in;

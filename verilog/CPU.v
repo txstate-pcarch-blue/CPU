@@ -153,9 +153,6 @@ module cpu (clk, rst
 	//*************************************
 	// ID stage: Control, Registers, branch_jump_calc, sign_extend (automatic in Verilog, //should not have to manually do this), regDst_mux_3_to_1, 
 	// ID_EX_reg, hazard_detection_unit
-	//
-	// What works: Control, Registers
-	// What is NOT verified: everything else
 	//*****************************************
 	Control Unit4 (
 		.opcode(IF_ID_instruction[31:26]), .ALUSrc(ALUSrc), .RegDst(RegDst), .MemWrite(MemWrite), .MemRead(MemRead), .Beq(Branch), .Jump(Jump), .MemToReg(MemToReg), .RegWrite(RegWrite), .ALUOp(ALUOp)
@@ -223,7 +220,7 @@ module cpu (clk, rst
 	
 	ForwardingUnit Unit13(
 		.ID_EX_RegRs(ID_EX_RegisterRs), .ID_EX_RegRt(ID_EX_RegisterRt), .EX_MEM_RegRd(EX_MEM_RegisterRd), .MEM_WB_RegRd(MEM_WB_RegisterRd),
-		.MEM_WB_RegWrite(MEM_WB_RegWrite), .EX_MEM_RegWrite(EX_MEM_RegWrite)
+		.MEM_WB_RegWrite(MEM_WB_RegWrite), .EX_MEM_RegWrite(EX_MEM_RegWrite), .Mux_ForwardA(ForwardA), .Mux_ForwardB(ForwardB)
 	);
 	
 	// ALU depends on muxes and does not receive any input directly. 
@@ -296,8 +293,7 @@ module cpu (clk, rst
 		.MemtoReg_out(MEM_WB_MemtoReg)
 	);
 	
-	//This likely won't work but intent is to create an AND gate to compare 
-	//ALU zero with Control's branch signal
+	//AND gate to compare ALU zero with Control's branch signal
 	wire branch_taken;
 	assign branch_taken = (ALU_zero & Branch);
 	

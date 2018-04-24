@@ -65,6 +65,30 @@ The cosimulation is compiled and run through a single command "python3 CPU_Cosim
 * show: Prints out both register files and tests for equality.
 * quit: Exits the program, terminating the simulation.
 
+## Project Structure
+### Folder Conventions
+Files are stored in this tree structure as follows:
+
+```
+.
+├── bin             # Stores compiled files
+├── lib             # Stores external libraries
+│   └── myhdl           # myhdl libary, used to compile myhdl.vpi
+├── python          # Stores python simulation files
+│   └── helpers         # Stores python test bench helping functions
+├── samples         # Stores sample code for simulation testing
+├── tools           # Stores assembler and generator files
+└── verilog         # Stores verilog simulation files
+```
+
+### File Conventions
+
+All verilog files end with `.v` and all python files end with `.py`
+
+If a file end with `_tb.*`, then the file is used to test the module.
+
+If a file end with `_cosim.*`, then the file is used to control cosimulation.
+
 ## Credits
 
 This program was built by the Texas State PC Architecture Blue Team.

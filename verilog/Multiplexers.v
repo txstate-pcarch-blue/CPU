@@ -121,11 +121,11 @@ endmodule
 //Need 3 muxes, outlined below. If result of last two muxes is 0, then what
 //gets passed to the PC is simply PC+4. 
 
-// 1st mux: Jump or branch 2:1
+// 1st mux: PC or branch 2:1
 // Control line comes from branch decision AND gate
 // if control is 0, select PC+4
 // if control is 1, select sign extended label added to PC for BTA
-module first_jump_or_branch_mux_2_to_1(In1_PC_plus_4, In2_BTA, Ctrl_Branch_Gate, out);
+module first_PC4_or_branch_mux_2_to_1(In1_PC_plus_4, In2_BTA, Ctrl_Branch_Gate, out);
 	input [31:0] In1_PC_plus_4, In2_BTA;
 	input Ctrl_Branch_Gate;
 	output reg [31:0] out; // 32-bit output
@@ -138,13 +138,13 @@ module first_jump_or_branch_mux_2_to_1(In1_PC_plus_4, In2_BTA, Ctrl_Branch_Gate,
 endmodule
 
 
-// 2nd mux: jal
+// 2nd mux: jump or first mux output
 // 1st mux feeds it's output value into 2nd as one of the inputs. 
 // 2nd input comes from jump_address_calculator. 
 // Control line comes from Control Unit jump line. If 1, then it's a jump. Take 2nd input.
 // If 0, it is the 1st input (can be either PC+4 or BTA depending on 1st mux result)
 // If 1, calculated jump address (shift two, concat top 4 of PC)
-module second_jump_or_branch_mux_2_to_1(In1_first_mux, In2_jump_addr_calc, Ctrl_Jump, out);
+module second_jump_or_first_mux_2_to_1(In1_first_mux, In2_jump_addr_calc, Ctrl_Jump, out);
 	input [31:0] In1_first_mux, In2_jump_addr_calc;
 	input Ctrl_Jump;
 	output reg [31:0] out; // 32-bit output
@@ -162,7 +162,7 @@ endmodule
 //Control line comes from the JRControl module in ALU Control
 //If control is 0 we take 1st input as determined by 2nd mux
 //If control is 1 we take register value which contains jr address
-module third_jump_or_branch_mux_2_to_1(In1_second_mux, In2_reg_value_ra, JRCtrl, out);
+module third_jr_or_second_mux_2_to_1(In1_second_mux, In2_reg_value_ra, JRCtrl, out);
 	input [31:0] In1_second_mux, In2_reg_value_ra;
 	input JRCtrl;
 	output reg [31:0] out; // 32-bit output

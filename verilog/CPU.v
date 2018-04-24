@@ -1,3 +1,5 @@
+`ifndef loaded
+`define loaded
 //MODULES
 `include "PC.v"
 `include "Instruction_Memory.v"
@@ -19,6 +21,7 @@
 `include "ID_EX.v"
 `include "EX_MEM.v"
 `include "MEM_WB.v"
+`endif
 
 
 //CPU - five stage MIPS CPU with forwarding and hazard control
@@ -26,7 +29,10 @@
 //Wires are associated with their respective stage
 //Multiplexers drive control decision making
 //Modules receive pre-determined inputs based on mux output
-module cpu (clk, rst
+module cpu (clk, rst, regOutReg0, regOutReg1, regOutReg2, regOutReg3, regOutReg4, regOutReg5, regOutReg6, regOutReg7, regOutReg8,
+            regOutReg9, regOutReg10, regOutReg11, regOutReg12, regOutReg13, regOutReg14, regOutReg15, regOutReg16, regOutReg17,
+            regOutReg18, regOutReg19, regOutReg20, regOutReg21, regOutReg22, regOutReg23, regOutReg24, regOutReg25, regOutReg26,
+            regOutReg27, regOutReg28, regOutReg29, regOutReg30, regOutReg31
 );
 
 	input clk, rst;
@@ -86,6 +92,22 @@ module cpu (clk, rst
 		regOut8,regOut9,regOut10,regOut11,regOut12,regOut13,regOut14,regOut15,
 		regOut16,regOut17,regOut18,regOut19,regOut20,regOut21,regOut22,regOut23,
 		regOut24,regOut25,regOut26,regOut27,regOut28,regOut29,regOut30,regOut31;
+	output reg [31:0] regOutReg0,regOutReg1,regOutReg2,regOutReg3,regOutReg4,regOutReg5,regOutReg6,regOutReg7,
+		regOutReg8,regOutReg9,regOutReg10,regOutReg11,regOutReg12,regOutReg13,regOutReg14,regOutReg15,
+		regOutReg16,regOutReg17,regOutReg18,regOutReg19,regOutReg20,regOutReg21,regOutReg22,regOutReg23,
+		regOutReg24,regOutReg25,regOutReg26,regOutReg27,regOutReg28,regOutReg29,regOutReg30,regOutReg31;
+	always @(*)
+	begin
+	    regOutReg0 <= regOut0; regOutReg1 <= regOut1; regOutReg2 <= regOut2; regOutReg3 <= regOut3;
+	    regOutReg4 <= regOut4; regOutReg5 <= regOut5; regOutReg6 <= regOut6; regOutReg7 <= regOut7;
+	    regOutReg8 <= regOut8; regOutReg9 <= regOut9; regOutReg10 <= regOut10; regOutReg11 <= regOut11;
+	    regOutReg12 <= regOut12; regOutReg13 <= regOut13; regOutReg14 <= regOut14; regOutReg15 <= regOut15;
+	    regOutReg16 <= regOut16; regOutReg17 <= regOut17; regOutReg18 <= regOut18; regOutReg19 <= regOut19;
+	    regOutReg20 <= regOut20; regOutReg21 <= regOut21; regOutReg22 <= regOut22; regOutReg23 <= regOut23;
+	    regOutReg24 <= regOut24; regOutReg25 <= regOut25; regOutReg26 <= regOut26; regOutReg27 <= regOut27;
+	    regOutReg28 <= regOut28; regOutReg29 <= regOut29; regOutReg30 <= regOut30; regOutReg31 <= regOut31;
+    end
+
 
 	assign immi_sign_extended = IF_ID_instruction[15:0];
 	
@@ -144,7 +166,8 @@ module cpu (clk, rst
 	InstructionMemory Unit1 (
 		.Addr(PC_out), .Clk(clk), .Inst(instruction_out)
 	);
-	defparam Unit1.in_file = "instructions.txt";
+	parameter in_file = "instructions.txt:";
+	defparam Unit1.in_file = in_file;
 	
 	IF_ID Unit3 (
 		.InsIn(instruction_out), .PC_plus4_In(PC_plus4), .InsOut(IF_ID_instruction), .PC_plus4_out(IF_ID_PC_plus4), .IFID_write(IF_ID_Write), .IF_flush(IF_Flush), .clk(clk), .reset(rst)

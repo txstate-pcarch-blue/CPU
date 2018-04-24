@@ -172,7 +172,7 @@ assign memOut248 = MEM[248]; assign memOut249 = MEM[249]; assign memOut250 = MEM
 assign memOut252 = MEM[252]; assign memOut253 = MEM[253]; assign memOut254 = MEM[254]; assign memOut255 = MEM[255];
 */
 
-parameter in_file = "input.hex";
+parameter in_file = "bin/.in_file_tmp";
 initial begin
     $readmemh(in_file, MEM);
 end 

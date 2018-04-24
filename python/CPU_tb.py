@@ -5,11 +5,12 @@ from helpers.Random_Signal import random_signal
 
 if (__name__ == "__main__"):
 
-    clk = Signal(0)
-    rst = Signal(0)
+    rst = Signal(bool(0))
 
-    clk_driver = clock_generator(clk)
-    CPU_driver = traceSignals(CPU(clk, rst))
+    regOut = []
+    for i in range(0,32):
+        regOut.append(Signal(intbv(0, 0, 2**32)))
+    CPU_driver = traceSignals(CPU(rst, regOut))
 
-    sim = Simulation(clk_driver, CPU_driver)
-    sim.run(1000)
+    sim = Simulation(CPU_driver)
+    sim.run(100000)

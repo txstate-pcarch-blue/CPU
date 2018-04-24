@@ -14,8 +14,8 @@ if (__name__ == "__main__"):
     RA = Signal(intbv(0, 0, 2**5)) #input
     RB = Signal(intbv(0, 0, 2**5)) #input
     RW = Signal(intbv(0, 0, 2**5)) #input
-    RegWr = Signal(0) #input
-    clk = Signal(0) #input
+    RegWr = Signal(intbv(0, 0, 2**1)) #input
+    clk = Signal(intbv(0, 0, 2**1)) #input
     rst = Signal(0) #input
     outregs = []
     for i in range(0, 32):

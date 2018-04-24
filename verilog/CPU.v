@@ -166,7 +166,7 @@ module cpu (clk, rst
 	);
 	
 	hazard_unit Unit25(
-		.ID_EX_MemRead(ID_EX_MemRead), .ID_EX_RegRt(ID_EX_RegisterRt), .IF_ID_RegRs(IF_ID_instruction[25:21]), .IF_ID_RegRt(IF_ID_RegRt[20:16]), .Mux_Select_Stall(ID_Flush_lwstall), .PCWrite(PCWrite), .IF_ID_Write(IF_ID_Write)
+		.ID_EX_MemRead(ID_EX_MemRead), .ID_EX_RegRt(ID_EX_RegisterRt), .IF_ID_RegRs(IF_ID_instruction[25:21]), .IF_ID_RegRt(IF_ID_instruction[20:16]), .Mux_Select_Stall(ID_Flush_lwstall), .PCWrite(PCWrite), .IF_ID_Write(IF_ID_Write)
 	);
 	
 	hazard_stall_mux_2_to_1 Unit6(
@@ -304,7 +304,7 @@ module cpu (clk, rst
 	);
 	
 	//*************************************
-	// WB Stage: mux?
+	// WB Stage: 
 	//*************************************
 	
 endmodule

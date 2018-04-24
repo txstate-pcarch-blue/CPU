@@ -8,16 +8,16 @@ module pc_tb();
 
 	parameter tck = 10; ///< clock tick
 
-	reg [31:0] addrIn ;
-	reg clk, reset, branch;
-	wire [31:0] addrOut;
+	reg [31:0] PC_in ;
+	reg clk, reset, PCWrite ;
+	wire [31:0] PC_out ;
 
 
-	pc dut(		.addrIn(addrIn),
+	pc dut(		.PC_in(PC_in),
 				.clk(clk),
 				.reset(reset),
-				.branch(branch),
-				.addrOut(addrOut)
+				.PCWrite(PCWrite),
+				.PC_out(PC_out)
 			);
 			
 	integer num_iter = 0 ;
@@ -27,7 +27,7 @@ module pc_tb();
 	initial begin
 		$dumpfile("pc_ah.vcd");
 		$dumpvars(-1, dut);
-		$monitor("%b", addrOut);
+		$monitor("%b", PC_out);
 	end
 							
 	//Initialise registers
@@ -35,22 +35,20 @@ module pc_tb();
 	initial begin
 		clk = 0 ; 
 		reset = 1 ;
-		addrIn = 0 ;
-		branch = 0 ;
+		PC_in = 0 ;
 		#(tck);
 		reset = 0 ;
 	end
 	
 	always @(posedge clk) begin
-		addrIn <= addrOut;
 
 		if (num_iter == 11) begin
-			branch <= 1 ;
-			addrIn <= 32'hcafef00c;
+			PCWrite <= 0 ;
 		end
 
 		else begin
-			branch <= 0 ;
+			PCWrite <= 1 ;
+			PC_in <= $random(seed);
 		end
 
 		num_iter = num_iter+1 ;

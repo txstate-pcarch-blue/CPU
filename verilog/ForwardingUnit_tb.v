@@ -5,9 +5,9 @@ module ForwardingUnit_tb();
 parameter tck = 10; ///< clock tick
 
 //input and output regs
-reg [31:0] ID_EX_RegRs, ID_EX_RegRt, EX_MEM_RegRd, MEM_WB_RegRd;
+reg [4:0] ID_EX_RegRs, ID_EX_RegRt, EX_MEM_RegRd, MEM_WB_RegRd;
 reg MEM_WB_RegWrite, EX_MEM_RegWrite;
-wire [31:0] Mux_ForwardA, Mux_ForwardB;
+wire [1:0] Mux_ForwardA, Mux_ForwardB;
 
 ForwardingUnit dut(	
 
@@ -32,10 +32,10 @@ initial begin
 
 initial begin
 	
-	ID_EX_RegRs = 32'h0;
-	ID_EX_RegRt = 32'h0;
-	EX_MEM_RegRd = 32'h0;
-	MEM_WB_RegRd = 32'h0;
+	ID_EX_RegRs = 5'h0;
+	ID_EX_RegRt = 5'h0;
+	EX_MEM_RegRd = 5'h0;
+	MEM_WB_RegRd = 5'h0;
 	MEM_WB_RegWrite = 0;
 	EX_MEM_RegWrite = 0;
 	#5
@@ -48,37 +48,37 @@ initial begin
 		//	EX_MEM_RegRd != ID EX RegRt;
 
 		//State #1
-		ID_EX_RegRs = 32'hcafef00d;
-		ID_EX_RegRt = 32'h0;
-		EX_MEM_RegRd = 32'hcafef00d;
-		MEM_WB_RegRd = 32'h0;
+		ID_EX_RegRs = 5'b11111;
+		ID_EX_RegRt = 5'b0;
+		EX_MEM_RegRd = 5'b11111;
+		MEM_WB_RegRd = 5'b0;
 		MEM_WB_RegWrite = 0;
 		EX_MEM_RegWrite = 1;
 		#5
 
 		//State #2
-		ID_EX_RegRs = 32'h0;
-		ID_EX_RegRt = 32'h12345678;
-		EX_MEM_RegRd = 32'h12345678;
-		MEM_WB_RegRd = 32'h0;
+		ID_EX_RegRs = 5'b0;
+		ID_EX_RegRt = 5'b10101;
+		EX_MEM_RegRd = 5'b10101;
+		MEM_WB_RegRd = 5'b0;
 		MEM_WB_RegWrite = 0;
 		EX_MEM_RegWrite = 1;
 		#5
 
 		//State #3
-		ID_EX_RegRs = 32'habcdef12;
-		ID_EX_RegRt = 32'h0;
-		EX_MEM_RegRd = 32'h0;
-		MEM_WB_RegRd = 32'habcdef12;
+		ID_EX_RegRs = 5'b00011;
+		ID_EX_RegRt = 5'b0;
+		EX_MEM_RegRd = 5'b0;
+		MEM_WB_RegRd = 5'b00011;
 		MEM_WB_RegWrite = 1;
 		EX_MEM_RegWrite = 0;
 		#5
 
 		//State #4
-		ID_EX_RegRs = 32'h0;
-		ID_EX_RegRt = 32'hf00df00d;
-		EX_MEM_RegRd = 32'h0;
-		MEM_WB_RegRd = 32'hf00df00d;
+		ID_EX_RegRs = 5'b0;
+		ID_EX_RegRt = 5'b10000;
+		EX_MEM_RegRd = 5'b0;
+		MEM_WB_RegRd = 5'b10000;
 		MEM_WB_RegWrite = 1;
 		EX_MEM_RegWrite = 0;
 		#5

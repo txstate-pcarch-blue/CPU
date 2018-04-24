@@ -31,7 +31,7 @@ module jump_calculator(In1_instruction, In2_pc_plus_4, Jump_Address);
 	reg [27:0] temp;
 	
 	always @(In1_instruction) begin
-		temp = In1_instruction[25:0] << 2;
+		temp <= In1_instruction[25:0] << 2;
 		Jump_Address <= {In2_pc_plus_4[31:28],temp};
 	end
 endmodule

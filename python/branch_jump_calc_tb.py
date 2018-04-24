@@ -15,7 +15,7 @@ if (__name__ == "__main__"):
     In2_pc_plus_4_driver = random_signal(In2_pc_plus_4, clk)
     bta = branch_calculator(In1_instruction, In2_pc_plus_4, Jump_Address)
     jump = jump_calculator(In1_instruction, In2_pc_plus_4, bta_Address)
-    driver = traceSignals([bta, jump])
+    driver = traceSignals(bta)
 
     #NOTE: to switch between jump and branch calc just change jump_calculator to branch_calculator
     #then run Simulation

@@ -72,6 +72,10 @@ def generate_progflow_instr(labels, max_jump, index):
         rs = rand_register()
         rt = rand_register()
         immediate = random.randint(0, max_jump) - index
+        if immediate > 128:
+            immediate = 128
+        elif immediate < -128:
+            immediate = -128
         return build_i(opcode, rs, rt, immediate)
     elif instr == "j":
         immediate = random.randint(0, max_jump)

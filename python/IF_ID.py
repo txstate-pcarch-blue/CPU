@@ -3,7 +3,7 @@ from myhdl import *
 @block
 def if_id(clk, rst, inst_in, inst_out, PC_in, PC_out, IF_flush, IFID_write):
 
-    @always(clk.negedge)
+    @always(clk.posedge)
     def latch():
         if(rst==1):
             inst_out.next = 0

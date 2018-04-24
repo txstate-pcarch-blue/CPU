@@ -17,6 +17,7 @@ def RegisterFile(BusA, BusB, BusW, RA, RB, RW, RegWr, clk, Rst, outregs):
     registers = []
     period = 10
 
+
     # Generate Signals of intbv type for registers (Signal is used to track on gtkwave)
     for i in range(0, 32):
         registers.append(Signal(intbv(0, 0, 2**32)))

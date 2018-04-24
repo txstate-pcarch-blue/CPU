@@ -159,3 +159,15 @@ def hazard_stall_mux_2_to_1(h_RegWrite, h_MemWrite, Ctrl_Mux_Select_Stall, h_Reg
             h_RegWrite_out.next = 0
             h_MemWrite_out.next = 0
     return mux
+
+
+@block
+def PC_input_2_to_1(pc_plus_4, branch_or_jump_in, branch_or_jump_taken, out):
+    @always_comb
+    def mux():
+        if branch_or_jump_taken:
+            out.next = branch_or_jump_in
+        else:
+            out.next = pc_plus_4
+
+    return mux

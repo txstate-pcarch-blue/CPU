@@ -8,7 +8,7 @@ def program_counter(clock, reset, addr_out, addr_in, PCwrite):
     @always(clock.posedge)
     def program_counter():
       if (reset):
-        addr_out.next = 0
+        addr_out.next = intbv(0)
       elif PCwrite:
         addr_out.next = addr_in
 

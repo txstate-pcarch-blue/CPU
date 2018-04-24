@@ -12,7 +12,7 @@ def id_ex(clk, rst, ID_Hazard_lwstall, ID_Hazard_Branch, Branch_in, MemRead_in,
             immi_sign_extended_out, ID_EX_RegisterRs_out, ID_EX_RegisterRt_out,
             ID_EX_RegisterRd_out, ID_EX_funct_out ):
 
-    @always(clk.negedge)
+    @always(clk.posedge)
     def latches():
         if(rst==1):
             RegWrite_out.next = 0

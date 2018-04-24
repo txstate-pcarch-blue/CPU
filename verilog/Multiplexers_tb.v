@@ -184,9 +184,9 @@ module idEx_to_exMem_mux_2_to_1_tb();
 parameter tck = 10; ///< clock tick
 
 //input and output regs
-reg [31:0] In1_rd, In2_rt;
+reg [4:0] In1_rd, In2_rt;
 reg [1:0] Ctrl_RegDst;
-wire [31:0] out;
+wire [4:0] out;
 
 idEx_to_exMem_mux_2_to_1 dut(	
 
@@ -298,9 +298,9 @@ module regDst_mux_3_to_1_tb();
 parameter tck = 10; ///< clock tick
 
 //input and output regs
-reg [31:0] In1_imm_destination_rt, In2_rType_rd, In3_jal_ra;
+reg [4:0] In1_imm_destination_rt, In2_rType_rd, In3_jal_ra;
 reg [1:0] Ctrl_RegDst;
-wire [31:0] out;
+wire [4:0] out;
 
 regDst_mux_3_to_1 dut(	
 
@@ -353,7 +353,7 @@ endmodule
 //Changes input registers randomly every 5 time units.
 //Changes FwdA_control to 0, 1, and then 0.
 
-module first_jump_or_branch_mux_2_to_1_tb();
+module first_PC4_or_branch_mux_2_to_1_tb();
 
 parameter tck = 10; ///< clock tick
 
@@ -362,7 +362,7 @@ reg [31:0] In1_PC_plus_4, In2_BTA;
 reg Ctrl_Branch_Gate;
 wire [31:0] out;
 
-first_jump_or_branch_mux_2_to_1 dut(	
+first_PC4_or_branch_mux_2_to_1 dut(	
 
 	.In1_PC_plus_4(In1_PC_plus_4), 
 	.In2_BTA(In2_BTA), 
@@ -407,7 +407,7 @@ endmodule
 //Changes input registers randomly every 5 time units.
 //Changes FwdA_control to 0, 1, and then 0.
 
-module second_jump_or_branch_mux_2_to_1_tb();
+module second_jump_or_first_mux_2_to_1_tb();
 
 parameter tck = 10; ///< clock tick
 
@@ -416,7 +416,7 @@ reg [31:0] In1_first_mux, In2_jump_addr_calc;
 reg Ctrl_Jump;
 wire [31:0] out;
 
-second_jump_or_branch_mux_2_to_1 dut(	
+second_jump_or_first_mux_2_to_1 dut(	
 
 	.In1_first_mux(In1_first_mux), 
 	.In2_jump_addr_calc(In2_jump_addr_calc), 
@@ -461,7 +461,7 @@ endmodule
 //Changes input registers randomly every 5 time units.
 //Changes FwdA_control to 0, 1, and then 0.
 
-module third_jump_or_branch_mux_2_to_1_tb();
+module third_jr_or_second_mux_2_to_1_tb();
 
 parameter tck = 10; ///< clock tick
 
@@ -470,7 +470,7 @@ reg [31:0] In1_second_mux, In2_reg_value_ra;
 reg JRCtrl;
 wire [31:0] out;
 
-third_jump_or_branch_mux_2_to_1 dut(	
+third_jr_or_second_mux_2_to_1 dut(	
 
 	.In1_second_mux(In1_second_mux), 
 	.In2_reg_value_ra(In2_reg_value_ra), 
@@ -520,9 +520,9 @@ module hazard_stall_mux_2_to_1_tb();
 parameter tck = 10; ///< clock tick
 
 //input and output regs
-reg [31:0] In1_zero, In2_control_unit;
+reg h_RegWrite, h_MemWrite;
 reg Ctrl_Mux_Select_Stall;
-wire [31:0] out;
+wire h_RegWrite_out, h_MemWrite_out;
 
 hazard_stall_mux_2_to_1 dut(	
 

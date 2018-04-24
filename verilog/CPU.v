@@ -1,3 +1,5 @@
+`ifndef loaded
+`define loaded
 //MODULES
 `include "PC.v"
 `include "Instruction_Memory.v"
@@ -19,6 +21,7 @@
 `include "ID_EX.v"
 `include "EX_MEM.v"
 `include "MEM_WB.v"
+`endif
 
 
 //CPU - five stage MIPS CPU with forwarding and hazard control
@@ -26,7 +29,10 @@
 //Wires are associated with their respective stage
 //Multiplexers drive control decision making
 //Modules receive pre-determined inputs based on mux output
-module cpu (clk, rst
+module cpu (clk, rst, regOutReg0, regOutReg1, regOutReg2, regOutReg3, regOutReg4, regOutReg5, regOutReg6, regOutReg7, regOutReg8,
+            regOutReg9, regOutReg10, regOutReg11, regOutReg12, regOutReg13, regOutReg14, regOutReg15, regOutReg16, regOutReg17,
+            regOutReg18, regOutReg19, regOutReg20, regOutReg21, regOutReg22, regOutReg23, regOutReg24, regOutReg25, regOutReg26,
+            regOutReg27, regOutReg28, regOutReg29, regOutReg30, regOutReg31
 );
 
 	input clk, rst;
@@ -86,6 +92,22 @@ module cpu (clk, rst
 		regOut8,regOut9,regOut10,regOut11,regOut12,regOut13,regOut14,regOut15,
 		regOut16,regOut17,regOut18,regOut19,regOut20,regOut21,regOut22,regOut23,
 		regOut24,regOut25,regOut26,regOut27,regOut28,regOut29,regOut30,regOut31;
+	output reg [31:0] regOutReg0,regOutReg1,regOutReg2,regOutReg3,regOutReg4,regOutReg5,regOutReg6,regOutReg7,
+		regOutReg8,regOutReg9,regOutReg10,regOutReg11,regOutReg12,regOutReg13,regOutReg14,regOutReg15,
+		regOutReg16,regOutReg17,regOutReg18,regOutReg19,regOutReg20,regOutReg21,regOutReg22,regOutReg23,
+		regOutReg24,regOutReg25,regOutReg26,regOutReg27,regOutReg28,regOutReg29,regOutReg30,regOutReg31;
+	always @(*)
+	begin
+	    regOutReg0 <= regOut0; regOutReg1 <= regOut1; regOutReg2 <= regOut2; regOutReg3 <= regOut3;
+	    regOutReg4 <= regOut4; regOutReg5 <= regOut5; regOutReg6 <= regOut6; regOutReg7 <= regOut7;
+	    regOutReg8 <= regOut8; regOutReg9 <= regOut9; regOutReg10 <= regOut10; regOutReg11 <= regOut11;
+	    regOutReg12 <= regOut12; regOutReg13 <= regOut13; regOutReg14 <= regOut14; regOutReg15 <= regOut15;
+	    regOutReg16 <= regOut16; regOutReg17 <= regOut17; regOutReg18 <= regOut18; regOutReg19 <= regOut19;
+	    regOutReg20 <= regOut20; regOutReg21 <= regOut21; regOutReg22 <= regOut22; regOutReg23 <= regOut23;
+	    regOutReg24 <= regOut24; regOutReg25 <= regOut25; regOutReg26 <= regOut26; regOutReg27 <= regOut27;
+	    regOutReg28 <= regOut28; regOutReg29 <= regOut29; regOutReg30 <= regOut30; regOutReg31 <= regOut31;
+    end
+
 
 	assign immi_sign_extended = IF_ID_instruction[15:0];
 	
@@ -137,16 +159,17 @@ module cpu (clk, rst
 	//*************************************
 	// (WORKING) IF stage: PC, IM, IF_ID_reg
 	//*************************************
-	pc Unit0 (
+	pc pc_Unit0 (
 		.PC_in(third_jr_or_second_mux_2_to_1_out), .clk(clk), .reset(rst),  .PCWrite(PCWrite), .PC_out(PC_out)
 	);
 	
-	InstructionMemory Unit1 (
+	InstructionMemory InstructionMemory_Unit1 (
 		.Addr(PC_out), .Clk(clk), .Inst(instruction_out)
 	);
-	defparam Unit1.in_file = "instructions.txt";
+	parameter in_file = "instructions.txt:";
+	defparam Unit1.in_file = in_file;
 	
-	IF_ID Unit3 (
+	IF_ID IF_ID_Unit2 (
 		.InsIn(instruction_out), .PC_plus4_In(PC_plus4), .InsOut(IF_ID_instruction), .PC_plus4_out(IF_ID_PC_plus4), .IFID_write(IF_ID_Write), .IF_flush(IF_Flush), .clk(clk), .reset(rst)
 	);
 	
@@ -154,24 +177,24 @@ module cpu (clk, rst
 	// ID stage: Control, Registers, branch_jump_calc, sign_extend (automatic in Verilog, //should not have to manually do this), regDst_mux_3_to_1, 
 	// ID_EX_reg, hazard_detection_unit
 	//*****************************************
-	Control Unit4 (
+	Control Control_Unit3 (
 		.opcode(IF_ID_instruction[31:26]), .ALUSrc(ALUSrc), .RegDst(RegDst), .MemWrite(MemWrite), .MemRead(MemRead), .Beq(Branch), .Jump(Jump), .MemToReg(MemToReg), .RegWrite(RegWrite), .ALUOp(ALUOp)
 	);
 	
-	regDst_mux_3_to_1 Unit5 (
+	regDst_mux_3_to_1 regDst_mux_3_to_1_Unit4 (
 		.In1_imm_destination_rt(IF_ID_instruction[20:16]), .In2_rType_rd(IF_ID_instruction[25:21]), .In3_jal_ra(In3_jal_ra), .Ctrl_RegDst(RegDst), .out(regDst_mux_3_to_1_out)
 	);
 	
-	hazard_unit Unit25(
+	hazard_unit hazard_unit_Unit5(
 		.ID_EX_MemRead(ID_EX_MemRead), .ID_EX_RegRt(ID_EX_RegisterRt), .IF_ID_RegRs(IF_ID_instruction[25:21]), .IF_ID_RegRt(IF_ID_instruction[20:16]), .Mux_Select_Stall(ID_Flush_lwstall), .PCWrite(PCWrite), .IF_ID_Write(IF_ID_Write)
 	);
 	
-	hazard_stall_mux_2_to_1 Unit6(
+	hazard_stall_mux_2_to_1 hazard_stall_mux_2_to_1_Unit6(
 	    .h_RegWrite(RegWrite), .h_MemWrite(MemWrite), .Ctrl_Mux_Select_Stall(ID_Flush_lwstall), .h_RegWrite_out(h_RegWrite_out), .h_MemWrite_out(h_MemWrite_out)
 	);
 	
-	RegisterFile Unit7(
-		.BusA(reg_read_data_1), .BusB(reg_read_data_2), .BusW(reg_write_data), .RA(IF_ID_instruction[25:21]), .RB(IF_ID_instruction[20:16]), .RW(regDst_mux_3_to_1_out), .RegWr(RegWrite), .Clk(clk), .Rst(rst),
+	RegisterFile RegisterFile_Unit7(
+		.BusA(reg_read_data_1), .BusB(reg_read_data_2), .BusW(writeback_source_mux_3_to_1_out), .RA(IF_ID_instruction[25:21]), .RB(IF_ID_instruction[20:16]), .RW(regDst_mux_3_to_1_out), .RegWr(MEM_WB_RegWrite), .Clk(clk), .Rst(rst),
 		.regOut0(regOut0), .regOut1(regOut1), .regOut2(regOut2), .regOut3(regOut3), .regOut4(regOut4), .regOut5(regOut5), .regOut6(regOut6), .regOut7(regOut7),
 		.regOut8(regOut8), .regOut9(regOut9), .regOut10(regOut10),.regOut11(regOut11),.regOut12(regOut12),.regOut13(regOut13),.regOut14(regOut14),.regOut15(regOut15),
 		.regOut16(regOut16),.regOut17(regOut17),.regOut18(regOut18),.regOut19(regOut19),.regOut20(regOut20),.regOut21(regOut21),.regOut22(regOut22),.regOut23(regOut23),
@@ -179,15 +202,15 @@ module cpu (clk, rst
 	);
 	
 	
-	branch_calculator Unit8(
+	branch_calculator branch_calculator_Unit8(
 		.In1_extended_imm(immi_sign_extended), .In2_pc_plus_4(IF_ID_PC_plus4), .BTA(BTA)
 	);
-	jump_calculator Unit9(
+	jump_calculator jump_calculator_Unit9(
 		.In1_instruction(IF_ID_instruction), .In2_pc_plus_4(IF_ID_PC_plus4), .Jump_Address(Jump_Address)
 	);
 	
 	// Beware, there be dragons here!
-	ID_EX Unit24(
+	ID_EX ID_EX_Unit10(
 		.ID_Hazard_lwstall(ID_Flush_lwstall), .ID_Hazard_Branch(ID_Flush_Branch),
 		.Branch_in(Branch), .MemRead_in(MemRead), .MemWrite_in(MemWrite), .Jump_in(Jump),
 		.RegWrite_in(RegWrite), 
@@ -214,11 +237,11 @@ module cpu (clk, rst
 	//*************************************
 	// EX Stage: ALU, ALU_Control, JRControl, Forwarding_Unit, alu muxes 1,2,3, ex_to_mem_mux, EX_MEM_reg
 	//*************************************
-	ALUControl Unit11(.ALUcontrol(out_to_ALU), .ALUop(ID_EX_ALUOp), .funct(ID_EX_funct));
+	ALUControl ALUControl_Unit11(.ALUcontrol(out_to_ALU), .ALUop(ID_EX_ALUOp), .funct(ID_EX_funct));
 	
-	JR_Control Unit12(.alu_op(ID_EX_ALUOp), .funct(ID_EX_funct), .JRControl(JRControl));
+	JR_Control JR_Control_Unit12(.alu_op(ID_EX_ALUOp), .funct(ID_EX_funct), .JRControl(JRControl));
 	
-	ForwardingUnit Unit13(
+	ForwardingUnit ForwardingUnit_Unit13(
 		.ID_EX_RegRs(ID_EX_RegisterRs), .ID_EX_RegRt(ID_EX_RegisterRt), .EX_MEM_RegRd(EX_MEM_RegisterRd), .MEM_WB_RegRd(MEM_WB_RegisterRd),
 		.MEM_WB_RegWrite(MEM_WB_RegWrite), .EX_MEM_RegWrite(EX_MEM_RegWrite), .Mux_ForwardA(ForwardA), .Mux_ForwardB(ForwardB)
 	);
@@ -227,26 +250,26 @@ module cpu (clk, rst
 	// Output of 1st mux is ALU's 1st input
 	// Output of 2nd mux feeds into 3rd mux as an input
 	// Output of 3rd mux is ALU's 2nd input
-	first_alu_mux_3_to_1 Unit14(.In1_RegRs(ID_EX_reg_read_data_1), .In2_fwdEx(EX_MEM_reg_read_data_2), .In3_fwdMem(MEM_WB_D_MEM_read_data), .Ctrl_FwdA(ForwardA), .out(first_alu_mux_3_to_1_out));
+	first_alu_mux_3_to_1 first_alu_mux_3_to_1_Unit14(.In1_RegRs(ID_EX_reg_read_data_1), .In2_fwdEx(EX_MEM_reg_read_data_2), .In3_fwdMem(MEM_WB_D_MEM_read_data), .Ctrl_FwdA(ForwardA), .out(first_alu_mux_3_to_1_out));
 	
-	second_alu_mux_3_to_1 Unit15(.In1_RegRt(ID_EX_reg_read_data_2), .In2_fwdEx(EX_MEM_reg_read_data_2), .In3_fwdMem(MEM_WB_D_MEM_read_data), .Ctrl_FwdB(ForwardB), .out(second_alu_mux_3_to_1_out));
+	second_alu_mux_3_to_1 second_alu_mux_3_to_1_Unit15(.In1_RegRt(ID_EX_reg_read_data_2), .In2_fwdEx(EX_MEM_reg_read_data_2), .In3_fwdMem(MEM_WB_D_MEM_read_data), .Ctrl_FwdB(ForwardB), .out(second_alu_mux_3_to_1_out));
 	
-	third_alu_mux_2_to_1 Unit16(
+	third_alu_mux_2_to_1 third_alu_mux_2_to_1_Unit16(
 		.In1_second_alu_mux(second_alu_mux_3_to_1_out), .In2_immediate(immi_sign_extended), .Ctrl_ALUSrc(ALUSrc), .out(third_alu_mux_2_to_1_out)
 	);
 	
 	
-	alu Unit10(
+	alu alu_Unit17(
 		.A(first_alu_mux_3_to_1_out), .B(third_alu_mux_2_to_1_out), .ALUControl(out_to_ALU), .clk(clk), .reset(rst), .R(ALU_result), .zero(ALU_zero)
 	);
 
-	idEx_to_exMem_mux_2_to_1 Unit17(
+	idEx_to_exMem_mux_2_to_1 idEx_to_exMem_mux_2_to_1_Unit18(
 		.In1_rd(ID_EX_RegisterRd), .In2_rt(ID_EX_RegisterRt), .Ctrl_RegDst(ID_EX_RegDst), .out(idEx_to_exMem_mux_2_to_1_out)
 	);
 	
 	// Beware, there be giant squid here!
 	// .ID_EX_RegisterRd_in(idEx_to_exMem_mux_2_to_1) is intentional!
-	EX_MEM Unit18(
+	EX_MEM EX_MEM_Unit19(
 		.clk(clk), .rst(rst),
 		.EX_Flush(EX_Flush),
 		.RegWrite_in(ID_EX_RegWrite), 
@@ -269,10 +292,10 @@ module cpu (clk, rst
 	//*************************************
 	// MEM Stage: Data_Memory, MEM_WB_Reg, jump/branch muxes 1,2,3,
 	//*************************************
-	DataMemory Unit19(.MR(EX_MEM_MemRead), .MW(EX_MEM_MemWrite), .Addr(EX_MEM_ALU_result), .WD(EX_MEM_reg_read_data_2), .Clk(clk), .RD(D_MEM_data));
+	DataMemory DataMemory_Unit20(.MR(EX_MEM_MemRead), .MW(EX_MEM_MemWrite), .Addr(EX_MEM_ALU_result), .WD(EX_MEM_reg_read_data_2), .Clk(clk), .RD(D_MEM_data));
 	
 	
-	branch_or_jump_taken_flush Unit26(
+	branch_or_jump_taken_flush branch_or_jump_taken_flush_Unit21(
 		.EX_MEM_branch_out_in(EX_MEM_Branch), .EX_MEM_jump_out_in(EX_MEM_Jump), .EX_MEM_ALU_Zero_out_in(EX_MEM_ALU_zero),
 	
 		.IF_Flush(IF_Flush), .ID_Flush_Branch(ID_Flush_Branch), .EX_Flush(EX_Flush)
@@ -280,7 +303,7 @@ module cpu (clk, rst
 	
 	
 	// Beware, there be alien engineers here!
-	MEM_WB Unit20(
+	MEM_WB MEM_WB_Unit22(
 		.RegWrite_in(EX_MEM_RegWrite), 
 		.MemtoReg_in(EX_MEM_MemtoReg),
 		.D_MEM_read_data_in(D_MEM_data), .D_MEM_read_addr_in(EX_MEM_ALU_result),
@@ -297,18 +320,24 @@ module cpu (clk, rst
 	wire branch_taken;
 	assign branch_taken = (ALU_zero & Branch);
 	
-	first_PC4_or_branch_mux_2_to_1 Unit21(.In1_PC_plus_4(ID_EX_PC_plus4), .In2_BTA(BTA), .Ctrl_Branch_Gate(branch_taken), .out(first_PC4_or_branch_mux_2_to_1_out));
+	first_PC4_or_branch_mux_2_to_1 first_PC4_or_branch_mux_2_to_1_Unit23(
+		.In1_PC_plus_4(ID_EX_PC_plus4), .In2_BTA(BTA), .Ctrl_Branch_Gate(branch_taken), .out(first_PC4_or_branch_mux_2_to_1_out)
+	);
 	
-	second_jump_or_first_mux_2_to_1 Unit22(
+	second_jump_or_first_mux_2_to_1 second_jump_or_first_mux_2_to_1_Unit24(
 		.In1_first_mux(first_PC4_or_branch_mux_2_to_1_out), .In2_jump_addr_calc(Jump_Address), .Ctrl_Jump(Jump), .out(second_jump_or_first_mux_2_to_1_out)
 	);
 	
-	third_jr_or_second_mux_2_to_1 Unit23(
+	third_jr_or_second_mux_2_to_1 third_jr_or_second_mux_2_to_1_Unit25(
 		.In1_second_mux(second_jump_or_first_mux_2_to_1_out), .In2_reg_value_ra(regOut31), .JRCtrl(JRControl), .out(third_jr_or_second_mux_2_to_1_out)
 	);
 	
 	//*************************************
 	// WB Stage: 
 	//*************************************
+	
+	writeback_source_mux_3_to_1 writeback_source_mux_3_to_1_Unit26(
+		.In1_ALU_Result(MEM_WB_D_MEM_read_addr), .In2_Mem_output(MEM_WB_D_MEM_read_data), .In3_PC_plus_4(), .Ctrl_MemToReg(MEM_WB_MemtoReg), .out(writeback_source_mux_3_to_1_out)
+	);
 	
 endmodule

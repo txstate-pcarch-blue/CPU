@@ -5,7 +5,7 @@ from myhdl import *
 @block
 def PC_Increment(clk, PC_in, PC_Plus4):
 
-    @always(clk.posedge)
+    @always(PC_in)
     def pc_plus4():
         PC_Plus4.next = intbv(PC_in + 4)
 

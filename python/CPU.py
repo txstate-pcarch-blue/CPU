@@ -1,6 +1,9 @@
 # Type imports
 from myhdl import intbv, Signal, always, block, instances
 
+#Clock import
+from helpers.Clock_Generator import clock_generator
+
 # Module Imports
 from PC import program_counter
 from Instruction_Memory import Instruction_Memory
@@ -26,6 +29,7 @@ from MEM_WB import mem_wb
 
 # CPU Assignments
 from CPU_Assigns import *
+from helpers.Paths import IM_in_file
 
 # CPU - five stage MIPS CPU with forwarding and hazard control
 # This file drives the processor. Control wiring signals are handled here.
@@ -33,8 +37,11 @@ from CPU_Assigns import *
 # Multiplexers drive control decision making
 # Modules receive pre-determined inputs based on mux output
 @block
-def CPU(clock, reset): #Removed Registers to handle locally for tb purposes
+def CPU(reset, regOut):
 
+    clock = Signal(intbv(0, 0, 2**1))
+
+    clock_driver = clock_generator(clock)
 
     # Wires in the IF stage
     PC_out = Signal(intbv(0, 0, 2**32))
@@ -95,12 +102,6 @@ def CPU(clock, reset): #Removed Registers to handle locally for tb purposes
     ID_Flush_Branch = Signal(intbv(0, 0, 2**1))
     EX_Flush = Signal(intbv(0, 0, 2**1))
 
-    # Register wires
-    regOut = []
-    for i in range(0, 32):
-        regOut.append(Signal(intbv(0, 0, 2**32)))
-
-
 
     # Wires in the EX stage
     ID_EX_Jump = Signal(intbv(0, 0, 2**1))
@@ -133,6 +134,7 @@ def CPU(clock, reset): #Removed Registers to handle locally for tb purposes
     ID_EX_funct = Signal(intbv(0, 0, 2**6))
 
     # Wires in the MEM stage
+    EX_MEM_PC_plus_4 = Signal(intbv(0, 0, 2**32))
     EX_MEM_RegisterRd = Signal(intbv(0, 0, 2**5))
     EX_MEM_Branch = Signal(intbv(0, 0, 2**1))
     EX_MEM_MemRead = Signal(intbv(0, 0, 2**1))
@@ -150,6 +152,7 @@ def CPU(clock, reset): #Removed Registers to handle locally for tb purposes
 
     # Wires in the WB Stage
     reg_write_data = Signal(intbv(0, 0, 2**32))
+    MEM_WB_PC_plus_4 = Signal(intbv(0, 0, 2**32))
     MEM_WB_RegWrite = Signal(intbv(0, 0, 2**1))
     MEM_WB_MemtoReg = Signal(intbv(0, 0, 2**2))
     MEM_WB_D_MEM_read_data = Signal(intbv(0, 0, 2**32))
@@ -172,7 +175,7 @@ def CPU(clock, reset): #Removed Registers to handle locally for tb purposes
     #IF stage: PC, IM, IF_ID_Reg
 
     # TODO: infile #
-    se_driver = Sign_Extender(IF_ID_instruction, immi_sign_extended)
+    se_driver = Sign_Extender(IF_ID_instruction(17,0), immi_sign_extended)
     Unit3 = if_id(clock, reset, instruction_out, IF_ID_instruction, PC_plus4, IF_ID_PC_plus4, IF_Flush, IF_ID_Write)
 
     #ID Stage: Control, Registers, branch_jump_cal, sign_extend, regDst_mux_3_to_1,
@@ -181,9 +184,8 @@ def CPU(clock, reset): #Removed Registers to handle locally for tb purposes
     Unit5 = regDst_mux_3_to_1(IF_ID_instruction(21,16), IF_ID_instruction(26,21), In3_jal_ra, RegDst, regDst_mux_3_to_1_out)
     Unit25 = hazard_unit(ID_EX_MemRead, ID_EX_RegisterRt, IF_ID_instruction(26,21), IF_ID_instruction(21,16), ID_Flush_lwstall, PCWrite, IF_ID_Write)
     Unit6 = hazard_stall_mux_2_to_1(RegWrite, MemWrite, ID_Flush_lwstall, h_RegWrite_out, h_MemWrite_out)
-In1_ALU_Result, In2_Mem_output, In3_PC_plus_4, Ctrl_MemToReg, out
-    Unit28 = writeback_source_mux_3_to_1(MEM_WB_D_MEM_read_addr, MEM_WB_D_MEM_read_data,  )
-    Unit7 = RegisterFile(reg_read_data_1, reg_read_data_2, #TODO writeback_source_mux_3_to_1_out, IF_ID_instruction(26, 21), IF_ID_instruction(21, 16), regDst_mux_3_to_1_out, MEM_WB_RegWrite, clock, reset, regOut)
+    Unit28 = writeback_source_mux_3_to_1(MEM_WB_D_MEM_read_addr, MEM_WB_D_MEM_read_data,  MEM_WB_PC_plus_4, MEM_WB_MemtoReg, writeback_source_mux_3_to_1_out)
+    Unit7 = RegisterFile(reg_read_data_1, reg_read_data_2, writeback_source_mux_3_to_1_out, IF_ID_instruction(26, 21), IF_ID_instruction(21, 16), regDst_mux_3_to_1_out, MEM_WB_RegWrite, clock, reset, regOut)
     Unit8 = branch_calculator(immi_sign_extended, IF_ID_PC_plus4, BTA)
     Unit9 = jump_calculator(IF_ID_instruction, IF_ID_PC_plus4, Jump_Address)
     Unit24 = id_ex(clock, reset, ID_Flush_lwstall, ID_Flush_Branch, Branch, MemRead, MemWrite, Jump, RegWrite, ALUSrc, ALUOp, RegDst, MemToReg, Jump_Address, BTA, IF_ID_PC_plus4, reg_read_data_1, reg_read_data_2, immi_sign_extended,  IF_ID_instruction(26,21), IF_ID_instruction(21,16), IF_ID_instruction(16,11), IF_ID_instruction(6,0), ID_EX_RegWrite, ID_EX_Branch, ID_EX_MemRead, ID_EX_MemWrite, ID_EX_Jump, ID_EX_ALUSrc, ID_EX_ALUOp, ID_EX_RegDst, ID_EX_MemtoReg, ID_EX_jump_addr, ID_EX_branch_address, ID_EX_PC_plus4, ID_EX_reg_read_data_1, ID_EX_reg_read_data_2, ID_EX_immi_sign_extended, ID_EX_RegisterRs, ID_EX_RegisterRt, ID_EX_RegisterRd, ID_EX_funct)
@@ -198,12 +200,12 @@ In1_ALU_Result, In2_Mem_output, In3_PC_plus_4, Ctrl_MemToReg, out
     Unit16 = third_alu_mux_2_to_1(second_alu_mux_3_to_1_out, immi_sign_extended, ALUSrc, third_alu_mux_2_to_1_out)
     Unit10 = alu(clock, reset, first_alu_mux_3_to_1_out, third_alu_mux_2_to_1_out, out_to_ALU, ALU_result, ALU_zero)
     Unit17 = idEx_to_exMem_mux_2_to_1(ID_EX_RegisterRd, ID_EX_RegisterRt, ID_EX_RegDst, idEx_to_exMem_mux_2_to_1_out)
-    Unit18 = ex_mem(clock, reset, EX_Flush, ID_EX_RegWrite, ID_EX_MemtoReg, ID_EX_Branch, ID_EX_MemRead, ID_EX_MemWrite, ID_EX_Jump, ID_EX_jump_addr, ID_EX_branch_address, ALU_zero, ALU_result, second_alu_mux_3_to_1_out, idEx_to_exMem_mux_2_to_1_out, EX_MEM_RegWrite, EX_MEM_MemtoReg, EX_MEM_Branch, EX_MEM_MemRead, EX_MEM_MemWrite, EX_MEM_Jump, EX_MEM_jump_addr, EX_MEM_branch_addr, EX_MEM_ALU_zero, EX_MEM_ALU_result, EX_MEM_reg_read_data_2, EX_MEM_RegisterRd)
+    Unit18 = ex_mem(clock, reset, EX_Flush, ID_EX_RegWrite, ID_EX_MemtoReg, ID_EX_Branch, ID_EX_MemRead, ID_EX_MemWrite, ID_EX_Jump, ID_EX_jump_addr, ID_EX_branch_address, ALU_zero, ALU_result, second_alu_mux_3_to_1_out, idEx_to_exMem_mux_2_to_1_out, ID_EX_PC_plus4, EX_MEM_RegWrite, EX_MEM_MemtoReg, EX_MEM_Branch, EX_MEM_MemRead, EX_MEM_MemWrite, EX_MEM_Jump, EX_MEM_jump_addr, EX_MEM_branch_addr, EX_MEM_ALU_zero, EX_MEM_ALU_result, EX_MEM_reg_read_data_2, EX_MEM_RegisterRd, EX_MEM_PC_plus_4)
 
     #Mem Stage:
     Unit19 = Data_Memory(clock, EX_MEM_ALU_result, EX_MEM_MemWrite, EX_MEM_MemRead, D_MEM_data, EX_MEM_reg_read_data_2)
     Unit26 = branch_or_jump_taken_flush(EX_MEM_Branch, EX_MEM_Jump, EX_MEM_ALU_zero, IF_Flush, ID_Flush_Branch, EX_Flush, branch_or_jump_taken)
-    Unit20 = mem_wb(clock, reset, EX_MEM_RegWrite, EX_MEM_MemtoReg, D_MEM_data, EX_MEM_ALU_result, EX_MEM_RegisterRd, MEM_WB_D_MEM_read_data, MEM_WB_D_MEM_read_addr, MEM_WB_RegisterRd, MEM_WB_RegWrite, MEM_WB_MemtoReg)
+    Unit20 = mem_wb(clock, reset, EX_MEM_RegWrite, EX_MEM_MemtoReg, D_MEM_data, EX_MEM_ALU_result, EX_MEM_RegisterRd, EX_MEM_PC_plus_4, MEM_WB_D_MEM_read_data, MEM_WB_D_MEM_read_addr, MEM_WB_RegisterRd, MEM_WB_RegWrite, MEM_WB_MemtoReg, MEM_WB_PC_plus_4)
 
     branch_taken = Signal(intbv(0, 0, 2**1))
     branch_checker = isBranch(ALU_zero, Branch, branch_taken)

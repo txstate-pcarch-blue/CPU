@@ -15,97 +15,97 @@ module Control(opcode, ALUSrc, RegDst, MemWrite, MemRead, Beq, Jump, MemToReg, R
 		case (opcode)
 			// R-type opcode 0x00
 			6'b000000: begin
-				ALUSrc = 0;  //from reg
-				RegDst = 1;
-				MemWrite = 0;
-				MemRead = 0;
-				Beq = 0;
-				Jump = 0;
-				MemToReg = 0;
-				RegWrite = 1;
-				ALUOp = 4;
+				ALUSrc <= 0;  //from reg
+				RegDst <= 1;
+				MemWrite <= 0;
+				MemRead <= 0;
+				Beq <= 0;
+				Jump <= 0;
+				MemToReg <= 0;
+				RegWrite <= 1;
+				ALUOp <= 4;
 			end
 
 			// lw opcode 0x23
 			6'b100011: begin
-				ALUSrc = 1;  //sign ext. imm.
-				RegDst = 0;
-				MemWrite = 0;
-				MemRead = 1;
-				Beq = 0;
-				Jump = 0;
-				MemToReg = 1;
-				RegWrite = 1;
-				ALUOp = 0; 
+				ALUSrc <= 1;  //sign ext. imm.
+				RegDst <= 0;
+				MemWrite <= 0;
+				MemRead <= 1;
+				Beq <= 0;
+				Jump <= 0;
+				MemToReg <= 1;
+				RegWrite <= 1;
+				ALUOp <= 0; 
 			end
 
 			// sw opcode 0x2b
 			6'b101011: begin
-				ALUSrc = 1;  //sign ext. imm.
-				MemWrite = 1;
-				MemRead = 0;
-				Beq = 0;
-				Jump = 0;
-				RegWrite = 0;
-				ALUOp = 0;
+				ALUSrc <= 1;  //sign ext. imm.
+				MemWrite <= 1;
+				MemRead <= 0;
+				Beq <= 0;
+				Jump <= 0;
+				RegWrite <= 0;
+				ALUOp <= 0;
 			end
 
 			// beq opcode 0x04
 			6'b000100: begin
-			    ALUSrc = 1;  //sign ext. imm.
-			    MemWrite = 0;
-			    MemRead = 0;
-			    Beq = 1;
-			    Jump = 0;
-			    RegWrite = 0;
-			    ALUOp = 1; 
+			    ALUSrc <= 1;  //sign ext. imm.
+			    MemWrite <= 0;
+			    MemRead <= 0;
+			    Beq <= 1;
+			    Jump <= 0;
+			    RegWrite <= 0;
+			    ALUOp <= 1; 
 			end
 
 			// Jump label opcode 0x02
 			6'b000010: begin
-				RegDst = 0;
-				MemToReg = 0;
-			    MemWrite = 0;
-			    MemRead = 0;
-			    Beq = 0;
-			    Jump = 1;
-			    RegWrite = 0;
+				RegDst <= 0;
+				MemToReg <= 0;
+			    MemWrite <= 0;
+			    MemRead <= 0;
+			    Beq <= 0;
+			    Jump <= 1;
+			    RegWrite <= 0;
 			end
 			
 			// Jump and link opcode 0x03
 			6'b00011: begin
-				RegDst = 2;
-				MemToReg = 2;
-			    MemWrite = 0;
-			    MemRead = 0;
-			    Beq = 0;
-			    Jump = 1;
-			    RegWrite = 0;
+				RegDst <= 2;
+				MemToReg <= 2;
+			    MemWrite <= 0;
+			    MemRead <= 0;
+			    Beq <= 0;
+			    Jump <= 1;
+			    RegWrite <= 0;
 			end
 			// addi opcode 0x08
 			6'b01000: begin
-			    ALUSrc = 1;  //sign ext. imm.
-			    RegDst = 0;
-			    MemWrite = 0;
-			    MemRead = 0;
-			    Beq = 0;
-			    Jump = 0;
-			    MemToReg = 0;
-			    RegWrite = 1;
-			    ALUOp = 2;
+			    ALUSrc <= 1;  //sign ext. imm.
+			    RegDst <= 0;
+			    MemWrite <= 0;
+			    MemRead <= 0;
+			    Beq <= 0;
+			    Jump <= 0;
+			    MemToReg <= 0;
+			    RegWrite <= 1;
+			    ALUOp <= 2;
 			end
 			
 			// subi opcode 0x09
 			6'b01001: begin
-			    ALUSrc = 1;  //sign ext. imm.
-			    RegDst = 0;
-			    MemWrite = 0;
-			    MemRead = 0;
-			    Beq = 0;
-			    Jump = 0;
-			    MemToReg = 0;
-			    RegWrite = 1;
-			    ALUOp = 3;
+			    ALUSrc <= 1;  //sign ext. imm.
+			    RegDst <= 0;
+			    MemWrite <= 0;
+			    MemRead <= 0;
+			    Beq <= 0;
+			    Jump <= 0;
+			    MemToReg <= 0;
+			    RegWrite <= 1;
+			    ALUOp <= 3;
 			end
 			
 		endcase

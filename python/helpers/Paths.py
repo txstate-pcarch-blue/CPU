@@ -3,16 +3,18 @@ from os import path
 base_d = path.join(path.abspath(path.dirname(__file__)), "../..")
 
 # Path declarations
+IM_in_file = path.join(base_d, "bin/.in_file_tmp") # Instruction Memory address hard coded into the CPU.v file
 Accu_v = path.join(base_d, "samples/Accumulator.v")
 Accu_o = path.join(base_d, "bin/Accumulator.o")
 ALU_v = path.join(base_d, "verilog/ALU.v")
 ALU_cosim_v = path.join(base_d, "verilog/ALU_cosim.v")
 ALU_cosim_o = path.join(base_d, "bin/ALU_cosim.o")
-ALU_control_v = path.join(base_d, "verilog/ALU_control.v")
+ALU_control_v = path.join(base_d, "verilog/ALU_Control.v")
 BJ_calc = path.join(base_d, "verilog/branch_jump_calc.v")
 Control_v = path.join(base_d, "verilog/Control.v")
-CPU_Cosim_o = path.join(base_d, "bin/CPU_Cosim.o")
-CPU_Cosim_v = path.join(base_d, "verilog/CPU_cosim.v")
+CPU_v = path.join(base_d, "verilog/CPU.v")
+CPU_cosim_o = path.join(base_d, "bin/CPU_cosim.o")
+CPU_cosim_v = path.join(base_d, "verilog/CPU_cosim.v")
 DM_v = path.join(base_d, "verilog/Data_Memory.v")
 DM_cosim_v = path.join(base_d, "verilog/Data_Memory_cosim.v")
 DM_cosim_o = path.join(base_d, "bin/Data_Memory_cosim.o")

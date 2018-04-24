@@ -11,10 +11,10 @@ module ALUControl(ALUcontrol,ALUop,funct);
 	//addi, subi require add and sub respectively
 	always @(ALUop, funct) begin
 		case(ALUop)
-			3'b000: ALUcontrol = 0; //lw,sw: add 
-			3'b001: ALUcontrol = 1; //beq: subtract 
-			3'b010: ALUcontrol = 0; //addi: add
-			3'b011: ALUcontrol = 1; //subi: add
+			3'b000: ALUcontrol <= 0; //lw,sw: add 
+			3'b001: ALUcontrol <= 1; //beq: subtract 
+			3'b010: ALUcontrol <= 0; //addi: add
+			3'b011: ALUcontrol <= 1; //subi: add
 			
 			3'b100:  begin
 						case(funct)

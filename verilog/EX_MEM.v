@@ -30,15 +30,15 @@ module EX_MEM (
 	input RegWrite_in, 
 	input [1:0] MemtoReg_in,
 	input Branch_in, MemRead_in, MemWrite_in, Jump_in,
-	input [31:0] jump_addr_in, branch_addr_in,
+	input [31:0] jump_addr_in, branch_addr_in, PC_plus_4_in,
 	input ALU_zero_in,
-	input [31:0] ALU_result_in, reg_read_data_2_in,
+	input [31:0] ALU_result_in, reg_read_data_2_in, 
 	input [4:0] ID_EX_RegisterRd_in,
 	
 	output RegWrite_out, 
 	output [1:0] MemtoReg_out,
 	output Branch_out, MemRead_out, MemWrite_out, Jump_out,
-	output [31:0] jump_addr_out, branch_addr_out,
+	output [31:0] jump_addr_out, branch_addr_out, PC_plus_4_out,
 	output ALU_zero_out,
 	output [31:0] ALU_result_out, reg_read_data_2_out,
 	output [4:0] EX_MEM_RegisterRd_out
@@ -47,7 +47,7 @@ module EX_MEM (
 	reg RegWrite_out;
 	reg [1:0] MemtoReg_out;
 	reg Branch_out, MemRead_out, MemWrite_out, Jump_out;
-	reg [31:0] jump_addr_out, branch_addr_out;
+	reg [31:0] jump_addr_out, branch_addr_out, PC_plus_4_out;
 	reg ALU_zero_out;
 	reg [31:0] ALU_result_out, reg_read_data_2_out;
 	reg [4:0] EX_MEM_RegisterRd_out;
@@ -61,6 +61,7 @@ module EX_MEM (
 		  MemWrite_out <= 1'b0;
 		  Jump_out <= 1'b0;
 		  jump_addr_out <= 32'b0;
+		  PC_plus_4_out <= 32'b0;
 		  branch_addr_out <= 32'b0;
 		  ALU_zero_out <= 1'b0;
 		  ALU_result_out <= 32'b0;
@@ -78,6 +79,7 @@ module EX_MEM (
 		  	Jump_out <= Jump_in;
 		  	jump_addr_out <= jump_addr_in;
 		  	branch_addr_out <= branch_addr_in;
+		  	PC_plus_4_out <= PC_plus_4_in;
 		  	ALU_zero_out <= ALU_zero_in;
 		  	ALU_result_out <= ALU_result_in;
 		  	reg_read_data_2_out <= reg_read_data_2_in;

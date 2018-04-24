@@ -20,26 +20,24 @@
 `include "EX_MEM.v"
 `include "MEM_WB.v"
 
+
 //CPU - five stage MIPS CPU with forwarding and hazard control
 //This file drives the processor. Control wiring signals are handled here.
-//Wires are associated with their respective stage 
+//Wires are associated with their respective stage
 //Multiplexers drive control decision making
 //Modules receive pre-determined inputs based on mux output
-
 module cpu (clk, rst
 );
 
 	input clk, rst;
 
 	// wires in IF stage
-	wire [31:0] PC_in;  
 	wire [31:0] PC_out;
 	wire [31:0] PC_plus4; 
 	wire [31:0] instruction_out;
 	
 	assign PC_plus4 = PC_out + 4;
-	assign PC_in = PC_plus4;
-	
+
 	// wires in ID stage
 	wire [31:0] IF_ID_PC_plus4, IF_ID_instruction;
 	wire [4:0] MEM_WB_RegisterRd;
@@ -140,7 +138,7 @@ module cpu (clk, rst
 	// (WORKING) IF stage: PC, IM, IF_ID_reg
 	//*************************************
 	pc Unit0 (
-		.PC_in(PC_in), .clk(clk), .reset(rst),  .PCWrite(PCWrite), .PC_out(PC_out)
+		.PC_in(third_jump_or_branch_mux_2_to_1_out), .clk(clk), .reset(rst),  .PCWrite(PCWrite), .PC_out(PC_out)
 	);
 	
 	InstructionMemory Unit1 (

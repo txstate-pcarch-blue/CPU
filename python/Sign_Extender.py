@@ -1,7 +1,7 @@
 from myhdl import *
 
 @block
-def Sign_Extender(clk, instruction, output):
+def Sign_Extender(instruction, output):
     #Instruction should be a 16-bit intbv
     #output is accurate 32-bit intbv.
     @always_comb

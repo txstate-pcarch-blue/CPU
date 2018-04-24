@@ -13,7 +13,7 @@ if (__name__ == "__main__"):
     output = Signal(intbv(0, 0, 2**32))
     clk = Signal(0)
 
-    pc_driver = traceSignals(Sign_Extender(clk, instruction, output))
+    pc_driver = traceSignals(Sign_Extender(instruction, output))
     clock_driver = clock_generator(clk)
     rand_driver = random_signal(clk, instruction)
   

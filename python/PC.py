@@ -9,7 +9,7 @@ def program_counter(clock, reset, addr_out, addr_in, PCwrite):
     def program_counter():
       if (reset):
         addr_out.next = 0
-      elif (PCWrite):
-        addr_out.next = addr_in + 4
+      elif PCwrite:
+        addr_out.next = addr_in
 
     return program_counter

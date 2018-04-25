@@ -6,7 +6,7 @@ from helpers.Pulse_Generator import pulse_generator
 
 if (__name__ == "__main__"):
     MAX_CYCLES = 1000
-
+    #create signal variables
     clk = Signal(0)
     RegWrite_in = Signal(0)
     MemtoReg_in = Signal(intbv(0, 0, 2**2))
@@ -20,7 +20,7 @@ if (__name__ == "__main__"):
     MemtoReg_out = Signal(intbv(0, 0, 2**2))
 
     rst = Signal(0)
-
+    #create drivers for variables
     clock_driver = clock_generator(clk, 10)
 
     reg_driver = traceSignals(mem_wb(clk, rst, RegWrite_in, MemtoReg_in, D_MEM_read_data_in, D_MEM_read_addr_in,
@@ -31,7 +31,7 @@ if (__name__ == "__main__"):
     D_MEM_read_addr_in_driver = random_signal(D_MEM_read_addr_in, clk)
     EX_MEM_RegisterRd_in_driver = random_signal(EX_MEM_RegisterRd_in, clk)
     RegWrite_in_driver = pulse_generator(clk, RegWrite_in, 20)
-
+    #create and run the simulation
     sim = Simulation(clock_driver, reg_driver, MemtoReg_in_driver,
                         D_MEM_read_data_in_driver, D_MEM_read_addr_in_driver, EX_MEM_RegisterRd_in_driver,
                         RegWrite_in_driver)

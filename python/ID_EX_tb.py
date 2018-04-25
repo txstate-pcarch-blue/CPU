@@ -5,7 +5,7 @@ from helpers.Random_Signal import random_signal
 
 if (__name__ == "__main__"):
     MAX_CYCLES = 1000
-
+    #create signal variables
     readA_out = Signal(intbv(0, 0, 2**32))
     readB_out = Signal(intbv(0, 0, 2**32))
     PC_Plus4_out = Signal(intbv(0, 0, 2 ** 32))
@@ -50,7 +50,7 @@ if (__name__ == "__main__"):
     reset = Signal(0)
     ID_Hazard_lwstall = Signal(intbv(0, 0, 2**1))
     ID_Hazard_branch = Signal(intbv(0, 0, 2**1))
-
+    #create drivers for signals
     reg_driver = traceSignals(id_ex(clock, reset, ID_Hazard_lwstall, ID_Hazard_branch, branch_in,
                                     MemRead_in, MemWrite_in, Jump_in, RegWrite_in, ALUSrc_in, ALUOp_in,
                                     RegDst_in, MemToReg_in, jump_addr_in, PC_Plus4_in, branch_addr_in,
@@ -83,6 +83,6 @@ if (__name__ == "__main__"):
     RS_driver = random_signal(clock, RS_in)
     RD_driver = random_signal(clock, RD_in)
     funct_driver = random_signal(clock, funct_in)
-
+    #run simulation
     sim = Simulation(instances())
     sim.run(MAX_CYCLES)

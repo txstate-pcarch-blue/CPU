@@ -4,12 +4,13 @@ from helpers.Clock_Generator import clock_generator
 from helpers.Random_Signal import random_signal
 
 if (__name__ == "__main__"):
+    #create signal variables
     clk = Signal(intbv(0, 0, 2**1))
     In1_instruction = Signal(intbv(0, 0, 2**16))
     In2_pc_plus_4 = Signal(intbv(0, 0, 2**32))
     Jump_Address = Signal(intbv(0, 0, 2**32))
     bta_Address = Signal(intbv(0, 0, 2**32))
-
+    #create drivers for signals
     clk_driver = clock_generator(clk)
     In1_instruction_driver = random_signal(In1_instruction, clk)
     In2_pc_plus_4_driver = random_signal(In2_pc_plus_4, clk)

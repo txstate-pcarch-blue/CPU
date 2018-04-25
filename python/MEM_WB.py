@@ -7,6 +7,7 @@ def mem_wb(clk, rst, RegWrite_in, MemtoReg_in, D_MEM_read_data_in, D_MEM_read_ad
 
             @always(clk.posedge)
             def latch():
+                #if reset, reset signals
                 if(rst==1):
                     RegWrite_out.next = 0
                     MemtoReg_out.next = 0
@@ -14,6 +15,7 @@ def mem_wb(clk, rst, RegWrite_in, MemtoReg_in, D_MEM_read_data_in, D_MEM_read_ad
                     D_MEM_read_addr_out.next = 0
                     MEM_WB_RegisterRd_out.next = 0
                     PC_plus_4_out.next = 0
+                #if not, send signals through normally
                 else:
                     RegWrite_out.next = RegWrite_in
                     MemtoReg_out.next = MemtoReg_in

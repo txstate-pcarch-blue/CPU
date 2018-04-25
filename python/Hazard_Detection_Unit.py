@@ -23,7 +23,7 @@ def branch_or_jump_taken_flush(EX_MEM_branch_out_in, EX_MEM_jump_out_in, EX_MEM_
             IF_Flush.next = 1
             ID_Flush.next = 1
             EX_Flush.next = 1
-            branch_or_jump_taken.next = 1;
+            branch_or_jump_taken.next = 1
         else:
             IF_Flush.next = 0
             ID_Flush.next = 0

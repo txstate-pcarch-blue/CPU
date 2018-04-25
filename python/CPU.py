@@ -185,10 +185,10 @@ def CPU(reset, regOut):
     Unit25 = hazard_unit(ID_EX_MemRead, ID_EX_RegisterRt, IF_ID_instruction(26,21), IF_ID_instruction(21,16), ID_Flush_lwstall, PCWrite, IF_ID_Write)
     Unit6 = hazard_stall_mux_2_to_1(RegWrite, MemWrite, ID_Flush_lwstall, h_RegWrite_out, h_MemWrite_out)
     Unit28 = writeback_source_mux_3_to_1(MEM_WB_D_MEM_read_addr, MEM_WB_D_MEM_read_data,  MEM_WB_PC_plus_4, MEM_WB_MemtoReg, writeback_source_mux_3_to_1_out)
-    Unit7 = RegisterFile(reg_read_data_1, reg_read_data_2, writeback_source_mux_3_to_1_out, IF_ID_instruction(26, 21), IF_ID_instruction(21, 16), regDst_mux_3_to_1_out, MEM_WB_RegWrite, clock, reset, regOut)
+    Unit7 = RegisterFile(reg_read_data_1, reg_read_data_2, writeback_source_mux_3_to_1_out, IF_ID_instruction(26, 21), IF_ID_instruction(21, 16), MEM_WB_RegRd, MEM_WB_RegWrite, clock, reset, regOut)
     Unit8 = branch_calculator(immi_sign_extended, IF_ID_PC_plus4, BTA)
     Unit9 = jump_calculator(IF_ID_instruction, IF_ID_PC_plus4, Jump_Address)
-    Unit24 = id_ex(clock, reset, ID_Flush_lwstall, ID_Flush_Branch, Branch, MemRead, MemWrite, Jump, RegWrite, ALUSrc, ALUOp, RegDst, MemToReg, Jump_Address, BTA, IF_ID_PC_plus4, reg_read_data_1, reg_read_data_2, immi_sign_extended,  IF_ID_instruction(26,21), IF_ID_instruction(21,16), IF_ID_instruction(16,11), IF_ID_instruction(6,0), ID_EX_RegWrite, ID_EX_Branch, ID_EX_MemRead, ID_EX_MemWrite, ID_EX_Jump, ID_EX_ALUSrc, ID_EX_ALUOp, ID_EX_RegDst, ID_EX_MemtoReg, ID_EX_jump_addr, ID_EX_branch_address, ID_EX_PC_plus4, ID_EX_reg_read_data_1, ID_EX_reg_read_data_2, ID_EX_immi_sign_extended, ID_EX_RegisterRs, ID_EX_RegisterRt, ID_EX_RegisterRd, ID_EX_funct)
+    Unit24 = id_ex(clock, reset, ID_Flush_lwstall, ID_Flush_Branch, Branch, MemRead, MemWrite, Jump, RegWrite, ALUSrc, ALUOp, RegDst, MemToReg, Jump_Address, IF_ID_PC_plus4, BTA, reg_read_data_1, reg_read_data_2, immi_sign_extended,  IF_ID_instruction(26,21), IF_ID_instruction(21,16), IF_ID_instruction(16,11), IF_ID_instruction(6,0), ID_EX_RegWrite, ID_EX_Branch, ID_EX_MemRead, ID_EX_MemWrite, ID_EX_Jump, ID_EX_ALUSrc, ID_EX_ALUOp, ID_EX_RegDst, ID_EX_MemtoReg, ID_EX_jump_addr, ID_EX_branch_address, ID_EX_PC_plus4, ID_EX_reg_read_data_1, ID_EX_reg_read_data_2, ID_EX_immi_sign_extended, ID_EX_RegisterRs, ID_EX_RegisterRt, ID_EX_RegisterRd, ID_EX_funct)
 
     #EX Stage:
     Unit11 = alu_control(ID_EX_ALUOp, ID_EX_funct, out_to_ALU)

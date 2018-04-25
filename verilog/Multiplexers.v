@@ -103,13 +103,13 @@ endmodule
 // if 0, if some immediate type (e.g., lw) address comes from 2nd read register, bits 20:16
 // if 1, R type, address comes from rd bits 15:11
 // if 2, jal and address is hardcoded $31 for $ra slot
-module regDst_mux_3_to_1(In1_imm_destination_rt, In2_rType_rd, In3_jal_ra, Ctrl_RegDst, out);
-	input [4:0] In1_imm_destination_rt, In2_rType_rd, In3_jal_ra;
+module regDst_mux_2_to_1(In2_rType_rd, In3_jal_ra, Ctrl_RegDst, out);
+	input [4:0] In2_rType_rd, In3_jal_ra;
 	input [1:0] Ctrl_RegDst;
 	output reg [4:0] out; // 32-bit output
-	always @(In1_imm_destination_rt, In2_rType_rd, In3_jal_ra, Ctrl_RegDst) begin
+	always @(In2_rType_rd, In3_jal_ra, Ctrl_RegDst) begin
 		case (Ctrl_RegDst) 
-			0: out <= In1_imm_destination_rt;
+			0: out <= In2_rType_rd;
 			1: out <= In2_rType_rd;
 			2: out <= In3_jal_ra;
 		endcase

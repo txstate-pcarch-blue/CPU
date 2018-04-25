@@ -23,17 +23,17 @@ module hazard_unit(ID_EX_MemRead, ID_EX_RegRt, IF_ID_RegRs, IF_ID_RegRt, Mux_Sel
 endmodule
 
 //flush IF/ID, ID/EX and EX/MEM if branch OR jump is determined viable at MEM stag
-module branch_or_jump_taken_flush(EX_MEM_branch_out_in, EX_MEM_jump_out_in, EX_MEM_ALU_Zero_out_in, IF_Flush, ID_Flush_Branch, EX_Flush);
+module branch_or_jump_taken_flush(EX_MEM_branch_out_in, EX_MEM_jump_out_in, EX_MEM_ALU_Zero_out_in, IF_Flush, ID_Flush_Branch, EX_Flush, branch_or_jump_taken);
 
 	input EX_MEM_branch_out_in, EX_MEM_jump_out_in, EX_MEM_ALU_Zero_out_in;
-	output reg IF_Flush, ID_Flush_Branch, EX_Flush;
+	output reg IF_Flush, ID_Flush_Branch, EX_Flush, branch_or_jump_taken;
 
 	always @( EX_MEM_branch_out_in, EX_MEM_jump_out_in, EX_MEM_ALU_Zero_out_in ) begin
 		if (((EX_MEM_ALU_Zero_out_in == 1) && (EX_MEM_branch_out_in == 1)) || (EX_MEM_jump_out_in == 1)) begin 
-			IF_Flush <=1 ; ID_Flush_Branch <=1 ; EX_Flush <=1 ; 
+			IF_Flush <=1 ; ID_Flush_Branch <=1 ; EX_Flush <=1 ; branch_or_jump_taken <= 1;
 		end
 		else begin 
-			IF_Flush <= 0; ID_Flush_Branch <= 0; EX_Flush <= 0; 
+			IF_Flush <= 0; ID_Flush_Branch <= 0; EX_Flush <= 0; branch_or_jump_taken <= 0;
 		end
 	end
 endmodule

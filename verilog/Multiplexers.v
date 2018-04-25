@@ -103,13 +103,13 @@ endmodule
 // if 0, if some immediate type (e.g., lw) address comes from 2nd read register, bits 20:16
 // if 1, R type, address comes from rd bits 15:11
 // if 2, jal and address is hardcoded $31 for $ra slot
-module regDst_mux_3_to_1(In1_imm_destination_rt, In2_rType_rd, In3_jal_ra, Ctrl_RegDst, out);
-	input [4:0] In1_imm_destination_rt, In2_rType_rd, In3_jal_ra;
+module regDst_mux_2_to_1(In2_rType_rd, In3_jal_ra, Ctrl_RegDst, out);
+	input [4:0] In2_rType_rd, In3_jal_ra;
 	input [1:0] Ctrl_RegDst;
 	output reg [4:0] out; // 32-bit output
-	always @(In1_imm_destination_rt, In2_rType_rd, In3_jal_ra, Ctrl_RegDst) begin
+	always @(In2_rType_rd, In3_jal_ra, Ctrl_RegDst) begin
 		case (Ctrl_RegDst) 
-			0: out <= In1_imm_destination_rt;
+			0: out <= In2_rType_rd;
 			1: out <= In2_rType_rd;
 			2: out <= In3_jal_ra;
 		endcase
@@ -189,6 +189,27 @@ module hazard_stall_mux_2_to_1(h_RegWrite, h_MemWrite, Ctrl_Mux_Select_Stall, h_
 		case (Ctrl_Mux_Select_Stall) 
 			0: begin h_RegWrite_out <= h_RegWrite; h_MemWrite_out <= h_MemWrite; end
 			1: begin h_RegWrite_out <= 0; h_MemWrite_out <= 0; end
+		endcase
+	end
+endmodule
+
+
+//Mux to select either output of third_jr_or_second_mux output
+//or next available instruction
+//Control: Ctrl_branch_or_jump_taken
+//If control is high, take output of 3rd mux that contains branch or jump address
+//If zero, proceed to PC+4
+module PC_input_mux_2_to_1(pc_plus_4, branch_or_jump_in, Ctrl_branch_or_jump_taken, out);
+
+	input [31:0] pc_plus_4;
+	input [31:0] branch_or_jump_in;
+	input Ctrl_branch_or_jump_taken;
+	output reg [31:0] out;
+	
+	always @(pc_plus_4, branch_or_jump_in, Ctrl_branch_or_jump_taken) begin
+		case (Ctrl_branch_or_jump_taken) 
+			0: out <= pc_plus_4;
+			1: out <= branch_or_jump_in;
 		endcase
 	end
 endmodule

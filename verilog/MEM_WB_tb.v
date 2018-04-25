@@ -6,11 +6,11 @@ module MEM_WB_tb();
 
 	reg RegWrite_in;
 	reg [1:0] MemtoReg_in;
-	reg [31:0] D_MEM_read_data_in, D_MEM_read_addr_in;
+	reg [31:0] D_MEM_read_data_in, D_MEM_read_addr_in, PC_plus_4_in;
 	reg [4:0] EX_MEM_RegisterRd_in;
 	reg clk, rst;
 
-	wire [31:0] D_MEM_read_data_out, D_MEM_read_addr_out;
+	wire [31:0] D_MEM_read_data_out, D_MEM_read_addr_out, PC_plus_4_out;
 	wire [4:0] MEM_WB_RegisterRd_out;
 	wire RegWrite_out;
 	wire [1:0] MemtoReg_out;
@@ -20,9 +20,9 @@ module MEM_WB_tb();
 	always #(tck/2) clk <= ~clk; // clocking device
 	
 	MEM_WB dut (
-		RegWrite_in, MemtoReg_in, D_MEM_read_data_in, D_MEM_read_addr_in, EX_MEM_RegisterRd_in, 		clk, rst,
+		RegWrite_in, MemtoReg_in, D_MEM_read_data_in, D_MEM_read_addr_in, PC_plus_4_in, EX_MEM_RegisterRd_in, 		clk, rst,
 
-		D_MEM_read_data_out, D_MEM_read_addr_out, 
+		D_MEM_read_data_out, D_MEM_read_addr_out, PC_plus_4_out,
 		MEM_WB_RegisterRd_out,
 		RegWrite_out, MemtoReg_out
 	 );

@@ -1,3 +1,5 @@
+#ID/EX stage register
+#if ID_Hazard_lwstall or ID_Hazard_Branch equals 1, clear all WB, MEM, and EX control signal on rising edge
 from myhdl import *
 
 @block
@@ -14,6 +16,7 @@ def id_ex(clk, rst, ID_Hazard_lwstall, ID_Hazard_Branch, Branch_in, MemRead_in,
 
     @always(clk.posedge)
     def latches():
+        #if reset, clear all WB, MEM, and EX control signals
         if(rst==1):
             RegWrite_out.next = 0
             MemtoReg_out.next = 0

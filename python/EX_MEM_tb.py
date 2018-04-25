@@ -5,7 +5,7 @@ from helpers.Random_Signal import random_signal
 
 if (__name__ == "__main__"):
     MAX_CYCLES = 1000
-
+    #create variables and Signals for them
     clk = Signal(intbv(0, 0, 2**1))
 
     ALU_in = Signal(intbv(0, 0, 2**32))
@@ -26,7 +26,7 @@ if (__name__ == "__main__"):
     MemWrite_out = Signal(intbv(0, 0, 2**1))
     WB_out = Signal(intbv(0, 0, 2**1))
 
-
+    #create all the drivers for the variables to generate the signals
     clock_driver = clock_generator(clk)
 
     register_driver = traceSignals(ex_mem(clk, ALU_in, ALU_out, MemData_in, MemData_out, reg_in,
@@ -41,7 +41,7 @@ if (__name__ == "__main__"):
     MemWrite_driver = random_signal(clk, MemWrite_in)
     WB_driver = random_signal(clk, WB_in)
 
-
+    #run the simulations
     sim = Simulation(clock_driver, register_driver, ALU_driver, MemData_driver,
                         reg_driver, zero_driver, PC_driver, MemToReg_driver, MemWrite_driver,
                         WB_driver)

@@ -19,4 +19,4 @@ def if_id(clk, rst, inst_in, inst_out, PC_in, PC_out, IF_flush, IFID_write):
                 inst_out.next = inst_in
                 PC_out.next = PC_in
 
-    return read
+    return latch

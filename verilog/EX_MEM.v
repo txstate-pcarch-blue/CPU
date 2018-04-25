@@ -27,8 +27,8 @@
 module EX_MEM (	
 	input clk, rst,
 	input EX_Flush,
-	input RegWrite_in, 
-	input [1:0] MemtoReg_in,
+	input RegWrite_in,  
+	input [1:0] MemtoReg_in, RegDst_in,
 	input Branch_in, MemRead_in, MemWrite_in, Jump_in,
 	input [31:0] jump_addr_in, branch_addr_in, PC_plus_4_in,
 	input ALU_zero_in,
@@ -36,7 +36,7 @@ module EX_MEM (
 	input [4:0] ID_EX_RegisterRd_in,
 	
 	output RegWrite_out, 
-	output [1:0] MemtoReg_out,
+	output [1:0] MemtoReg_out, RegDst_out,
 	output Branch_out, MemRead_out, MemWrite_out, Jump_out,
 	output [31:0] jump_addr_out, branch_addr_out, PC_plus_4_out,
 	output ALU_zero_out,
@@ -45,7 +45,7 @@ module EX_MEM (
 );
 
 	reg RegWrite_out;
-	reg [1:0] MemtoReg_out;
+	reg [1:0] MemtoReg_out, RegDst_out;
 	reg Branch_out, MemRead_out, MemWrite_out, Jump_out;
 	reg [31:0] jump_addr_out, branch_addr_out, PC_plus_4_out;
 	reg ALU_zero_out;
@@ -56,6 +56,7 @@ module EX_MEM (
 		if (rst == 1'b1) begin
 		  RegWrite_out <= 1'b0;
 		  MemtoReg_out <= 2'b00;
+		  RegDst_out <= 2'b00;
 		  Branch_out <= 1'b0;
 		  MemRead_out <= 1'b0;
 		  MemWrite_out <= 1'b0;
@@ -73,6 +74,7 @@ module EX_MEM (
 
 			RegWrite_out <= RegWrite_in;
 		 	MemtoReg_out <= MemtoReg_in;
+			RegDst_out <= RegDst_in;
 		  	Branch_out <= Branch_in;
 		  	MemRead_out <= MemRead_in;
 		  	MemWrite_out <= MemWrite_in;
@@ -89,6 +91,7 @@ module EX_MEM (
 
 				RegWrite_out <= 1'b0;
 			  	MemtoReg_out <= 2'b00;
+				RegDst_out <= 2'b00;
 			  	Branch_out <= 1'b0;
 			  	MemRead_out <= 1'b0;
 			  	MemWrite_out <= 1'b0;

@@ -73,7 +73,7 @@ module cpu (clk, rst, regOutReg0, regOutReg1, regOutReg2, regOutReg3, regOutReg4
 	wire [31:0] third_alu_mux_2_to_1_out;
 	wire [4:0] idEx_to_exMem_mux_2_to_1_out;
 	wire [31:0] writeback_source_mux_3_to_1_out;
-	wire [4:0] regDst_mux_3_to_1_out;
+	wire [4:0] regDst_mux_2_to_1_out;
 	wire [31:0] first_PC4_or_branch_mux_2_to_1_out;
 	wire [31:0] second_jump_or_first_mux_2_to_1_out;
 	wire [31:0] third_jr_or_second_mux_2_to_1_out;
@@ -138,7 +138,7 @@ module cpu (clk, rst, regOutReg0, regOutReg1, regOutReg2, regOutReg3, regOutReg4
 	//*************************************
 	wire [4:0] EX_MEM_RegisterRd;
 	wire EX_MEM_Branch, EX_MEM_MemRead, EX_MEM_MemWrite, EX_MEM_Jump;
-	wire [1:0] EX_MEM_MemtoReg;
+	wire [1:0] EX_MEM_MemtoReg, EX_MEM_RegDst;
 	wire EX_MEM_RegWrite;
 	wire [31:0] EX_MEM_jump_addr, EX_MEM_branch_addr, EX_MEM_PC_plus4;
 	wire EX_MEM_ALU_zero;
@@ -150,7 +150,7 @@ module cpu (clk, rst, regOutReg0, regOutReg1, regOutReg2, regOutReg3, regOutReg4
 	//*************************************
 	wire [31:0] reg_write_data;
 	wire MEM_WB_RegWrite;
-	wire [1:0] MEM_WB_MemtoReg;
+	wire [1:0] MEM_WB_MemtoReg, MEM_WB_RegDst;
 	wire [31:0] MEM_WB_D_MEM_read_data, MEM_WB_D_MEM_read_addr;
 	wire [31:0] MEM_WB_PC_plus4;
 	
@@ -187,8 +187,8 @@ module cpu (clk, rst, regOutReg0, regOutReg1, regOutReg2, regOutReg3, regOutReg4
 		.opcode(IF_ID_instruction[31:26]), .ALUSrc(ALUSrc), .RegDst(RegDst), .MemWrite(MemWrite), .MemRead(MemRead), .Beq(Branch), .Jump(Jump), .MemToReg(MemToReg), .RegWrite(RegWrite), .ALUOp(ALUOp)
 	);
 	
-	regDst_mux_3_to_1 regDst_mux_3_to_1_Unit4 (
-		.In1_imm_destination_rt(IF_ID_instruction[20:16]), .In2_rType_rd(IF_ID_instruction[25:21]), .In3_jal_ra(In3_jal_ra), .Ctrl_RegDst(RegDst), .out(regDst_mux_3_to_1_out)
+	regDst_mux_2_to_1 regDst_mux_2_to_1_Unit4 (
+		.In2_rType_rd(MEM_WB_RegisterRd), .In3_jal_ra(In3_jal_ra), .Ctrl_RegDst(MEM_WB_RegDst), .out(regDst_mux_2_to_1_out)
 	);
 	
 	hazard_unit hazard_unit_Unit5(
@@ -200,7 +200,7 @@ module cpu (clk, rst, regOutReg0, regOutReg1, regOutReg2, regOutReg3, regOutReg4
 	);
 	
 	RegisterFile RegisterFile_Unit7(
-		.BusA(reg_read_data_1), .BusB(reg_read_data_2), .BusW(writeback_source_mux_3_to_1_out), .RA(IF_ID_instruction[25:21]), .RB(IF_ID_instruction[20:16]), .RW(regDst_mux_3_to_1_out), .RegWr(MEM_WB_RegWrite), .Clk(clk), .Rst(rst),
+		.BusA(reg_read_data_1), .BusB(reg_read_data_2), .BusW(writeback_source_mux_3_to_1_out), .RA(IF_ID_instruction[25:21]), .RB(IF_ID_instruction[20:16]), .RW(regDst_mux_2_to_1_out), .RegWr(MEM_WB_RegWrite), .Clk(clk), .Rst(rst),
 		.regOut0(regOut0), .regOut1(regOut1), .regOut2(regOut2), .regOut3(regOut3), .regOut4(regOut4), .regOut5(regOut5), .regOut6(regOut6), .regOut7(regOut7),
 		.regOut8(regOut8), .regOut9(regOut9), .regOut10(regOut10),.regOut11(regOut11),.regOut12(regOut12),.regOut13(regOut13),.regOut14(regOut14),.regOut15(regOut15),
 		.regOut16(regOut16),.regOut17(regOut17),.regOut18(regOut18),.regOut19(regOut19),.regOut20(regOut20),.regOut21(regOut21),.regOut22(regOut22),.regOut23(regOut23),
@@ -279,7 +279,7 @@ module cpu (clk, rst, regOutReg0, regOutReg1, regOutReg2, regOutReg3, regOutReg4
 		.clk(clk), .rst(rst),
 		.EX_Flush(EX_Flush),
 		.RegWrite_in(ID_EX_RegWrite), 
-		.MemtoReg_in(ID_EX_MemtoReg),
+		.MemtoReg_in(ID_EX_MemtoReg), .RegDst_in(ID_EX_RegDst),
 		.Branch_in(ID_EX_Branch), .MemRead_in(ID_EX_MemRead), .MemWrite_in(ID_EX_MemWrite), .Jump_in(ID_EX_Jump),
 		.jump_addr_in(ID_EX_jump_addr), .branch_addr_in(ID_EX_branch_address), .PC_plus_4_in(ID_EX_PC_plus4),
 		.ALU_zero_in(ALU_zero),
@@ -287,7 +287,7 @@ module cpu (clk, rst, regOutReg0, regOutReg1, regOutReg2, regOutReg3, regOutReg4
 		.ID_EX_RegisterRd_in(idEx_to_exMem_mux_2_to_1_out),
 		
 		.RegWrite_out(EX_MEM_RegWrite), 
-		.MemtoReg_out(EX_MEM_MemtoReg),
+		.MemtoReg_out(EX_MEM_MemtoReg), .RegDst_out(EX_MEM_RegDst), 
 		.Branch_out(EX_MEM_Branch), .MemRead_out(EX_MEM_MemRead), .MemWrite_out(EX_MEM_MemWrite), .Jump_out(EX_MEM_Jump),
 		.jump_addr_out(EX_MEM_jump_addr), .branch_addr_out(EX_MEM_branch_addr), .PC_plus_4_out(EX_MEM_PC_plus4),
 		.ALU_zero_out(EX_MEM_ALU_zero),
@@ -311,7 +311,7 @@ module cpu (clk, rst, regOutReg0, regOutReg1, regOutReg2, regOutReg3, regOutReg4
 	// Beware, there be alien engineers here!
 	MEM_WB MEM_WB_Unit22(
 		.RegWrite_in(EX_MEM_RegWrite), 
-		.MemtoReg_in(EX_MEM_MemtoReg),
+		.MemtoReg_in(EX_MEM_MemtoReg), .RegDst_in(EX_MEM_RegDst),
 		.D_MEM_read_data_in(D_MEM_data), .D_MEM_read_addr_in(EX_MEM_ALU_result), .PC_plus_4_in(EX_MEM_PC_plus4),
 		.EX_MEM_RegisterRd_in(EX_MEM_RegisterRd),
 		.clk(clk), .rst(rst),
@@ -319,7 +319,7 @@ module cpu (clk, rst, regOutReg0, regOutReg1, regOutReg2, regOutReg3, regOutReg4
 		.D_MEM_read_data_out(MEM_WB_D_MEM_read_data), .D_MEM_read_addr_out(MEM_WB_D_MEM_read_addr), .PC_plus_4_out(MEM_WB_PC_plus4),
 		.MEM_WB_RegisterRd_out(MEM_WB_RegisterRd),
 		.RegWrite_out(MEM_WB_RegWrite), 
-		.MemtoReg_out(MEM_WB_MemtoReg)
+		.MemtoReg_out(MEM_WB_MemtoReg), .RegDst_out(MEM_WB_RegDst)
 	);
 	
 	//AND gate to compare ALU zero with Control's branch signal

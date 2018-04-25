@@ -40,7 +40,7 @@ memOut250,memOut251,memOut252,memOut253,memOut254,memOut255
 );
 
 input [31:0] Addr; //instruction address from PC
-output [31:0] Inst; //instruction to output
+output reg [31:0] Inst; //instruction to output
 
 reg [31:0] MEM[0:255];
 

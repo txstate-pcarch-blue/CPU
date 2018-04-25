@@ -193,3 +193,24 @@ module hazard_stall_mux_2_to_1(h_RegWrite, h_MemWrite, Ctrl_Mux_Select_Stall, h_
 	end
 endmodule
 
+
+//Mux to select either output of third_jr_or_second_mux output
+//or next available instruction
+//Control: Ctrl_branch_or_jump_taken
+//If control is high, take output of 3rd mux that contains branch or jump address
+//If zero, proceed to PC+4
+module PC_input_mux_2_to_1(pc_plus_4, branch_or_jump_in, Ctrl_branch_or_jump_taken, out);
+
+	input [31:0] pc_plus_4;
+	input [31:0] branch_or_jump_in;
+	input Ctrl_branch_or_jump_taken;
+	output reg [31:0] out;
+	
+	always @(pc_plus_4, branch_or_jump_in, Ctrl_branch_or_jump_taken) begin
+		case (Ctrl_branch_or_jump_taken) 
+			0: out <= pc_plus_4;
+			1: out <= branch_or_jump_in;
+		endcase
+	end
+endmodule
+

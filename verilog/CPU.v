@@ -38,6 +38,7 @@ module cpu (clk, rst, regOutReg0, regOutReg1, regOutReg2, regOutReg3, regOutReg4
 	input clk, rst;
 
 	// wires in IF stage
+	wire [31:0] PC_in;
 	wire [31:0] PC_out;
 	wire [31:0] PC_plus4; 
 	wire [31:0] instruction_out;
@@ -139,7 +140,7 @@ module cpu (clk, rst, regOutReg0, regOutReg1, regOutReg2, regOutReg3, regOutReg4
 	wire EX_MEM_Branch, EX_MEM_MemRead, EX_MEM_MemWrite, EX_MEM_Jump;
 	wire [1:0] EX_MEM_MemtoReg;
 	wire EX_MEM_RegWrite;
-	wire [31:0] EX_MEM_jump_addr, EX_MEM_branch_addr;
+	wire [31:0] EX_MEM_jump_addr, EX_MEM_branch_addr, EX_MEM_PC_plus4;
 	wire EX_MEM_ALU_zero;
 	wire [31:0] EX_MEM_ALU_result, EX_MEM_reg_read_data_2;
 	wire [31:0] D_MEM_data;  //from DM stage output
@@ -151,23 +152,28 @@ module cpu (clk, rst, regOutReg0, regOutReg1, regOutReg2, regOutReg3, regOutReg4
 	wire MEM_WB_RegWrite;
 	wire [1:0] MEM_WB_MemtoReg;
 	wire [31:0] MEM_WB_D_MEM_read_data, MEM_WB_D_MEM_read_addr;
-	
+	wire [31:0] MEM_WB_PC_plus4;
 	
 	// wires for forwarding
 	wire [1:0] ForwardA, ForwardB;
+	wire branch_or_jump_taken;
 	
 	//*************************************
 	// (WORKING) IF stage: PC, IM, IF_ID_reg
 	//*************************************
+	PC_input_mux_2_to_1 PC_input_mux_2_to_1_UnitX(
+		.pc_plus_4(PC_plus4), .branch_or_jump_in(third_jr_or_second_mux_2_to_1_out), .Ctrl_branch_or_jump_taken(branch_or_jump_taken), .out(PC_in)
+	);
+	
 	pc pc_Unit0 (
-		.PC_in(third_jr_or_second_mux_2_to_1_out), .clk(clk), .reset(rst),  .PCWrite(PCWrite), .PC_out(PC_out)
+		.PC_in(PC_in), .clk(clk), .reset(rst),  .PCWrite(PCWrite), .PC_out(PC_out)
 	);
 	
 	InstructionMemory InstructionMemory_Unit1 (
-		.Addr(PC_out), .Clk(clk), .Inst(instruction_out)
+		.Addr(PC_out), .Inst(instruction_out)
 	);
-	parameter in_file = "instructions.txt:";
-	defparam Unit1.in_file = in_file;
+	parameter in_file = "instructions.txt";
+	defparam InstructionMemory_Unit1.in_file = in_file;
 	
 	IF_ID IF_ID_Unit2 (
 		.InsIn(instruction_out), .PC_plus4_In(PC_plus4), .InsOut(IF_ID_instruction), .PC_plus4_out(IF_ID_PC_plus4), .IFID_write(IF_ID_Write), .IF_flush(IF_Flush), .clk(clk), .reset(rst)
@@ -275,7 +281,7 @@ module cpu (clk, rst, regOutReg0, regOutReg1, regOutReg2, regOutReg3, regOutReg4
 		.RegWrite_in(ID_EX_RegWrite), 
 		.MemtoReg_in(ID_EX_MemtoReg),
 		.Branch_in(ID_EX_Branch), .MemRead_in(ID_EX_MemRead), .MemWrite_in(ID_EX_MemWrite), .Jump_in(ID_EX_Jump),
-		.jump_addr_in(ID_EX_jump_addr), .branch_addr_in(ID_EX_branch_address),
+		.jump_addr_in(ID_EX_jump_addr), .branch_addr_in(ID_EX_branch_address), .PC_plus_4_in(ID_EX_PC_plus4),
 		.ALU_zero_in(ALU_zero),
 		.ALU_result_in(ALU_result), .reg_read_data_2_in(second_alu_mux_3_to_1_out),
 		.ID_EX_RegisterRd_in(idEx_to_exMem_mux_2_to_1_out),
@@ -283,7 +289,7 @@ module cpu (clk, rst, regOutReg0, regOutReg1, regOutReg2, regOutReg3, regOutReg4
 		.RegWrite_out(EX_MEM_RegWrite), 
 		.MemtoReg_out(EX_MEM_MemtoReg),
 		.Branch_out(EX_MEM_Branch), .MemRead_out(EX_MEM_MemRead), .MemWrite_out(EX_MEM_MemWrite), .Jump_out(EX_MEM_Jump),
-		.jump_addr_out(EX_MEM_jump_addr), .branch_addr_out(EX_MEM_branch_addr),
+		.jump_addr_out(EX_MEM_jump_addr), .branch_addr_out(EX_MEM_branch_addr), .PC_plus_4_out(EX_MEM_PC_plus4),
 		.ALU_zero_out(EX_MEM_ALU_zero),
 		.ALU_result_out(EX_MEM_ALU_result), .reg_read_data_2_out(EX_MEM_reg_read_data_2),
 		.EX_MEM_RegisterRd_out(EX_MEM_RegisterRd)
@@ -298,7 +304,7 @@ module cpu (clk, rst, regOutReg0, regOutReg1, regOutReg2, regOutReg3, regOutReg4
 	branch_or_jump_taken_flush branch_or_jump_taken_flush_Unit21(
 		.EX_MEM_branch_out_in(EX_MEM_Branch), .EX_MEM_jump_out_in(EX_MEM_Jump), .EX_MEM_ALU_Zero_out_in(EX_MEM_ALU_zero),
 	
-		.IF_Flush(IF_Flush), .ID_Flush_Branch(ID_Flush_Branch), .EX_Flush(EX_Flush)
+		.IF_Flush(IF_Flush), .ID_Flush_Branch(ID_Flush_Branch), .EX_Flush(EX_Flush), .branch_or_jump_taken(branch_or_jump_taken)
 	);
 	
 	
@@ -306,11 +312,11 @@ module cpu (clk, rst, regOutReg0, regOutReg1, regOutReg2, regOutReg3, regOutReg4
 	MEM_WB MEM_WB_Unit22(
 		.RegWrite_in(EX_MEM_RegWrite), 
 		.MemtoReg_in(EX_MEM_MemtoReg),
-		.D_MEM_read_data_in(D_MEM_data), .D_MEM_read_addr_in(EX_MEM_ALU_result),
+		.D_MEM_read_data_in(D_MEM_data), .D_MEM_read_addr_in(EX_MEM_ALU_result), .PC_plus_4_in(EX_MEM_PC_plus4),
 		.EX_MEM_RegisterRd_in(EX_MEM_RegisterRd),
 		.clk(clk), .rst(rst),
         
-		.D_MEM_read_data_out(MEM_WB_D_MEM_read_data), .D_MEM_read_addr_out(MEM_WB_D_MEM_read_addr),
+		.D_MEM_read_data_out(MEM_WB_D_MEM_read_data), .D_MEM_read_addr_out(MEM_WB_D_MEM_read_addr), .PC_plus_4_out(MEM_WB_PC_plus4),
 		.MEM_WB_RegisterRd_out(MEM_WB_RegisterRd),
 		.RegWrite_out(MEM_WB_RegWrite), 
 		.MemtoReg_out(MEM_WB_MemtoReg)
@@ -337,7 +343,7 @@ module cpu (clk, rst, regOutReg0, regOutReg1, regOutReg2, regOutReg3, regOutReg4
 	//*************************************
 	
 	writeback_source_mux_3_to_1 writeback_source_mux_3_to_1_Unit26(
-		.In1_ALU_Result(MEM_WB_D_MEM_read_addr), .In2_Mem_output(MEM_WB_D_MEM_read_data), .In3_PC_plus_4(), .Ctrl_MemToReg(MEM_WB_MemtoReg), .out(writeback_source_mux_3_to_1_out)
+		.In1_ALU_Result(MEM_WB_D_MEM_read_addr), .In2_Mem_output(MEM_WB_D_MEM_read_data), .In3_PC_plus_4(MEM_WB_PC_plus4), .Ctrl_MemToReg(MEM_WB_MemtoReg), .out(writeback_source_mux_3_to_1_out)
 	);
 	
 endmodule

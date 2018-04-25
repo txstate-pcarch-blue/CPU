@@ -7,7 +7,7 @@ sys.path.append(os.path.join(base_d, "python/"))
 
 from python.helpers.Clock_Generator import clock_generator
 from python.helpers.Paths import *
-from python.helpers.Match_Test import match_test_assert
+from python.helpers.Match_Test import match_test_assert, match_test_report
 from CPU import CPU as py_cpu
 from helpers.CPU_Reset_Generator import CPU_Reset_Generator
 
@@ -45,9 +45,9 @@ def run_MIPS_cosim():
     # Create the simulations and run
     clock_driver = clock_generator(clock)
     reset_driver = CPU_Reset_Generator(clock, reset)
-    py_cosim = py_cpu(clock, reset, pyregs)
+    py_cosim = traceSignals(py_cpu(clock, reset, pyregs))
     v_cosim = v_cpu(clock, reset, vregs)
-    match_t = match_test_assert(clock, vregs, pyregs)
+    match_t = match_test_report(clock, vregs, pyregs)
     sim = Simulation(instances())
 
     # Enter the read / execute / display cycle
@@ -72,7 +72,7 @@ def run_MIPS_cosim():
         elif inp.startswith("run "):
             try:
                 cycles = int(inp.split()[1].strip())
-                sim.run(cycles)
+                sim.run(cycles*20)
                 continue
             except ValueError:
                 pass

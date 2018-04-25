@@ -3,7 +3,7 @@ from os import path
 base_d = path.join(path.abspath(path.dirname(__file__)), "../..")
 
 # Path declarations
-IM_in_file = path.join(base_d, "bin/instructions.txt") # Instruction Memory address hard coded into the CPU.v file
+IM_in_file = path.join(base_d, "instructions.txt") # Instruction Memory address hard coded into the CPU.v file
 Accu_v = path.join(base_d, "samples/Accumulator.v")
 Accu_o = path.join(base_d, "bin/Accumulator.o")
 ALU_v = path.join(base_d, "verilog/ALU.v")

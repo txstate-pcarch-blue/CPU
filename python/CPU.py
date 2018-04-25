@@ -37,11 +37,9 @@ from helpers.Paths import IM_in_file
 # Multiplexers drive control decision making
 # Modules receive pre-determined inputs based on mux output
 @block
-def CPU(reset, regOut):
+def CPU(clock, reset, regOut):
 
-    clock = Signal(intbv(0, 0, 2**1))
 
-    clock_driver = clock_generator(clock)
 
     # Wires in the IF stage
     PC_out = Signal(intbv(0, 0, 2**32))

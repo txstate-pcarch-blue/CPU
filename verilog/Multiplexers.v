@@ -70,8 +70,8 @@ module idEx_to_exMem_mux_2_to_1(In1_rd, In2_rt, Ctrl_RegDst, out);
 	output reg [4:0] out; // 32-bit output
 	always @(In1_rd, In2_rt, Ctrl_RegDst) begin
 		case (Ctrl_RegDst) 
-			0: out <= In1_rd;
-			1: out <= In2_rt;
+			0: out <= In2_rt;
+			1: out <= In1_rd;
 		endcase
 	end
 endmodule

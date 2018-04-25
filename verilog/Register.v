@@ -49,7 +49,7 @@ regOut24,regOut25,regOut26,regOut27,regOut28,regOut29,regOut30,regOut31
 			for(j = 0; j < 32; j = j + 1)
 				registers[j] <= 0;
 		end
-		else if ((RegWr != 0) && (RW != 0)) begin //$0 must remain unchanged as 0
+		else if ((RegWr) && (RW)) begin //$0 must remain unchanged as 0
 			registers[RW] <= BusW;
 		end
 	end

@@ -12,6 +12,7 @@ def ex_mem(clk, rst, EX_Flush, RegWrite_in, MemtoReg_in, Branch_in, MemRead_in,
 
     @always(clk.posedge)
     def latches():
+        #flush all signals
         if(rst==1):
             RegWrite_out.next = 0
             MemtoReg_out.next = 0
@@ -26,6 +27,7 @@ def ex_mem(clk, rst, EX_Flush, RegWrite_in, MemtoReg_in, Branch_in, MemRead_in,
             reg_read_data_2_out.next = 0
             EX_MEM_RegisterRd_out.next = 0
             PC_plus_4_out.next = 0
+        #send all sigals out
         else:
             RegWrite_out.next = RegWrite_in
             MemtoReg_out.next = MemtoReg_in
@@ -40,7 +42,7 @@ def ex_mem(clk, rst, EX_Flush, RegWrite_in, MemtoReg_in, Branch_in, MemRead_in,
             reg_read_data_2_out.next = reg_read_data_2_in
             EX_MEM_RegisterRd_out.next = ID_EX_RegisterRd_in
             PC_plus_4_out.next = PC_plus_4_in
-
+            #flush EX
             if(EX_Flush==1):
                 RegWrite_out.next = 0
                 MemtoReg_out.next = 0

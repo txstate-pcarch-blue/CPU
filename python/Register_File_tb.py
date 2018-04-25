@@ -6,7 +6,7 @@ from helpers.Random_Signal import random_signal
 
 if (__name__ == "__main__"):
     MAX_CYCLES = 100000
-
+    #creates signal variables
     BusA = Signal(intbv(0, 0, 2**32)) #output
     BusB = Signal(intbv(0, 0, 2**32)) #output
     BusW = Signal(intbv(0, 0, 2**32)) #input
@@ -17,11 +17,12 @@ if (__name__ == "__main__"):
     RegWr = Signal(intbv(0, 0, 2**1)) #input
     clk = Signal(intbv(0, 0, 2**1)) #input
     rst = Signal(0) #input
+    #makes an array for memory
     outregs = []
     for i in range(0, 32):
         outregs.append(Signal(intbv(0, 0, 2**32)))
         outregs[i].driven = not outregs[i].driven
-
+    #creates drivers for signals
     busWAddress_driver = random_signal(clk, BusW)
     readAAddress_driver = random_signal(clk, RA)
     readBAddress_driver = random_signal(clk, RB)
@@ -30,6 +31,6 @@ if (__name__ == "__main__"):
     reset_driver = pulse_generator(clk, rst, delay=40)
     register_driver = traceSignals(RegisterFile(BusA, BusB, BusW, RA, RB, RW, RegWr, clk, rst, outregs))
     clock_driver = clock_generator(clk)
-
+    #create and run simulation
     sim = Simulation(instances())
     sim.run(MAX_CYCLES)

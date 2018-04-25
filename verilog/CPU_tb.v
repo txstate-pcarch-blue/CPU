@@ -42,7 +42,7 @@ module CPU_tb();
 	
 	always @(posedge clk) begin
 		num_iter = num_iter + 1;
-		if (num_iter > 1000)
+		if (num_iter > 50)
 			$finish;
 	end
 	

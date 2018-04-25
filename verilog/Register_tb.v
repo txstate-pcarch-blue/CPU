@@ -107,12 +107,12 @@ module tb();
 		W = 32'd0;  
 	end
 	
-	always @(posedge clk) begin
+	always @(negedge clk) begin
 		RA  <= $random(seed);
 		RB  <= $random(seed);
 		RW  <= $random(seed);
 		W   <= $random(seed);
-		wrn <= $random(seed);
+		wrn <= 1;
 
 		// limit random reset to every 10 cycles
 		// to make results more readable

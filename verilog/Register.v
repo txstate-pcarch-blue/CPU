@@ -44,28 +44,24 @@ regOut24,regOut25,regOut26,regOut27,regOut28,regOut29,regOut30,regOut31
 		end
 	end
 	
-	always begin
-		@(posedge Clk) begin
-			if (Rst) begin
-				for(j = 0; j < 32; j = j + 1)
-					registers[j] <= 0;
-			end
-			else if (RegWr && RW != 0) begin //$0 must remain unchanged as 0
-				registers[RW] <= BusW;
-			end
+	always @(posedge Clk) begin	
+		if (Rst) begin
+			for(j = 0; j < 32; j = j + 1)
+				registers[j] <= 0;
 		end
-		
-		@(negedge Clk) begin
-		    if (Rst) begin
-		        BusA <= 0;
-		        BusB <= 0;
-		    end
-		    else begin
-                BusA <= registers[RA];
-                BusB <= registers[RB];
-            end
-
+		else if ((RegWr != 0) && (RW != 0)) begin //$0 must remain unchanged as 0
+			registers[RW] <= BusW;
 		end
 	end
-	
+		
+	always @(negedge Clk) begin
+		if (Rst) begin
+		    BusA <= 0;
+		    BusB <= 0;
+		end
+		else begin
+            BusA <= registers[RA];
+            BusB <= registers[RB];
+        end
+	end	
 endmodule

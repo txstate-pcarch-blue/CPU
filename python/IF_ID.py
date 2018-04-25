@@ -10,7 +10,7 @@ def if_id(clk, rst, inst_in, inst_out, PC_in, PC_out, IF_flush, IFID_write):
         PC_out = Signal(intbv(0))
 
     '''
-    @always(delay(10))
+    @always(clk.posedge)
     def read():
         if(rst==1):
             inst_out.next = 0
@@ -37,4 +37,4 @@ def if_id(clk, rst, inst_in, inst_out, PC_in, PC_out, IF_flush, IFID_write):
             latches.inst_out = inst_in
             latches.PC_out = PC_in
             '''
-    return read, write
+    return read

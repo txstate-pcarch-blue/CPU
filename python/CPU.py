@@ -84,7 +84,7 @@ def CPU(reset, regOut):
     third_alu_mux_2_to_1_out = Signal(intbv(0, 0, 2**32))
     idEx_to_exMem_mux_2_to_1_out = Signal(intbv(0, 0, 2**5))
     writeback_source_mux_3_to_1_out = Signal(intbv(0, 0, 2**32))
-    regDst_mux_3_to_1_out = Signal(intbv(0, 0, 2**5))
+    regDst_mux_2_to_1_out = Signal(intbv(0, 0, 2**5))
     first_PC4_or_branch_mux_2_to_1_out = Signal(intbv(0, 0, 2**32))
     second_jump_or_first_mux_2_to_1_out = Signal(intbv(0, 0, 2**32))
     third_jr_or_second_mux_2_to_1_out = Signal(intbv(0, 0, 2**32))
@@ -155,6 +155,7 @@ def CPU(reset, regOut):
     MEM_WB_PC_plus_4 = Signal(intbv(0, 0, 2**32))
     MEM_WB_RegWrite = Signal(intbv(0, 0, 2**1))
     MEM_WB_MemtoReg = Signal(intbv(0, 0, 2**2))
+    MEM_WB_RegDst = Signal(intbv(0, 0, 2**2))
     MEM_WB_D_MEM_read_data = Signal(intbv(0, 0, 2**32))
     MEM_WB_D_MEM_read_addr = Signal(intbv(0, 0, 2**32))
 
@@ -181,37 +182,55 @@ def CPU(reset, regOut):
     #ID Stage: Control, Registers, branch_jump_cal, sign_extend, regDst_mux_3_to_1,
     #ID_EX_reg, Hazard_Detection_Unit
     Unit4 = control(IF_ID_instruction(32, 26), ALUSrc, RegDst, MemWrite, MemRead, Branch, Jump, MemToReg, RegWrite, ALUOp)
-    Unit5 = regDst_mux_3_to_1(IF_ID_instruction(21,16), IF_ID_instruction(26,21), In3_jal_ra, RegDst, regDst_mux_3_to_1_out)
+
+    Unit5 = regDst_mux_2_to_1(MEM_WB_RegisterRd, In3_jal_ra, MEM_WB_RegDst, regDst_mux_2_to_1_out)
+
     Unit25 = hazard_unit(ID_EX_MemRead, ID_EX_RegisterRt, IF_ID_instruction(26,21), IF_ID_instruction(21,16), ID_Flush_lwstall, PCWrite, IF_ID_Write)
+
     Unit6 = hazard_stall_mux_2_to_1(RegWrite, MemWrite, ID_Flush_lwstall, h_RegWrite_out, h_MemWrite_out)
+
     Unit28 = writeback_source_mux_3_to_1(MEM_WB_D_MEM_read_addr, MEM_WB_D_MEM_read_data,  MEM_WB_PC_plus_4, MEM_WB_MemtoReg, writeback_source_mux_3_to_1_out)
-    Unit7 = RegisterFile(reg_read_data_1, reg_read_data_2, writeback_source_mux_3_to_1_out, IF_ID_instruction(26, 21), IF_ID_instruction(21, 16), MEM_WB_RegRd, MEM_WB_RegWrite, clock, reset, regOut)
+
+    Unit7 = RegisterFile(reg_read_data_1, reg_read_data_2, writeback_source_mux_3_to_1_out, IF_ID_instruction(26, 21), IF_ID_instruction(21, 16), regDst_mux_2_to_1_out, MEM_WB_RegWrite, clock, reset, regOut)
+
     Unit8 = branch_calculator(immi_sign_extended, IF_ID_PC_plus4, BTA)
+
     Unit9 = jump_calculator(IF_ID_instruction, IF_ID_PC_plus4, Jump_Address)
+
     Unit24 = id_ex(clock, reset, ID_Flush_lwstall, ID_Flush_Branch, Branch, MemRead, MemWrite, Jump, RegWrite, ALUSrc, ALUOp, RegDst, MemToReg, Jump_Address, IF_ID_PC_plus4, BTA, reg_read_data_1, reg_read_data_2, immi_sign_extended,  IF_ID_instruction(26,21), IF_ID_instruction(21,16), IF_ID_instruction(16,11), IF_ID_instruction(6,0), ID_EX_RegWrite, ID_EX_Branch, ID_EX_MemRead, ID_EX_MemWrite, ID_EX_Jump, ID_EX_ALUSrc, ID_EX_ALUOp, ID_EX_RegDst, ID_EX_MemtoReg, ID_EX_jump_addr, ID_EX_branch_address, ID_EX_PC_plus4, ID_EX_reg_read_data_1, ID_EX_reg_read_data_2, ID_EX_immi_sign_extended, ID_EX_RegisterRs, ID_EX_RegisterRt, ID_EX_RegisterRd, ID_EX_funct)
 
     #EX Stage:
     Unit11 = alu_control(ID_EX_ALUOp, ID_EX_funct, out_to_ALU)
+
     Unit12 = JR_Control(ID_EX_ALUOp, ID_EX_funct, JRControl)
     #ID_EX_RegRs, ID_EX_RegRt, EX_MEM_RegRd, EX_MEM_RegWrite, MEM_WB_RegRd, MEM_WB_RegWrite, Mux_ForwardA, Mux_ForwardB
     Unit13 = ForwardingUnit(ID_EX_RegisterRs, ID_EX_RegisterRt, EX_MEM_RegisterRd, MEM_WB_RegisterRd, MEM_WB_RegWrite, EX_MEM_RegWrite, ForwardA, ForwardB)
+
     Unit14 = first_alu_mux_3_to_1(ID_EX_reg_read_data_1, EX_MEM_reg_read_data_2, MEM_WB_D_MEM_read_data, ForwardA, first_alu_mux_3_to_1_out)
+
     Unit15 = second_alu_mux_3_to_1(ID_EX_reg_read_data_2, EX_MEM_reg_read_data_2, MEM_WB_D_MEM_read_data, ForwardB, second_alu_mux_3_to_1_out)
+
     Unit16 = third_alu_mux_2_to_1(second_alu_mux_3_to_1_out, immi_sign_extended, ALUSrc, third_alu_mux_2_to_1_out)
+
     Unit10 = alu(clock, reset, first_alu_mux_3_to_1_out, third_alu_mux_2_to_1_out, out_to_ALU, ALU_result, ALU_zero)
+
     Unit17 = idEx_to_exMem_mux_2_to_1(ID_EX_RegisterRd, ID_EX_RegisterRt, ID_EX_RegDst, idEx_to_exMem_mux_2_to_1_out)
+
     Unit18 = ex_mem(clock, reset, EX_Flush, ID_EX_RegWrite, ID_EX_MemtoReg, ID_EX_Branch, ID_EX_MemRead, ID_EX_MemWrite, ID_EX_Jump, ID_EX_jump_addr, ID_EX_branch_address, ALU_zero, ALU_result, second_alu_mux_3_to_1_out, idEx_to_exMem_mux_2_to_1_out, ID_EX_PC_plus4, EX_MEM_RegWrite, EX_MEM_MemtoReg, EX_MEM_Branch, EX_MEM_MemRead, EX_MEM_MemWrite, EX_MEM_Jump, EX_MEM_jump_addr, EX_MEM_branch_addr, EX_MEM_ALU_zero, EX_MEM_ALU_result, EX_MEM_reg_read_data_2, EX_MEM_RegisterRd, EX_MEM_PC_plus_4)
 
     #Mem Stage:
     Unit19 = Data_Memory(clock, EX_MEM_ALU_result, EX_MEM_MemWrite, EX_MEM_MemRead, D_MEM_data, EX_MEM_reg_read_data_2)
     Unit26 = branch_or_jump_taken_flush(EX_MEM_Branch, EX_MEM_Jump, EX_MEM_ALU_zero, IF_Flush, ID_Flush_Branch, EX_Flush, branch_or_jump_taken)
+
     Unit20 = mem_wb(clock, reset, EX_MEM_RegWrite, EX_MEM_MemtoReg, D_MEM_data, EX_MEM_ALU_result, EX_MEM_RegisterRd, EX_MEM_PC_plus_4, MEM_WB_D_MEM_read_data, MEM_WB_D_MEM_read_addr, MEM_WB_RegisterRd, MEM_WB_RegWrite, MEM_WB_MemtoReg, MEM_WB_PC_plus_4)
 
     branch_taken = Signal(intbv(0, 0, 2**1))
     branch_checker = isBranch(ALU_zero, Branch, branch_taken)
 
     Unit21 = first_PC4_or_branch_mux_2_to_1(ID_EX_PC_plus4, BTA, branch_taken, first_PC4_or_branch_mux_2_to_1_out)
+
     Unit22 = second_jump_or_first_mux_2_to_1(first_PC4_or_branch_mux_2_to_1_out, Jump_Address, Jump, second_jump_or_first_mux_2_to_1_out)
+
     Unit23 = third_jr_or_second_mux_2_to_1(second_jump_or_first_mux_2_to_1_out, regOut[31], JRControl, third_jr_or_second_mux_2_to_1_out)
 
     return instances()

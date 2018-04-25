@@ -13,4 +13,4 @@ if (__name__ == "__main__"):
     CPU_driver = traceSignals(CPU(rst, regOut))
 
     sim = Simulation(CPU_driver)
-    sim.run(200)
+    sim.run(10000)

@@ -1,4 +1,4 @@
-from myhdl import block, always
+from myhdl import block, always, intbv
 
 # Program Counter
 # Adds 4 to the current instruction address each clock cycle

@@ -1,3 +1,12 @@
+// IF/ID stage register
+// 1. Write instruction to register (sync falling edge)
+//input IFID_write;
+//output InsOut, PC_plus4_out;
+// 2. Flush signal
+//input IF_flush;
+//output InsOut, PC_plus4_out;
+// reset: set all register content to 0
+
 module IF_ID(InsIn, PC_plus4_In, InsOut, PC_plus4_out, IFID_write, IF_flush, clk, reset);
 
 output reg [31:0] InsOut, PC_plus4_out;

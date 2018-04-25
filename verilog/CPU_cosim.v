@@ -22,6 +22,11 @@ cpu dut (clock, reset, regOut0, regOut1, regOut2, regOut3, regOut4, regOut5, reg
         regOut27, regOut28, regOut29, regOut30, regOut31
 );
 
-defparam dut.in_file = "bin/.in_file_tmp";
+initial begin
+	$dumpfile("CPU_v.vcd");
+	$dumpvars(-1, dut);
+end
+
+defparam dut.in_file = "instructions.txt";
 
 endmodule

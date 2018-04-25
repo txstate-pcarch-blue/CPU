@@ -59,8 +59,24 @@ cd tools
 python3 Assembler.py [-o out_file] infile.S
 ```
 
+## Input File Requirements
+
+Input files must be ASCII representations of hex digits separated by a new line character. Example:
+
+```
+20100004
+20110004
+2012ffff
+...
+```
+
 ## Running the cosimulation
-The cosimulation is compiled and run through a single command "python3 CPU_Cosim.py <instruction_file.hex>". This will launch the cosimulation with a command line prompt that accepts the following commands:
+The cosimulation is compiled and run through the CPU_Cosim.py file using the command:
+```
+python3 CPU_Cosim.py input.hex
+```
+
+This will launch the cosimulation with a command line prompt that accepts the following commands:
 * run <n>: Runs the simulation for n ticks. There are 20 ticks per clock cycle.
 * show: Prints out both register files and tests for equality.
 * quit: Exits the program, terminating the simulation.

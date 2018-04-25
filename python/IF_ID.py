@@ -2,7 +2,7 @@ from myhdl import *
 
 @block
 def if_id(clk, rst, inst_in, inst_out, PC_in, PC_out, IF_flush, IFID_write):
-    
+
     @always(clk.posedge)
     def latch():
         #check for reset

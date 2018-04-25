@@ -58,9 +58,9 @@ def idEx_to_exMem_mux_2_to_1(In1_rd, In2_rt, Ctrl_RegDst, out):
     @always_comb
     def mux():
         if Ctrl_RegDst == 0:
-            out.next = In1_rd
-        elif Ctrl_RegDst == 1:
             out.next = In2_rt
+        elif Ctrl_RegDst == 1:
+            out.next = In1_rd
     return mux
 
 #Mux to determine writeback source (32 bit value)
@@ -86,11 +86,11 @@ def writeback_source_mux_3_to_1(In1_ALU_Result, In2_Mem_output, In3_PC_plus_4, C
 #if 1, R type, address comes from rd, bits 15:11
 #if 2, jal and address is hardcoded $31 for $ra slot
 @block
-def regDst_mux_3_to_1(In1_imm_destination_rt, In2_rType_rd, In3_jal_ra, Ctrl_RegDst, out):
+def regDst_mux_2_to_1(In2_rType_rd, In3_jal_ra, Ctrl_RegDst, out):
     @always_comb
     def mux():
         if Ctrl_RegDst == 0:
-            out.next = In1_imm_destination_rt
+            out.next = In2_rType_rd
         elif Ctrl_RegDst == 1:
             out.next = In2_rType_rd
         elif Ctrl_RegDst == 2:
@@ -165,7 +165,7 @@ def hazard_stall_mux_2_to_1(h_RegWrite, h_MemWrite, Ctrl_Mux_Select_Stall, h_Reg
 def PC_input_2_to_1(pc_plus_4, branch_or_jump_in, branch_or_jump_taken, out):
     @always_comb
     def mux():
-        if branch_or_jump_taken:
+        if (branch_or_jump_taken==1):
             out.next = branch_or_jump_in
         else:
             out.next = pc_plus_4

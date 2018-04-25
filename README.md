@@ -2,6 +2,19 @@
 
 A basic implementation of a simplified MIPS CPU with pipelining. Built using verilog and python.
 
+
+## Credits
+
+This program was built by the Texas State PC Architecture Blue Team.
+
+**Team Lead:** Michael Volling
+
+| Verilog Team    | Python Team       |
+|-----------------|-------------------|
+| Boris Sabotinov (Lead) | Kevin Maxey (Lead)|
+| Daniel Le       | Matthew Maluschka |
+| Cody Sears      | Eric McLaurin     |
+
 ## Circuit Diagram
 
 ![CPU Diagram](https://docs.google.com/drawings/d/e/2PACX-1vRrMpbQXb1UR1Z8QOkAiz5xBP98bftds78a3To3jghdwoKGM-Dwq32E8awjsxzxpPebcAGCQkeBMsUH/pub?w=1414&h=751)
@@ -108,20 +121,3 @@ All verilog files end with `.v` and all python files end with `.py`
 If a file end with `_tb.[py|v]`, then the file is used to test the module.
 
 If a file end with `_cosim.[py|v]`, then the file is used to control cosimulation. Each `_cosim.[py|v]` pair is used to control one build target. I.E. the Register_File_cosim files are not used in the CPU Cosimulation. Run the python files to initiate cosimulation.
-
-## Credits
-
-This program was built by the Texas State PC Architecture Blue Team.
-
-**Team Lead:** Michael Volling
-
-**Verilog Team**
-
-* Boris Sabotinov **Lead**
-* Daniel Le
-* Cody Sears
-
-**Python Team**
-* Kevin Maxey **Lead**
-* Matthew Maluschka
-* Erich McLaurin

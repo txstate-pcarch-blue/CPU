@@ -1,8 +1,10 @@
 # MIPS-CPU
 
-![CPU Diagram](https://drive.google.com/open?id=1Gf2pR-RkKIHtupP5HYv62-d1iUI8allX)
-
 A basic implementation of a simplified MIPS CPU with pipelining. Built using verilog and python.
+
+## Circuit Diagram
+
+![CPU Diagram](https://docs.google.com/drawings/d/e/2PACX-1vRrMpbQXb1UR1Z8QOkAiz5xBP98bftds78a3To3jghdwoKGM-Dwq32E8awjsxzxpPebcAGCQkeBMsUH/pub?w=1414&h=751)
 
 ## System Requirements
 
